@@ -9,8 +9,14 @@ export default async function EspaceArtisanPage() {
   const supabase = createServerSupabaseClient({
     getAll: () => cookieStore.getAll(),
     setAll: (cookiesToSet) => {
-      for (const { name, value, options } of cookiesToSet) {
-        cookieStore.set(name, value, options);
+      try {
+        for (const { name, value, options } of cookiesToSet) {
+          cookieStore.set(name, value, options);
+        }
+      } catch {
+        // Server Components can't write cookies. middleware.ts refreshes
+        // the session and writes fresh cookies on every request, so a
+        // write attempted here is safe to ignore.
       }
     },
   });
