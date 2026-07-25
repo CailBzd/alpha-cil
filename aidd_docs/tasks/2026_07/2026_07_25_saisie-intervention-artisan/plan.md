@@ -1,6 +1,6 @@
 ---
 objective: "Un artisan connecté peut soumettre une intervention (facture PDF + type de travaux, date, montant, corps de métier) enregistrée en attente de vérification ; un fichier non-PDF échoue proprement sans créer d'intervention partielle."
-status: pending
+status: implemented
 ---
 
 # Plan: Soumission de facture et saisie assistée d'intervention (US-02)
