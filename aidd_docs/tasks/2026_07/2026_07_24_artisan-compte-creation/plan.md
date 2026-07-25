@@ -1,6 +1,6 @@
 ---
 objective: "Un artisan peut créer un compte (email + SIRET + corps de métier), se connecter, et accéder à son espace ; un email déjà utilisé échoue proprement."
-status: in-progress
+status: implemented
 ---
 
 # Plan: Création de compte artisan (US-01)
