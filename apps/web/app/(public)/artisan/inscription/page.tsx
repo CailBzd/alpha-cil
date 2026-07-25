@@ -4,19 +4,8 @@ import { Alert, AuthCard, Button, Input, Select } from "@alpha-cil/ui";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { CORPS_METIER_OPTIONS } from "@/lib/corps-metier";
 import { ThemeToggle } from "../../../theme-toggle";
-
-const CORPS_METIER_OPTIONS = [
-  { value: "plombier", label: "Plombier" },
-  { value: "electricien", label: "Électricien" },
-  { value: "chauffagiste", label: "Chauffagiste" },
-  { value: "couvreur", label: "Couvreur" },
-  { value: "macon", label: "Maçon" },
-  { value: "menuisier", label: "Menuisier" },
-  { value: "peintre", label: "Peintre" },
-  { value: "carreleur", label: "Carreleur" },
-  { value: "autre", label: "Autre" },
-] as const;
 
 export default function ArtisanInscriptionPage() {
   const router = useRouter();

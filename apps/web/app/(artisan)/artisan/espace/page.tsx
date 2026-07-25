@@ -1,5 +1,7 @@
+import { buttonVariants } from "@alpha-cil/ui";
 import { createServerSupabaseClient } from "@alpha-cil/db";
 import { cookies } from "next/headers";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ThemeToggle } from "../../../theme-toggle";
 import { SignOutButton } from "./SignOutButton";
@@ -48,11 +50,14 @@ export default async function EspaceArtisanPage() {
             Mes interventions
           </a>
         </nav>
-        <main className="flex-1 space-y-2">
+        <main className="flex-1 space-y-4">
           <h1 className="text-xl font-semibold tracking-tight text-foreground">Bienvenue</h1>
           <p className="text-sm text-muted-foreground">
             Soumettez votre première intervention pour commencer.
           </p>
+          <Link href="/artisan/espace/interventions/nouvelle" className={buttonVariants()}>
+            Soumettre une intervention
+          </Link>
         </main>
       </div>
     </div>
