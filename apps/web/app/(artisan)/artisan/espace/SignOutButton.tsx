@@ -13,5 +13,9 @@ export function SignOutButton() {
     router.push("/artisan/connexion");
   }
 
-  return <Button onClick={handleSignOut}>Se déconnecter</Button>;
+  return (
+    <Button variant="ghost" size="sm" onClick={handleSignOut}>
+      Se déconnecter
+    </Button>
+  );
 }

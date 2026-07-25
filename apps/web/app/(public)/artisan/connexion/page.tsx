@@ -1,10 +1,11 @@
 "use client";
 
 import { createBrowserSupabaseClient } from "@alpha-cil/db";
-import { Button, Input } from "@alpha-cil/ui";
+import { Alert, AuthCard, Button, Input } from "@alpha-cil/ui";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { ThemeToggle } from "../../../theme-toggle";
 
 export default function ArtisanConnexionPage() {
   const router = useRouter();
@@ -33,9 +34,22 @@ export default function ArtisanConnexionPage() {
   }
 
   return (
-    <main>
-      <h1>Alpha CIL</h1>
-      <form onSubmit={handleSubmit}>
+    <AuthCard
+      title="Connexion artisan"
+      action={<ThemeToggle />}
+      footer={
+        <>
+          Pas de compte ?{" "}
+          <Link
+            href="/artisan/inscription"
+            className="font-medium text-foreground underline underline-offset-4"
+          >
+            S&apos;inscrire
+          </Link>
+        </>
+      }
+    >
+      <form onSubmit={handleSubmit} className="space-y-4">
         <Input label="Email" name="email" type="email" required autoComplete="email" />
         <Input
           label="Mot de passe"
@@ -44,14 +58,11 @@ export default function ArtisanConnexionPage() {
           required
           autoComplete="current-password"
         />
-        <Button type="submit" disabled={submitting}>
+        {error ? <Alert>{error}</Alert> : null}
+        <Button type="submit" disabled={submitting} className="w-full">
           Se connecter
         </Button>
-        {error ? <p role="alert">{error}</p> : null}
       </form>
-      <p>
-        Pas de compte ? <Link href="/artisan/inscription">S&apos;inscrire</Link>
-      </p>
-    </main>
+    </AuthCard>
   );
 }

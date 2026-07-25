@@ -1,0 +1,31 @@
+import type { ReactNode } from "react";
+
+export function AuthCard({
+  title,
+  children,
+  footer,
+  action,
+}: {
+  title: string;
+  children: ReactNode;
+  footer?: ReactNode;
+  action?: ReactNode;
+}) {
+  return (
+    <main className="relative flex min-h-screen items-center justify-center bg-background px-4 py-12">
+      {action ? <div className="absolute right-4 top-4">{action}</div> : null}
+      <div className="w-full max-w-sm space-y-6">
+        <div className="space-y-1 text-center">
+          <p className="text-sm font-semibold tracking-tight text-muted-foreground">
+            Alpha CIL
+          </p>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">{title}</h1>
+        </div>
+        <div className="space-y-4 rounded-xl border border-border bg-card p-6 shadow-sm">
+          {children}
+        </div>
+        {footer ? <p className="text-center text-sm text-muted-foreground">{footer}</p> : null}
+      </div>
+    </main>
+  );
+}

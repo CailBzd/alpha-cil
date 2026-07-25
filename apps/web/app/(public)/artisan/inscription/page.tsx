@@ -1,9 +1,10 @@
 "use client";
 
-import { Button, Input } from "@alpha-cil/ui";
+import { Alert, AuthCard, Button, Input, Select } from "@alpha-cil/ui";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { ThemeToggle } from "../../../theme-toggle";
 
 const CORPS_METIER_OPTIONS = [
   { value: "plombier", label: "Plombier" },
@@ -61,9 +62,19 @@ export default function ArtisanInscriptionPage() {
   }
 
   return (
-    <main>
-      <h1>Alpha CIL</h1>
-      <form onSubmit={handleSubmit}>
+    <AuthCard
+      title="Créer mon compte artisan"
+      action={<ThemeToggle />}
+      footer={
+        <>
+          Déjà un compte ?{" "}
+          <Link href="/artisan/connexion" className="font-medium text-foreground underline underline-offset-4">
+            Se connecter
+          </Link>
+        </>
+      }
+    >
+      <form onSubmit={handleSubmit} className="space-y-4">
         <Input label="Email" name="email" type="email" required autoComplete="email" />
         <Input
           label="Mot de passe"
@@ -81,27 +92,19 @@ export default function ArtisanInscriptionPage() {
           pattern="[0-9]{14}"
           title="14 chiffres"
         />
-        <div>
-          <label htmlFor="corpsMetier">Corps de métier</label>
-          <select id="corpsMetier" name="corpsMetier" required defaultValue="">
-            <option value="" disabled>
-              Sélectionnez un corps de métier
-            </option>
-            {CORPS_METIER_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-        <Button type="submit" disabled={submitting}>
+        <Select
+          label="Corps de métier"
+          name="corpsMetier"
+          required
+          defaultValue=""
+          placeholder="Sélectionnez un corps de métier"
+          options={CORPS_METIER_OPTIONS.map((option) => ({ ...option }))}
+        />
+        {error ? <Alert>{error}</Alert> : null}
+        <Button type="submit" disabled={submitting} className="w-full">
           Créer mon compte
         </Button>
-        {error ? <p role="alert">{error}</p> : null}
       </form>
-      <p>
-        Déjà un compte ? <Link href="/artisan/connexion">Se connecter</Link>
-      </p>
-    </main>
+    </AuthCard>
   );
 }
