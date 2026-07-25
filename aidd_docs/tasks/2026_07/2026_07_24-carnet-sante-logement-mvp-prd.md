@@ -4,7 +4,7 @@ Une plateforme qui transforme le Carnet d'Information du Logement (CIL), obligat
 
 ## Overview
 
-Le CIL est encadré par la loi Climat et Résilience (2021) et obligatoire pour les logements neufs post-2023 et les logements rénovés avec incidence énergétique. Aucune plateforme n'est imposée par la loi : le CIL peut être un classeur papier, une clé USB ou un PDF, et il n'existe aujourd'hui aucun acteur en position de standard de facto. Le produit ne se positionne pas comme un outil de conformité réglementaire, mais comme un carnet de santé de la maison dont la valeur perçue (tranquillité d'esprit, valorisation à la revente, preuve de garanties) dépasse largement l'obligation légale. L'adoption est pensée pour être tirée par les artisans, qui ont un intérêt immédiat à digitaliser leur propre facturation et leurs attestations, plutôt que par le propriétaire, peu motivé à saisir spontanément son historique.
+Le CIL est encadré par la loi Climat et Résilience (2021) et obligatoire pour les logements neufs post-2023 et les logements rénovés avec incidence énergétique. Aucune plateforme n'est imposée par la loi : le CIL peut être un classeur papier, une clé USB ou un PDF, et il n'existe aujourd'hui aucun acteur en position de standard de facto. Le produit ne se positionne pas comme un outil de conformité réglementaire, mais comme un carnet de santé de la maison dont la valeur perçue (tranquillité d'esprit, valorisation à la revente, preuve de garanties) dépasse largement l'obligation légale. L'adoption est pensée pour être tirée par les artisans, qui ont un intérêt immédiat à digitaliser leur propre facturation et leurs attestations, plutôt que par le propriétaire, peu motivé à saisir spontanément son historique. Les agences immobilières impliquées dans une vente ou une location peuvent consulter le carnet en lecture seule lorsque le propriétaire leur en accorde l'accès ; elles ne saisissent ni ne modifient jamais son contenu.
 
 ## Problem Statement
 
@@ -19,6 +19,8 @@ Les propriétaires n'ont aucune raison spontanée de numériser leur historique 
 - Des rappels d'entretien sont générés automatiquement à partir des équipements déclarés, avec notification email/app.
 - Le propriétaire peut générer un export (PDF/lien) présentable à un tiers, en choisissant les informations incluses.
 - Succès mesuré via : nombre de fiches logement créées/mois, % créées automatiquement via facture artisan (vs saisie manuelle), nombre d'artisans actifs mensuels, taux de rétention à 6 mois côté artisan, nombre d'exports "dossier de vente" générés, taux d'ouverture des rappels d'entretien.
+- Une agence immobilière à qui le propriétaire a accordé un accès peut consulter le carnet du logement en lecture seule, sans aucune capacité de modification.
+- Un propriétaire peut saisir lui-même une intervention (type de travaux, date, montant, corps de métier, facture optionnelle) sans dépendre d'un artisan qui l'aurait fait à sa place.
 
 ## Non-Goals
 
@@ -32,6 +34,9 @@ Les propriétaires n'ont aucune raison spontanée de numériser leur historique 
 - Partenariats assurance (réduction de prime, traitement accéléré des sinistres) — prévus en V3.
 - Consultation directe du carnet par un tiers de confiance sans lien explicite transmis par le propriétaire : en V1, l'unique accès tiers passe par un export contrôlé, jamais par un accès permanent ou par défaut.
 - Système de notation ou de score propriétaire des artisans : explicitement exclu, la vérification RGE/décennale doit rester factuelle et sourcée, jamais un jugement propriétaire de la plateforme.
+- Un accès en écriture ou en gestion pour une agence immobilière : son rôle reste strictement consultatif, jamais une saisie ou une modification du carnet.
+- Gestion multi-biens sous un compte unique (type SCI, investisseur, multi-propriétaire) — prévue en V2 ; le MVP scope un compte propriétaire à un seul bien.
+- Vue "carnet d'adresses" consolidée pour une agence sur l'ensemble de ses biens en mandat (vente/location) — prévue en V2 ; en V1 l'agence consulte un carnet à la fois, via l'accès accordé individuellement par chaque propriétaire.
 
 ## User Stories
 
@@ -45,6 +50,8 @@ Les propriétaires n'ont aucune raison spontanée de numériser leur historique 
 - En tant qu'artisan, je veux que mon statut RGE et mon assurance décennale soient vérifiés et horodatés automatiquement à la date de l'intervention, afin d'avoir une preuve factuelle et opposable de mes garanties en cas de litige.
 - En tant qu'artisan, je veux que l'intervention soit attribuée automatiquement à la bonne fiche logement de mon client, afin de ne pas avoir à gérer moi-même la mise en relation.
 - En tant qu'artisan, je veux consulter mon propre historique d'interventions, afin de m'en servir comme book de références professionnel.
+- En tant qu'agence immobilière à qui un propriétaire a donné accès, je veux consulter le carnet du logement en lecture seule, afin de renseigner un acquéreur ou un locataire sans solliciter le propriétaire à chaque question.
+- En tant que propriétaire, je veux pouvoir saisir moi-même une intervention sur mon logement, afin de compléter mon carnet même quand mon artisan n'utilise pas (encore) la plateforme.
 
 ## Acceptance Criteria
 
@@ -58,6 +65,8 @@ Les propriétaires n'ont aucune raison spontanée de numériser leur historique 
 - Des rappels d'entretien sont générés automatiquement à partir des équipements déclarés sur la fiche et notifiés par email.
 - Le propriétaire peut générer un export PDF ou un lien de synthèse en choisissant les informations incluses.
 - Aucune information du carnet n'est consultable par un tiers sans action explicite et révocable du propriétaire.
+- Une agence disposant d'un accès accordé par le propriétaire peut consulter le carnet en lecture seule ; aucune action de modification n'est disponible depuis son interface.
+- Un propriétaire peut créer une intervention manuellement (mêmes champs qu'une saisie artisan) sans qu'un artisan ne l'ait préalablement renseignée.
 
 ## Dependencies
 
