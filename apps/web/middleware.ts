@@ -18,15 +18,9 @@ export async function middleware(request: NextRequest) {
     },
   });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/artisan/connexion";
-    return NextResponse.redirect(url);
-  }
+  // Refresh the session only. Access control is enforced by the route
+  // itself (see apps/web/app/(artisan)/artisan/espace/page.tsx), never here.
+  await supabase.auth.getUser();
 
   return response;
 }
