@@ -275,7 +275,7 @@ Scenario: Aucun DPE disponible
 - **Story points**: 5
 - **Impact**: minor — chemin de création alternatif et additif, n'altère pas le chemin de création piloté par l'artisan (US-04).
 - **Dependencies**: aucune
-- **Priority**: 11
+- **Priority**: 12
 
 ---
 
@@ -378,7 +378,7 @@ Scenario: Aucun équipement déclaré
 - **Story points**: 5
 - **Impact**: minor — fonctionnalité de notification additive, ne modifie aucune donnée existante.
 - **Dependencies**: US-04 ou US-08 (fiche avec équipements déclarés)
-- **Priority**: 12
+- **Priority**: 14
 
 ---
 
@@ -413,7 +413,77 @@ Scenario: Export sans aucune information sélectionnée
 - **Story points**: 5
 - **Impact**: major — moment clé du parcours (revente), une erreur de scope d'export pourrait sur-partager des informations non voulues par le propriétaire.
 - **Dependencies**: US-09 (historique des interventions), US-10 (modèle d'accès/sélection)
+- **Priority**: 11
+
+---
+
+## US-13: "Consultation en lecture seule du carnet par une agence immobilière"
+
+**As a** agence immobilière
+**I want** consulter le carnet d'un logement en lecture seule, lorsqu'un propriétaire m'y a donné accès
+**So that** je peux renseigner un acquéreur ou un locataire sans le solliciter à chaque question
+
+### Acceptance criteria
+
+```gherkin
+Scenario: Accès accordé et consultation
+  Given un propriétaire a accordé un accès à mon agence sur sa fiche logement
+  When j'ouvre le carnet de ce logement
+  Then je vois les informations dans la portée accordée, en lecture seule, sans aucune action de modification disponible
+
+Scenario: Accès non accordé ou révoqué
+  Given le propriétaire ne m'a jamais accordé d'accès, ou l'a révoqué
+  When je tente de consulter ce carnet
+  Then l'accès m'est refusé sans qu'aucune information du carnet ne soit exposée
+```
+
+### Definition of Done (functional)
+
+- Une agence avec un accès actif voit le carnet en lecture seule, limité à la portée accordée par le propriétaire.
+- Aucune action de saisie, modification ou suppression n'est disponible depuis l'interface agence.
+- Un accès révoqué ou jamais accordé refuse la consultation sans exposer d'information.
+
+### Estimation
+
+- **Story points**: 5
+- **Impact**: major — consomme directement le mécanisme de contrôle d'accès critique de US-10 ; une erreur de portée ou un accès en écriture accidentel exposerait des données personnelles à un tiers non habilité.
+- **Dependencies**: US-09 (vue chronologique à consulter), US-10 (mécanisme d'octroi/révocation d'accès)
 - **Priority**: 10
+
+---
+
+## US-14: "Saisie manuelle d'une intervention par le propriétaire"
+
+**As a** propriétaire
+**I want** saisir moi-même une intervention (type de travaux, date, montant, corps de métier, facture optionnelle)
+**So that** je peux compléter mon carnet même quand mon artisan n'utilise pas la plateforme
+
+### Acceptance criteria
+
+```gherkin
+Scenario: Saisie manuelle complète
+  Given je suis connecté à ma fiche logement
+  When je saisis moi-même une intervention avec type de travaux, date, montant et corps de métier
+  Then l'intervention est enregistrée sur ma fiche, avec la mention qu'elle a été saisie par le propriétaire plutôt que par un artisan
+
+Scenario: Aucune fiche logement existante
+  Given je n'ai pas encore de fiche logement
+  When je tente de saisir une intervention
+  Then je suis d'abord invité à créer ma fiche logement à partir de mon adresse avant de pouvoir saisir l'intervention
+```
+
+### Definition of Done (functional)
+
+- Un propriétaire peut ajouter une intervention à sa fiche sans qu'un artisan ne l'ait préalablement saisie.
+- Une intervention saisie par le propriétaire est visible dans son historique avec une mention claire de son origine (propriétaire, pas artisan).
+- L'absence de fiche logement redirige vers sa création plutôt que d'échouer silencieusement.
+
+### Estimation
+
+- **Story points**: 3
+- **Impact**: minor — chemin de saisie additif, réutilise les champs de US-02 sans modifier le flux artisan existant.
+- **Dependencies**: US-06 (compte propriétaire), US-08 (fiche logement sans intervention artisan préalable)
+- **Priority**: 13
 
 ---
 
@@ -421,6 +491,8 @@ Scenario: Export sans aucune information sélectionnée
 
 Classement par ratio valeur/effort décroissant, en respectant les dépendances (une story n'est classée qu'une fois ses prérequis satisfaits ; parmi les stories déjà prêtes, celle au meilleur ratio est choisie en premier). En cas d'égalité de ratio, la story au niveau d'impact le plus faible passe devant.
 
-**Priority order**: US-01 → US-02 → US-05 → US-06 → US-03 → US-04 → US-07 → US-09 → US-10 → US-12 → US-08 → US-11
+**Priority order**: US-01 → US-02 → US-05 → US-06 → US-03 → US-04 → US-07 → US-09 → US-10 → US-13 → US-12 → US-08 → US-14 → US-11
 
 - US-04 a été classée juste avant US-10 malgré un ratio et un niveau d'impact identiques (tous deux "critic", ratio 0.625), car US-07, US-09 et US-11 dépendent toutes de US-04 alors que seule US-12 dépend de US-10 — débloquer US-04 en premier libère trois stories en aval au lieu d'une.
+- US-13 se classe dès que US-10 est prête : elle consomme directement le même mécanisme d'accès sans rien y ajouter, donc rien ne justifie d'attendre.
+- US-14 se classe juste après US-08 (sa dépendance la plus tardive) plutôt qu'après US-11 : à effort moindre (3 pts vs 5) et impact plus faible (minor vs minor à égalité, mais ratio valeur/effort supérieur), elle passe devant dès qu'elle est prête.
