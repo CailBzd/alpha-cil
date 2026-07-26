@@ -1,6 +1,6 @@
 ---
 objective: "Le propriétaire distingue, à la création d'un accès, si le tiers est une agence immobilière ou un autre type de tiers ; cette distinction est visible dans la liste des accès actifs et adapte la présentation de la page de consultation, sans changer le mécanisme d'accès (portée, expiration, révocation) déjà livré par US-10."
-status: pending
+status: implemented
 ---
 
 # Plan: Distinction du type de tiers — agence immobilière (US-13)
