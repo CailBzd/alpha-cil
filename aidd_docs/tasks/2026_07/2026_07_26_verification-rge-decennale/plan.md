@@ -1,6 +1,6 @@
 ---
 objective: "Chaque intervention soumise porte un statut RGE vérifié et horodaté (sourcé depuis l'API ADEME à la date de l'intervention) et une attestation décennale associée avec la mention explicite de son caractère déclaratif."
-status: pending
+status: implemented
 ---
 
 # Plan: Vérification automatique RGE et décennale horodatée (US-03)
