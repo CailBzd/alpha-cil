@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from "@alpha-cil/db";
 import { CHAUFFAGE_OPTIONS, VMC_OPTIONS } from "@/lib/equipements";
 import { cookies } from "next/headers";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ThemeToggle } from "../../../theme-toggle";
 import { EquipementsForm } from "./EquipementsForm";
@@ -68,7 +69,15 @@ export default async function EspaceProprietairePage() {
         </div>
       </header>
       <main className="mx-auto max-w-3xl space-y-4 px-6 py-8">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">Mon logement</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-xl font-semibold tracking-tight text-foreground">Mon logement</h1>
+          <Link
+            href="/proprietaire/espace/acces"
+            className="text-sm font-medium text-foreground underline underline-offset-4"
+          >
+            Gérer les accès
+          </Link>
+        </div>
         {logement ? (
           <>
             <div className="space-y-1 text-sm">
