@@ -61,7 +61,7 @@ graph TD
   Notifications --> Email[Email transactionnel]
 ```
 
-Les modules `packages/*` (logement, intervention, artisan, notifications) sont indépendants et ne communiquent qu'à travers `packages/db` — aucun accès direct entre modules, ce qui garde la frontière d'accès (RLS/ACL) au niveau des données plutôt qu'au niveau du code métier. `intervention` est le seul module qui parle aux APIs externes (ADEME) et au stockage de fichiers.
+Les modules `packages/*` (logement, intervention, artisan, notifications) sont indépendants et ne communiquent qu'à travers `packages/db` — aucun accès direct entre modules, ce qui garde la frontière d'accès (RLS/ACL) au niveau des données plutôt qu'au niveau du code métier. `intervention` et `logement` sont les deux seuls modules qui parlent aux APIs externes ADEME, chacun pour son propre domaine (`intervention` pour le statut RGE, `logement` pour l'import DPE) ; `intervention` reste seul à parler au stockage de fichiers.
 
 ## Folder structure
 
