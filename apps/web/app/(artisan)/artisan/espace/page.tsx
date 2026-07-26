@@ -45,8 +45,14 @@ export default async function EspaceArtisanPage() {
 
   const { data: interventions } = await supabase
     .from("interventions")
-    .select("id, type_travaux, date_intervention, montant_euros, corps_metier, statut")
+    .select("id, type_travaux, date_intervention, montant_euros, corps_metier, statut, rge_verifie")
     .order("date_intervention", { ascending: false });
+
+  const { data: artisan } = await supabase
+    .from("artisans")
+    .select("attestation_decennale_uploaded_at")
+    .eq("id", user.id)
+    .single();
 
   return (
     <div className="min-h-screen bg-background">
@@ -59,12 +65,18 @@ export default async function EspaceArtisanPage() {
         </div>
       </header>
       <div className="mx-auto flex max-w-5xl gap-8 px-6 py-8">
-        <nav className="w-48 shrink-0">
+        <nav className="w-48 shrink-0 space-y-1">
           <a
             href="/artisan/espace"
             className="block rounded-md bg-secondary px-3 py-2 text-sm font-medium text-secondary-foreground"
           >
             Mes interventions
+          </a>
+          <a
+            href="/artisan/espace/profil"
+            className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-secondary-foreground"
+          >
+            Mon profil
           </a>
         </nav>
         <main className="flex-1 space-y-4">
@@ -98,6 +110,15 @@ export default async function EspaceArtisanPage() {
                   <span className="rounded-full bg-secondary px-2 py-0.5 text-xs text-secondary-foreground">
                     {STATUT_LABELS[intervention.statut] ?? intervention.statut}
                   </span>
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-xs ${
+                      intervention.rge_verifie
+                        ? "bg-secondary text-secondary-foreground"
+                        : "border border-border text-muted-foreground"
+                    }`}
+                  >
+                    {intervention.rge_verifie ? "RGE vérifié" : "RGE non vérifié"}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -107,6 +128,16 @@ export default async function EspaceArtisanPage() {
               pour ajouter la première.
             </p>
           )}
+          <p className="text-sm text-muted-foreground">
+            Attestation décennale : déclarative, non vérifiée par une source tierce.{" "}
+            {artisan?.attestation_decennale_uploaded_at ? (
+              `Enregistrée le ${new Date(artisan.attestation_decennale_uploaded_at).toLocaleDateString("fr-FR")}.`
+            ) : (
+              <Link href="/artisan/espace/profil" className="underline underline-offset-4">
+                Renseignez-la sur votre profil.
+              </Link>
+            )}
+          </p>
         </main>
       </div>
     </div>
