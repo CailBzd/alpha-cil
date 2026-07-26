@@ -17,6 +17,9 @@ importers:
       '@alpha-cil/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@alpha-cil/intervention':
+        specifier: workspace:*
+        version: link:../../packages/intervention
       '@alpha-cil/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -67,6 +70,12 @@ importers:
       '@types/node':
         specifier: ^22.10.2
         version: 22.20.1
+      typescript:
+        specifier: ^5.7.2
+        version: 5.9.3
+
+  packages/intervention:
+    devDependencies:
       typescript:
         specifier: ^5.7.2
         version: 5.9.3

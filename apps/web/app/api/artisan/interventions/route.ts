@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from "@alpha-cil/db";
+import { verifyRge } from "@alpha-cil/intervention";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -71,6 +72,14 @@ export async function POST(request: Request) {
     }
   }
 
+  const { data: artisan } = await supabase
+    .from("artisans")
+    .select("siret")
+    .eq("id", user.id)
+    .single();
+
+  const rgeVerifie = artisan ? await verifyRge(artisan.siret, dateIntervention) : false;
+
   const { error: insertError } = await supabase.from("interventions").insert({
     artisan_id: user.id,
     type_travaux: typeTravaux,
@@ -79,6 +88,8 @@ export async function POST(request: Request) {
     corps_metier: corpsMetier,
     facture_path: facturePath,
     photos: photoPaths,
+    rge_verifie: rgeVerifie,
+    rge_verifie_a: new Date().toISOString(),
   });
 
   if (insertError) {
