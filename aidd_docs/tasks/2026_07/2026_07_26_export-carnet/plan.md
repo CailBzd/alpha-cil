@@ -1,6 +1,6 @@
 ---
 objective: "Un propriétaire choisit précisément quelles interventions de son carnet inclure, puis obtient soit un PDF téléchargeable, soit un lien de consultation, ne contenant jamais rien de plus que sa sélection ; une tentative d'export sans rien sélectionner est signalée avant confirmation, jamais acceptée silencieusement."
-status: pending
+status: implemented
 ---
 
 # Plan: Export PDF/lien contrôlé pour un tiers (US-12)
