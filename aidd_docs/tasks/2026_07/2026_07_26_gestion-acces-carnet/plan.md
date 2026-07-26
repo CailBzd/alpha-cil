@@ -1,6 +1,6 @@
 ---
 objective: "Un propriétaire accorde à un tiers nommé un accès total ou limité à des interventions précises de son logement, pour une durée définie ; ce tiers consulte en lecture seule via un lien à jeton ; une révocation coupe l'accès immédiatement, et aucun tiers ne consulte quoi que ce soit sans octroi explicite."
-status: pending
+status: implemented
 ---
 
 # Plan: Gestion des accès au carnet — RGPD (US-10)
