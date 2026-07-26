@@ -1,0 +1,13 @@
+{
+  "name": "@alpha-cil/notifications",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "resend": "^4.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}
