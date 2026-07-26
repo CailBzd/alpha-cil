@@ -20,6 +20,9 @@ importers:
       '@alpha-cil/intervention':
         specifier: workspace:*
         version: link:../../packages/intervention
+      '@alpha-cil/notifications':
+        specifier: workspace:*
+        version: link:../../packages/notifications
       '@alpha-cil/ui':
         specifier: workspace:*
         version: link:../../packages/ui

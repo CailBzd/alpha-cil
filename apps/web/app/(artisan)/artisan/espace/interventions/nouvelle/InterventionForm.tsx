@@ -65,6 +65,8 @@ export function InterventionForm() {
         placeholder="Sélectionnez un corps de métier"
         options={CORPS_METIER_OPTIONS.map((option) => ({ ...option }))}
       />
+      <Input label="Adresse du logement" name="adresseLogement" type="text" required />
+      <Input label="Email du client" name="emailClient" type="email" required />
       <Input
         label="Photos avant/après (optionnel)"
         name="photos"

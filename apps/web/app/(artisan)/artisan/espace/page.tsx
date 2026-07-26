@@ -45,7 +45,9 @@ export default async function EspaceArtisanPage() {
 
   const { data: interventions } = await supabase
     .from("interventions")
-    .select("id, type_travaux, date_intervention, montant_euros, corps_metier, statut, rge_verifie")
+    .select(
+      "id, type_travaux, date_intervention, montant_euros, corps_metier, statut, rge_verifie, rattachement_ambigu",
+    )
     .order("date_intervention", { ascending: false });
 
   const { data: artisan } = await supabase
@@ -119,6 +121,11 @@ export default async function EspaceArtisanPage() {
                   >
                     {intervention.rge_verifie ? "RGE vérifié" : "RGE non vérifié"}
                   </span>
+                  {intervention.rattachement_ambigu ? (
+                    <span className="rounded-full border border-destructive/30 bg-destructive/10 px-2 py-0.5 text-xs text-destructive">
+                      Rattachement à vérifier
+                    </span>
+                  ) : null}
                 </li>
               ))}
             </ul>
