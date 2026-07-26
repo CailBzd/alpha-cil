@@ -11,6 +11,7 @@ export function AccesForm({
 }) {
   const router = useRouter();
   const [scope, setScope] = useState<"total" | "partiel">("total");
+  const [tiersType, setTiersType] = useState<"agence" | "autre">("autre");
   const [error, setError] = useState<string | null>(null);
   const [link, setLink] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -30,6 +31,7 @@ export function AccesForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           tiersEmail: form.get("tiersEmail"),
+          tiersType,
           scope,
           expiresAt: form.get("expiresAt"),
           interventionIds: scope === "partiel" ? interventionIds : [],
@@ -58,6 +60,27 @@ export function AccesForm({
       className="space-y-4 rounded-xl border border-border bg-card p-6 shadow-sm"
     >
       <Input label="Email du tiers" name="tiersEmail" type="email" required />
+      <div className="space-y-1.5">
+        <span className="text-sm font-medium text-foreground">Type de tiers</span>
+        <div className="flex gap-4 text-sm text-foreground">
+          <label className="flex items-center gap-1.5">
+            <input
+              type="radio"
+              checked={tiersType === "agence"}
+              onChange={() => setTiersType("agence")}
+            />
+            Agence immobilière
+          </label>
+          <label className="flex items-center gap-1.5">
+            <input
+              type="radio"
+              checked={tiersType === "autre"}
+              onChange={() => setTiersType("autre")}
+            />
+            Autre
+          </label>
+        </div>
+      </div>
       <div className="space-y-1.5">
         <span className="text-sm font-medium text-foreground">Portée</span>
         <div className="flex gap-4 text-sm text-foreground">

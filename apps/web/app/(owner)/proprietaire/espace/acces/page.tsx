@@ -45,7 +45,7 @@ export default async function AccesPage() {
   const { data: grants } = logement
     ? await supabase
         .from("logement_access_grants")
-        .select("id, tiers_email, scope, expires_at, revoked_at")
+        .select("id, tiers_email, tiers_type, scope, expires_at, revoked_at")
         .eq("logement_id", logement.id)
         .is("revoked_at", null)
         .order("created_at", { ascending: false })
@@ -90,6 +90,9 @@ export default async function AccesPage() {
                   className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3 text-sm"
                 >
                   <span className="flex-1 font-medium text-foreground">{grant.tiers_email}</span>
+                  <span className="text-muted-foreground">
+                    {grant.tiers_type === "agence" ? "Agence immobilière" : "Autre"}
+                  </span>
                   <span className="text-muted-foreground">
                     {grant.scope === "total" ? "Accès total" : "Accès partiel"}
                   </span>

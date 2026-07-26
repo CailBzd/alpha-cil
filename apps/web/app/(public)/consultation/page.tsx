@@ -19,6 +19,7 @@ interface GrantValidation {
   chauffage_type: string | null;
   vmc_type: string | null;
   scope: string | null;
+  tiers_type: string | null;
   valid: boolean;
 }
 
@@ -72,7 +73,9 @@ export default async function ConsultationPage({
   return (
     <main className="mx-auto max-w-2xl space-y-4 px-4 py-12">
       <p className="rounded-md bg-secondary px-3 py-2 text-sm text-secondary-foreground">
-        Consultation en lecture seule — aucune modification possible.
+        {validation.tiers_type === "agence"
+          ? "Consultation agence immobilière — lecture seule, aucune modification possible."
+          : "Consultation en lecture seule — aucune modification possible."}
       </p>
       {validation.scope === "total" ? (
         <div className="space-y-1 text-sm">

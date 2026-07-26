@@ -1,5 +1,5 @@
 ---
-status: pending
+status: done
 ---
 
 # Instruction: Type de tiers sur l'octroi, la liste, et la consultation

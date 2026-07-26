@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 
 interface AccesBody {
   tiersEmail?: unknown;
+  tiersType?: unknown;
   scope?: unknown;
   expiresAt?: unknown;
   interventionIds?: unknown;
@@ -20,6 +21,7 @@ export async function POST(request: Request) {
     !body ||
     !isNonEmptyString(body.tiersEmail) ||
     (body.scope !== "total" && body.scope !== "partiel") ||
+    (body.tiersType !== "agence" && body.tiersType !== "autre") ||
     !isNonEmptyString(body.expiresAt)
   ) {
     return NextResponse.json({ error: "invalid_request" }, { status: 400 });
@@ -58,6 +60,7 @@ export async function POST(request: Request) {
     .insert({
       logement_id: logement.id,
       tiers_email: body.tiersEmail,
+      tiers_type: body.tiersType,
       scope: body.scope,
       expires_at: new Date(body.expiresAt).toISOString(),
     })
