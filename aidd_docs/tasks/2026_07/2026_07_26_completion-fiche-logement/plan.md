@@ -1,6 +1,6 @@
 ---
 objective: "Un propriétaire voit clairement quels équipements de sa fiche sont renseignés et lesquels manquent, et peut compléter les manquants en une seule session ; une fiche déjà complète n'affiche aucune invite de complétion."
-status: pending
+status: implemented
 ---
 
 # Plan: Découverte et complétion de la fiche pré-remplie (US-07)
