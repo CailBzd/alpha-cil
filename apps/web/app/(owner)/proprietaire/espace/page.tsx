@@ -14,6 +14,9 @@ function vmcLabel(value: string) {
   return VMC_OPTIONS.find((option) => option.value === value)?.label ?? value;
 }
 
+const dateFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "UTC" });
+const dateTimeFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeStyle: "short" });
+
 export default async function EspaceProprietairePage() {
   const cookieStore = await cookies();
   const supabase = createServerSupabaseClient({
@@ -46,6 +49,14 @@ export default async function EspaceProprietairePage() {
 
   const incomplet = logement ? !logement.chauffage_type || !logement.vmc_type : false;
 
+  const { data: interventions } = logement
+    ? await supabase
+        .from("interventions")
+        .select("id, type_travaux, date_intervention, artisan_siret, rge_verifie, rge_verifie_a")
+        .eq("logement_id", logement.id)
+        .order("date_intervention", { ascending: false })
+    : { data: null };
+
   return (
     <div className="min-h-screen bg-background">
       <header className="flex items-center justify-between border-b border-border px-6 py-4">
@@ -77,6 +88,49 @@ export default async function EspaceProprietairePage() {
                 vmcType={logement.vmc_type}
               />
             ) : null}
+
+            <h2 className="text-lg font-semibold tracking-tight text-foreground">
+              Historique des interventions
+            </h2>
+            {interventions && interventions.length > 0 ? (
+              <ul className="divide-y divide-border rounded-xl border border-border bg-card">
+                {interventions.map((intervention) => (
+                  <li
+                    key={intervention.id}
+                    className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3 text-sm"
+                  >
+                    <span className="text-muted-foreground">
+                      {dateFormatter.format(new Date(intervention.date_intervention))}
+                    </span>
+                    <span className="flex-1 font-medium text-foreground">
+                      {intervention.type_travaux}
+                    </span>
+                    <span className="text-muted-foreground">
+                      Artisan (SIRET {intervention.artisan_siret ?? "inconnu"})
+                    </span>
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-xs ${
+                        intervention.rge_verifie
+                          ? "bg-secondary text-secondary-foreground"
+                          : "border border-border text-muted-foreground"
+                      }`}
+                    >
+                      {intervention.rge_verifie ? "RGE vérifié" : "RGE non vérifié"}
+                      {intervention.rge_verifie_a
+                        ? ` le ${dateTimeFormatter.format(new Date(intervention.rge_verifie_a))}`
+                        : ""}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      Attestation décennale : déclarative, non vérifiée par une source tierce.
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Aucune intervention enregistrée pour ce logement pour l&apos;instant.
+              </p>
+            )}
           </>
         ) : (
           <p className="text-sm text-muted-foreground">
