@@ -1,6 +1,6 @@
 ---
 objective: "Un propriétaire peut créer un compte soit directement (email + mot de passe), soit en réclamant l'accès via un lien d'invitation lié à une fiche logement ; un lien invalide, expiré ou déjà utilisé échoue proprement, et le propriétaire peut ensuite se connecter et accéder à son espace."
-status: pending
+status: implemented
 ---
 
 # Plan: Création de compte propriétaire (US-06)
