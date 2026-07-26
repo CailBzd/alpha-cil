@@ -1,6 +1,6 @@
 ---
 objective: "Un artisan qui ouvre son espace voit la liste chronologique de ses interventions avec leur statut ; sans intervention, il voit un état vide qui l'invite à soumettre la première."
-status: pending
+status: implemented
 ---
 
 # Plan: Consultation de l'historique d'interventions par l'artisan (US-05)
