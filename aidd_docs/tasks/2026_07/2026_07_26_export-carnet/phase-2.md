@@ -1,5 +1,5 @@
 ---
-status: pending
+status: done
 ---
 
 # Instruction: Écran d'export : sélection, lien, PDF, confirmation à vide

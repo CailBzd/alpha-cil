@@ -71,12 +71,20 @@ export default async function EspaceProprietairePage() {
       <main className="mx-auto max-w-3xl space-y-4 px-6 py-8">
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-semibold tracking-tight text-foreground">Mon logement</h1>
-          <Link
-            href="/proprietaire/espace/acces"
-            className="text-sm font-medium text-foreground underline underline-offset-4"
-          >
-            Gérer les accès
-          </Link>
+          <div className="flex gap-4">
+            <Link
+              href="/proprietaire/espace/acces"
+              className="text-sm font-medium text-foreground underline underline-offset-4"
+            >
+              Gérer les accès
+            </Link>
+            <Link
+              href="/proprietaire/espace/export"
+              className="text-sm font-medium text-foreground underline underline-offset-4"
+            >
+              Exporter
+            </Link>
+          </div>
         </div>
         {logement ? (
           <>
