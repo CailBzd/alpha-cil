@@ -1,6 +1,6 @@
 ---
 objective: "Une intervention vérifiée est toujours rattachée à une fiche logement (existante ou nouvellement créée à partir de l'adresse), jamais orpheline silencieusement ; le propriétaire est notifié par email ; une correspondance d'adresse ambiguë est signalée plutôt que rattachée par défaut."
-status: in-progress
+status: implemented
 ---
 
 # Plan: Rattachement ou création automatique de la fiche logement (US-04)
