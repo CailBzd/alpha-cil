@@ -18,13 +18,14 @@ export async function middleware(request: NextRequest) {
     },
   });
 
-  // Refresh the session only. Access control is enforced by the route
-  // itself (see apps/web/app/(artisan)/artisan/espace/page.tsx), never here.
+  // Refresh the session only. Access control is enforced by each route
+  // itself (see apps/web/app/(artisan)/artisan/espace/page.tsx and
+  // apps/web/app/(owner)/proprietaire/espace/page.tsx), never here.
   await supabase.auth.getUser();
 
   return response;
 }
 
 export const config = {
-  matcher: ["/artisan/espace/:path*"],
+  matcher: ["/artisan/espace/:path*", "/proprietaire/espace/:path*"],
 };
