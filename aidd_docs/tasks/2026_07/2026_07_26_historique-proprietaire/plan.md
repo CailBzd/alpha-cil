@@ -1,6 +1,6 @@
 ---
 objective: "Un propriétaire voit la liste chronologique de toutes les interventions rattachées à son logement (artisan, date, type de travaux, statut RGE horodaté, mention décennale) ; sans intervention, il voit un état vide plutôt qu'une erreur."
-status: pending
+status: implemented
 ---
 
 # Plan: Vue chronologique des interventions et attestations horodatées (US-09)
