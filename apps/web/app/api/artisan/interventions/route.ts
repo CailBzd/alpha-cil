@@ -113,6 +113,7 @@ export async function POST(request: Request) {
     email_client: emailClient,
     logement_id: match?.ambiguous ? null : (match?.logement_id ?? null),
     rattachement_ambigu: match?.ambiguous ?? false,
+    artisan_siret: artisan?.siret ?? null,
   });
 
   if (insertError) {
