@@ -28,7 +28,9 @@ export function InterventionForm() {
         setError(
           data?.error === "invalid_file_type"
             ? "La facture doit être un fichier PDF."
-            : "Impossible de soumettre l'intervention. Réessayez.",
+            : data?.error === "adresse_ambigue"
+              ? "Cette adresse correspond à plusieurs logements. Précisez le numéro d'appartement, bis/ter, ou tout autre détail permettant de distinguer le bon logement, puis réessayez."
+              : "Impossible de soumettre l'intervention. Réessayez.",
         );
         setSubmitting(false);
         return;

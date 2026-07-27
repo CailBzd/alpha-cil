@@ -64,6 +64,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "invalid_file_type" }, { status: 400 });
   }
 
+  const { data: matchResult } = await supabase.rpc("match_or_create_logement", {
+    p_adresse: adresseLogement,
+    p_contact_email: emailClient,
+  });
+  const match = (matchResult?.[0] ?? null) as MatchOrCreateLogementResult | null;
+
+  if (match?.ambiguous) {
+    return NextResponse.json({ error: "adresse_ambigue" }, { status: 409 });
+  }
+
   const facturePath = `${user.id}/facture-${crypto.randomUUID()}.pdf`;
   const { error: uploadError } = await supabase.storage
     .from("interventions")
@@ -93,12 +103,6 @@ export async function POST(request: Request) {
 
   const rgeVerifie = artisan ? await verifyRge(artisan.siret, dateIntervention) : false;
 
-  const { data: matchResult } = await supabase.rpc("match_or_create_logement", {
-    p_adresse: adresseLogement,
-    p_contact_email: emailClient,
-  });
-  const match = (matchResult?.[0] ?? null) as MatchOrCreateLogementResult | null;
-
   const { error: insertError } = await supabase.from("interventions").insert({
     artisan_id: user.id,
     type_travaux: typeTravaux,
@@ -111,8 +115,7 @@ export async function POST(request: Request) {
     rge_verifie_a: new Date().toISOString(),
     adresse_logement: adresseLogement,
     email_client: emailClient,
-    logement_id: match?.ambiguous ? null : (match?.logement_id ?? null),
-    rattachement_ambigu: match?.ambiguous ?? false,
+    logement_id: match?.logement_id ?? null,
     artisan_siret: artisan?.siret ?? null,
   });
 
