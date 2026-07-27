@@ -1,5 +1,5 @@
 ---
-status: pending
+status: done
 ---
 
 # Instruction: Schéma : champs DPE et fonction de création/réclamation
