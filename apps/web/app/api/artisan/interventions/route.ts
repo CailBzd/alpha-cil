@@ -47,6 +47,12 @@ export async function POST(request: Request) {
     .getAll("photos")
     .filter((entry): entry is File => entry instanceof File && entry.size > 0);
 
+  // facture/adresseLogement/emailClient are nullable at the DB level since
+  // 0015_saisie_intervention_proprietaire.sql (the owner's own entry path
+  // needs them optional) — this route is the ONLY remaining place that
+  // requires them for an artisan submission. Accepted tradeoff: no other
+  // write path exists today, but a future one (a new API route, a Studio
+  // edit) would not inherit this enforcement automatically.
   if (
     !(facture instanceof File) ||
     facture.size === 0 ||
