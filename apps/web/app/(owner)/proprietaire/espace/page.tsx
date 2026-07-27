@@ -5,6 +5,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ThemeToggle } from "../../../theme-toggle";
 import { CreerFicheForm } from "./CreerFicheForm";
+import { EntretienForm } from "./EntretienForm";
 import { EquipementsForm } from "./EquipementsForm";
 import { SignOutButton } from "./SignOutButton";
 
@@ -46,7 +47,9 @@ export default async function EspaceProprietairePage() {
 
   const { data: logement } = await supabase
     .from("logements")
-    .select("id, adresse, chauffage_type, vmc_type, dpe_classe_energie, dpe_classe_ges")
+    .select(
+      "id, adresse, chauffage_type, vmc_type, dpe_classe_energie, dpe_classe_ges, derniere_verif_chauffage, derniere_verif_vmc",
+    )
     .maybeSingle();
 
   const incomplet = logement ? !logement.chauffage_type || !logement.vmc_type : false;
@@ -111,7 +114,15 @@ export default async function EspaceProprietairePage() {
                 chauffageType={logement.chauffage_type}
                 vmcType={logement.vmc_type}
               />
-            ) : null}
+            ) : (
+              <EntretienForm
+                logementId={logement.id}
+                chauffageType={logement.chauffage_type}
+                vmcType={logement.vmc_type}
+                derniereVerifChauffage={logement.derniere_verif_chauffage}
+                derniereVerifVmc={logement.derniere_verif_vmc}
+              />
+            )}
 
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold tracking-tight text-foreground">
