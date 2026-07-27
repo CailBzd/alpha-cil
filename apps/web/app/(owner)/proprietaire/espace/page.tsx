@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ThemeToggle } from "../../../theme-toggle";
+import { AttestationLink } from "./AttestationLink";
 import { CreerFicheForm } from "./CreerFicheForm";
 import { EntretienForm } from "./EntretienForm";
 import { EquipementsForm } from "./EquipementsForm";
@@ -58,7 +59,7 @@ export default async function EspaceProprietairePage() {
     ? await supabase
         .from("interventions")
         .select(
-          "id, type_travaux, date_intervention, artisan_id, artisan_siret, rge_verifie, rge_verifie_a",
+          "id, type_travaux, date_intervention, artisan_id, artisan_siret, rge_verifie, rge_verifie_a, attestation_decennale_path, attestation_decennale_uploaded_at",
         )
         .eq("logement_id", logement.id)
         .order("date_intervention", { ascending: false })
@@ -181,6 +182,17 @@ export default async function EspaceProprietairePage() {
                       </span>
                       <span className="text-xs text-muted-foreground">
                         Attestation décennale : déclarative, non vérifiée par une source tierce.
+                        {intervention.attestation_decennale_path ? (
+                          <>
+                            {" "}
+                            <AttestationLink path={intervention.attestation_decennale_path} />
+                            {intervention.attestation_decennale_uploaded_at
+                              ? ` (enregistrée le ${dateFormatter.format(new Date(intervention.attestation_decennale_uploaded_at))})`
+                              : ""}
+                          </>
+                        ) : (
+                          " Aucune attestation fournie."
+                        )}
                       </span>
                     </li>
                   ),

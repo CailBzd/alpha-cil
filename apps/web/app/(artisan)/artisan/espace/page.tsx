@@ -12,6 +12,7 @@ const STATUT_LABELS: Record<string, string> = {
 };
 
 const dateFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "UTC" });
+const dateTimeFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeStyle: "short" });
 const montantFormatter = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
 
 function corpsMetierLabel(value: string) {
@@ -46,7 +47,7 @@ export default async function EspaceArtisanPage() {
   const { data: interventions } = await supabase
     .from("interventions")
     .select(
-      "id, type_travaux, date_intervention, montant_euros, corps_metier, statut, rge_verifie",
+      "id, type_travaux, date_intervention, montant_euros, corps_metier, statut, rge_verifie, rge_verifie_a",
     )
     .order("date_intervention", { ascending: false });
 
@@ -120,6 +121,9 @@ export default async function EspaceArtisanPage() {
                     }`}
                   >
                     {intervention.rge_verifie ? "RGE vérifié" : "RGE non vérifié"}
+                    {intervention.rge_verifie_a
+                      ? ` le ${dateTimeFormatter.format(new Date(intervention.rge_verifie_a))}`
+                      : ""}
                   </span>
                 </li>
               ))}

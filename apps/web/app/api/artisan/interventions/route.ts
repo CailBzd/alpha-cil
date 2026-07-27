@@ -97,7 +97,7 @@ export async function POST(request: Request) {
 
   const { data: artisan } = await supabase
     .from("artisans")
-    .select("siret")
+    .select("siret, attestation_decennale_path, attestation_decennale_uploaded_at")
     .eq("id", user.id)
     .single();
 
@@ -117,6 +117,8 @@ export async function POST(request: Request) {
     email_client: emailClient,
     logement_id: match?.logement_id ?? null,
     artisan_siret: artisan?.siret ?? null,
+    attestation_decennale_path: artisan?.attestation_decennale_path ?? null,
+    attestation_decennale_uploaded_at: artisan?.attestation_decennale_uploaded_at ?? null,
   });
 
   if (insertError) {
