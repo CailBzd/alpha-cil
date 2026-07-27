@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ThemeToggle } from "../../../theme-toggle";
+import { CreerFicheForm } from "./CreerFicheForm";
 import { EquipementsForm } from "./EquipementsForm";
 import { SignOutButton } from "./SignOutButton";
 
@@ -45,7 +46,7 @@ export default async function EspaceProprietairePage() {
 
   const { data: logement } = await supabase
     .from("logements")
-    .select("id, adresse, chauffage_type, vmc_type")
+    .select("id, adresse, chauffage_type, vmc_type, dpe_classe_energie, dpe_classe_ges")
     .maybeSingle();
 
   const incomplet = logement ? !logement.chauffage_type || !logement.vmc_type : false;
@@ -96,6 +97,10 @@ export default async function EspaceProprietairePage() {
               </p>
               <p className="text-muted-foreground">
                 VMC : {logement.vmc_type ? vmcLabel(logement.vmc_type) : "Non renseigné"}
+              </p>
+              <p className="text-muted-foreground">
+                DPE : {logement.dpe_classe_energie ?? "Non disponible"}
+                {logement.dpe_classe_ges ? ` · GES : ${logement.dpe_classe_ges}` : ""}
               </p>
             </div>
             {incomplet ? (
@@ -150,9 +155,7 @@ export default async function EspaceProprietairePage() {
             )}
           </>
         ) : (
-          <p className="text-sm text-muted-foreground">
-            Aucun logement n&apos;est encore lié à votre compte.
-          </p>
+          <CreerFicheForm />
         )}
       </main>
     </div>
