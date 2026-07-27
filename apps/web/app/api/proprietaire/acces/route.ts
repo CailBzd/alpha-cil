@@ -8,6 +8,7 @@ interface AccesBody {
   scope?: unknown;
   expiresAt?: unknown;
   interventionIds?: unknown;
+  confirmed?: unknown;
 }
 
 function isNonEmptyString(value: unknown): value is string {
@@ -30,6 +31,10 @@ export async function POST(request: Request) {
   const interventionIds = Array.isArray(body.interventionIds)
     ? body.interventionIds.filter((id): id is string => typeof id === "string")
     : [];
+
+  if (body.scope === "partiel" && interventionIds.length === 0 && body.confirmed !== true) {
+    return NextResponse.json({ error: "empty_selection" }, { status: 400 });
+  }
 
   const cookieStore = await cookies();
   const supabase = createServerSupabaseClient({

@@ -9,6 +9,7 @@ export function ExportForm({
   interventions: { id: string; label: string }[];
 }) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [includeAdresse, setIncludeAdresse] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [link, setLink] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -26,14 +27,15 @@ export function ExportForm({
   }
 
   function confirmIfEmpty() {
-    if (selected.size === 0) {
+    if (selected.size === 0 && !includeAdresse) {
       return window.confirm("Aucune information ne sera incluse. Continuer quand même ?");
     }
     return true;
   }
 
   async function handleDownloadPdf() {
-    if (!confirmIfEmpty()) {
+    const confirmed = confirmIfEmpty();
+    if (!confirmed) {
       return;
     }
     setError(null);
@@ -43,11 +45,20 @@ export function ExportForm({
       const response = await fetch("/api/proprietaire/export/pdf", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ interventionIds: Array.from(selected) }),
+        body: JSON.stringify({
+          interventionIds: Array.from(selected),
+          includeAdresse,
+          confirmed,
+        }),
       });
 
       if (!response.ok) {
-        setError("Impossible de générer le PDF. Réessayez.");
+        const data = (await response.json().catch(() => null)) as { error?: string } | null;
+        setError(
+          data?.error === "empty_selection"
+            ? "Sélectionnez au moins une information à inclure, ou cochez l'adresse."
+            : "Impossible de générer le PDF. Réessayez.",
+        );
         setSubmitting(false);
         return;
       }
@@ -68,7 +79,8 @@ export function ExportForm({
 
   async function handleCreateLink(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!confirmIfEmpty()) {
+    const confirmed = confirmIfEmpty();
+    if (!confirmed) {
       return;
     }
     setError(null);
@@ -87,11 +99,17 @@ export function ExportForm({
           scope: "partiel",
           expiresAt: form.get("expiresAt"),
           interventionIds: Array.from(selected),
+          confirmed,
         }),
       });
 
       if (!response.ok) {
-        setError("Impossible de créer le lien. Réessayez.");
+        const errorData = (await response.json().catch(() => null)) as { error?: string } | null;
+        setError(
+          errorData?.error === "empty_selection"
+            ? "Sélectionnez au moins une intervention à partager."
+            : "Impossible de créer le lien. Réessayez.",
+        );
         setSubmitting(false);
         return;
       }
@@ -129,6 +147,14 @@ export function ExportForm({
           )}
         </div>
       </div>
+      <label className="flex items-center gap-1.5 text-sm text-foreground">
+        <input
+          type="checkbox"
+          checked={includeAdresse}
+          onChange={(event) => setIncludeAdresse(event.target.checked)}
+        />
+        Inclure l&apos;adresse du logement (PDF uniquement — le lien reste toujours sans adresse)
+      </label>
       <Input label="Destinataire (email ou nom)" name="destinataire" type="text" required />
       <Input label="Expire le" name="expiresAt" type="date" required />
       {error ? <Alert>{error}</Alert> : null}

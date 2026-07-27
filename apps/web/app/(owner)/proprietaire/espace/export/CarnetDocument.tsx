@@ -32,14 +32,14 @@ export function CarnetDocument({
   adresse,
   interventions,
 }: {
-  adresse: string;
+  adresse: string | null;
   interventions: CarnetDocumentIntervention[];
 }) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         <Text style={styles.title}>Alpha CIL — Carnet de santé du logement</Text>
-        <Text style={styles.address}>{adresse}</Text>
+        {adresse ? <Text style={styles.address}>{adresse}</Text> : null}
         <Text style={styles.sectionTitle}>Interventions</Text>
         {interventions.length > 0 ? (
           interventions.map((intervention) => (

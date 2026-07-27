@@ -35,6 +35,7 @@ export function AccesForm({
           scope,
           expiresAt: form.get("expiresAt"),
           interventionIds: scope === "partiel" ? interventionIds : [],
+          confirmed: true,
         }),
       });
 

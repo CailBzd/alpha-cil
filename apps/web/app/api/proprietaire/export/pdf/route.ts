@@ -4,11 +4,22 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { CarnetDocument } from "@/app/(owner)/proprietaire/espace/export/CarnetDocument";
 
+interface ExportPdfBody {
+  interventionIds?: unknown;
+  includeAdresse?: unknown;
+  confirmed?: unknown;
+}
+
 export async function POST(request: Request) {
-  const body = (await request.json().catch(() => null)) as { interventionIds?: unknown } | null;
+  const body = (await request.json().catch(() => null)) as ExportPdfBody | null;
   const interventionIds = Array.isArray(body?.interventionIds)
     ? body.interventionIds.filter((id): id is string => typeof id === "string")
     : [];
+  const includeAdresse = body?.includeAdresse === true;
+
+  if (interventionIds.length === 0 && !includeAdresse && body?.confirmed !== true) {
+    return NextResponse.json({ error: "empty_selection" }, { status: 400 });
+  }
 
   const cookieStore = await cookies();
   const supabase = createServerSupabaseClient({
@@ -49,7 +60,10 @@ export async function POST(request: Request) {
       : { data: [] };
 
   const pdfBuffer = await renderToBuffer(
-    CarnetDocument({ adresse: logement.adresse, interventions: interventions ?? [] }),
+    CarnetDocument({
+      adresse: includeAdresse ? logement.adresse : null,
+      interventions: interventions ?? [],
+    }),
   );
 
   return new NextResponse(new Uint8Array(pdfBuffer), {
