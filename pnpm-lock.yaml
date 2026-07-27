@@ -20,6 +20,9 @@ importers:
       '@alpha-cil/intervention':
         specifier: workspace:*
         version: link:../../packages/intervention
+      '@alpha-cil/logement':
+        specifier: workspace:*
+        version: link:../../packages/logement
       '@alpha-cil/notifications':
         specifier: workspace:*
         version: link:../../packages/notifications
@@ -81,6 +84,12 @@ importers:
         version: 5.9.3
 
   packages/intervention:
+    devDependencies:
+      typescript:
+        specifier: ^5.7.2
+        version: 5.9.3
+
+  packages/logement:
     devDependencies:
       typescript:
         specifier: ^5.7.2

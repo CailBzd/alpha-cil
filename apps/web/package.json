@@ -11,6 +11,7 @@
   "dependencies": {
     "@alpha-cil/db": "workspace:*",
     "@alpha-cil/intervention": "workspace:*",
+    "@alpha-cil/logement": "workspace:*",
     "@alpha-cil/notifications": "workspace:*",
     "@alpha-cil/ui": "workspace:*",
     "@react-pdf/renderer": "^4.1.6",
