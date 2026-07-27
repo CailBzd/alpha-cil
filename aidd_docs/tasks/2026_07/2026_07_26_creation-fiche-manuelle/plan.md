@@ -1,6 +1,6 @@
 ---
 objective: "Un propriétaire sans intervention artisan préalable crée sa fiche logement à partir d'une simple adresse ; le DPE est importé automatiquement quand l'API ADEME en connaît un pour cette adresse, et son absence n'empêche jamais la création."
-status: pending
+status: implemented
 ---
 
 # Plan: Création manuelle d'une fiche logement à partir d'une adresse (US-08)
