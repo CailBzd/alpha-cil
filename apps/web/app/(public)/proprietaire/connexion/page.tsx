@@ -46,6 +46,13 @@ export default function ProprietaireConnexionPage() {
           >
             S&apos;inscrire
           </Link>
+          <br />
+          <Link
+            href="/mot-de-passe-oublie"
+            className="font-medium text-foreground underline underline-offset-4"
+          >
+            Mot de passe oublié ?
+          </Link>
         </>
       }
     >
