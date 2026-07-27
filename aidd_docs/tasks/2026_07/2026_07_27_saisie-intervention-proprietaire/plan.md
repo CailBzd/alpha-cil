@@ -1,6 +1,6 @@
 ---
 objective: "Un propriétaire peut ajouter lui-même une intervention à sa fiche (type de travaux, date, montant, corps de métier, facture optionnelle), visible dans l'historique avec la mention qu'elle a été saisie par lui plutôt que par un artisan ; sans fiche logement, il est redirigé vers sa création avant de pouvoir saisir quoi que ce soit."
-status: in-progress
+status: implemented
 ---
 
 # Plan: Saisie manuelle d'une intervention par le propriétaire (US-14)
