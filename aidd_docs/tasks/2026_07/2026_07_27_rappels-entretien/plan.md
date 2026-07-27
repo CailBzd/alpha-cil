@@ -1,6 +1,6 @@
 ---
 objective: "Un propriétaire qui a déclaré une date de dernier entretien pour un équipement qui en nécessite un (chaudière gaz, chauffage bois/ramonage, VMC) reçoit un email de rappel avant l'échéance annuelle ; une fiche sans équipement concerné, ou sans date déclarée, ne génère jamais de rappel."
-status: in-progress
+status: implemented
 ---
 
 # Plan: Rappels d'entretien automatiques (US-11)
