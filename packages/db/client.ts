@@ -1,5 +1,5 @@
 import { createBrowserClient, createServerClient } from "@supabase/ssr";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 interface CookieToSet {
   name: string;
@@ -42,4 +42,13 @@ export function createServerSupabaseClient(cookies: ServerCookieAdapter): Supaba
     requireEnv("SUPABASE_ANON_KEY"),
     { cookies },
   );
+}
+
+// For system-wide operations with no user session (e.g. the maintenance
+// reminders cron): bypasses RLS entirely, never used to act on a user's
+// behalf.
+export function createServiceRoleSupabaseClient(): SupabaseClient {
+  return createClient(requireEnv("SUPABASE_URL"), requireEnv("SUPABASE_SERVICE_ROLE_KEY"), {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
 }
