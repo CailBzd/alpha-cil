@@ -15,6 +15,7 @@ const STATUT_LABELS: Record<string, string> = {
 const dateFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "UTC" });
 const dateTimeFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeStyle: "short" });
 const montantFormatter = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
+const consommationFormatter = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 });
 
 function corpsMetierLabel(value: string) {
   return CORPS_METIER_OPTIONS.find((option) => option.value === value)?.label ?? value;
@@ -48,7 +49,7 @@ export default async function EspaceArtisanPage() {
   const { data: interventions } = await supabase
     .from("interventions")
     .select(
-      "id, type_travaux, date_intervention, montant_euros, corps_metier, statut, rge_verifie, rge_verifie_a",
+      "id, type_travaux, date_intervention, montant_euros, corps_metier, statut, rge_verifie, rge_verifie_a, dpe_classe_energie, dpe_classe_ges, dpe_consommation, dpe_emissions, dpe_date_diagnostic",
     )
     .order("date_intervention", { ascending: false });
 
@@ -125,6 +126,26 @@ export default async function EspaceArtisanPage() {
                     {intervention.rge_verifie_a
                       ? ` le ${dateTimeFormatter.format(new Date(intervention.rge_verifie_a))}`
                       : ""}
+                  </span>
+                  <span className="w-full text-xs text-muted-foreground">
+                    DPE :{" "}
+                    {intervention.dpe_classe_energie
+                      ? `${intervention.dpe_classe_energie}${
+                          intervention.dpe_classe_ges ? ` · GES : ${intervention.dpe_classe_ges}` : ""
+                        }${
+                          intervention.dpe_consommation
+                            ? ` · ${consommationFormatter.format(intervention.dpe_consommation)} kWh/m²/an`
+                            : ""
+                        }${
+                          intervention.dpe_emissions
+                            ? ` · ${consommationFormatter.format(intervention.dpe_emissions)} kgCO2/m²/an`
+                            : ""
+                        }${
+                          intervention.dpe_date_diagnostic
+                            ? ` · diagnostiqué le ${dateFormatter.format(new Date(intervention.dpe_date_diagnostic))}`
+                            : ""
+                        }`
+                      : "Non disponible"}
                   </span>
                 </li>
               ))}

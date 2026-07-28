@@ -44,6 +44,10 @@ export async function POST(request: Request) {
     p_adresse: body.adresse,
     p_dpe_classe_energie: dpe?.classeEnergie ?? null,
     p_dpe_classe_ges: dpe?.classeGes ?? null,
+    p_dpe_consommation: dpe?.consommation ?? null,
+    p_dpe_emissions: dpe?.emissions ?? null,
+    p_dpe_date_diagnostic: dpe?.dateDiagnostic ?? null,
+    p_surface_habitable: dpe?.surfaceHabitable ?? null,
   });
 
   const outcome = result?.[0];

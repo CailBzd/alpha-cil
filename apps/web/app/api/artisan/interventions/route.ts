@@ -1,5 +1,6 @@
 import { createServerSupabaseClient } from "@alpha-cil/db";
 import { verifyRge } from "@alpha-cil/intervention";
+import { lookupDpe } from "@alpha-cil/logement";
 import { sendMail } from "@alpha-cil/notifications";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
@@ -70,9 +71,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "invalid_file_type" }, { status: 400 });
   }
 
+  const dpe = await lookupDpe(adresseLogement);
+
   const { data: matchResult } = await supabase.rpc("match_or_create_logement", {
     p_adresse: adresseLogement,
     p_contact_email: emailClient,
+    p_dpe_classe_energie: dpe?.classeEnergie ?? null,
+    p_dpe_classe_ges: dpe?.classeGes ?? null,
+    p_dpe_consommation: dpe?.consommation ?? null,
+    p_dpe_emissions: dpe?.emissions ?? null,
+    p_dpe_date_diagnostic: dpe?.dateDiagnostic ?? null,
+    p_surface_habitable: dpe?.surfaceHabitable ?? null,
   });
   const match = (matchResult?.[0] ?? null) as MatchOrCreateLogementResult | null;
 
@@ -125,6 +134,11 @@ export async function POST(request: Request) {
     artisan_siret: artisan?.siret ?? null,
     attestation_decennale_path: artisan?.attestation_decennale_path ?? null,
     attestation_decennale_uploaded_at: artisan?.attestation_decennale_uploaded_at ?? null,
+    dpe_classe_energie: dpe?.classeEnergie ?? null,
+    dpe_classe_ges: dpe?.classeGes ?? null,
+    dpe_consommation: dpe?.consommation ?? null,
+    dpe_emissions: dpe?.emissions ?? null,
+    dpe_date_diagnostic: dpe?.dateDiagnostic ?? null,
   });
 
   if (insertError) {

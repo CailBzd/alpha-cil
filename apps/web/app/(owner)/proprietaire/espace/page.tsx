@@ -7,6 +7,7 @@ import { AppHeader } from "../../../AppHeader";
 import { ThemeToggle } from "../../../theme-toggle";
 import { AttestationLink } from "./AttestationLink";
 import { CreerFicheForm } from "./CreerFicheForm";
+import { DetailsLogementForm } from "./DetailsLogementForm";
 import { EntretienForm } from "./EntretienForm";
 import { EquipementsForm } from "./EquipementsForm";
 import { SignOutButton } from "./SignOutButton";
@@ -22,6 +23,8 @@ function vmcLabel(value: string) {
 const dateFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "UTC" });
 const dateTimeFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeStyle: "short" });
 const montantFormatter = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
+const consommationFormatter = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 });
+const surfaceFormatter = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 });
 
 export default async function EspaceProprietairePage() {
   const cookieStore = await cookies();
@@ -51,7 +54,7 @@ export default async function EspaceProprietairePage() {
   const { data: logement } = await supabase
     .from("logements")
     .select(
-      "id, adresse, chauffage_type, vmc_type, dpe_classe_energie, dpe_classe_ges, derniere_verif_chauffage_gaz, derniere_verif_chauffage_bois, derniere_verif_vmc",
+      "id, adresse, chauffage_type, vmc_type, dpe_classe_energie, dpe_classe_ges, dpe_consommation, dpe_emissions, dpe_date_diagnostic, surface_habitable, nombre_pieces, annee_construction, derniere_verif_chauffage_gaz, derniere_verif_chauffage_bois, derniere_verif_vmc",
     )
     .maybeSingle();
 
@@ -116,8 +119,29 @@ export default async function EspaceProprietairePage() {
               <p className="text-muted-foreground">
                 DPE : {logement.dpe_classe_energie ?? "Non disponible"}
                 {logement.dpe_classe_ges ? ` · GES : ${logement.dpe_classe_ges}` : ""}
+                {logement.dpe_consommation
+                  ? ` · ${consommationFormatter.format(logement.dpe_consommation)} kWh/m²/an`
+                  : ""}
+                {logement.dpe_emissions
+                  ? ` · ${consommationFormatter.format(logement.dpe_emissions)} kgCO2/m²/an`
+                  : ""}
+                {logement.dpe_date_diagnostic
+                  ? ` · diagnostiqué le ${dateFormatter.format(new Date(logement.dpe_date_diagnostic))}`
+                  : ""}
+              </p>
+              <p className="text-muted-foreground">
+                Surface : {logement.surface_habitable ? `${surfaceFormatter.format(logement.surface_habitable)} m²` : "Non disponible"}
+                {" · "}
+                Pièces : {logement.nombre_pieces ?? "Non renseigné"}
+                {" · "}
+                Construit en : {logement.annee_construction ?? "Non renseigné"}
               </p>
             </div>
+            <DetailsLogementForm
+              logementId={logement.id}
+              nombrePieces={logement.nombre_pieces}
+              anneeConstruction={logement.annee_construction}
+            />
             {incomplet ? (
               <EquipementsForm
                 logementId={logement.id}

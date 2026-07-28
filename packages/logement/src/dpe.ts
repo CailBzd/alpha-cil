@@ -5,6 +5,10 @@ interface AdemeDpeRecord {
   etiquette_dpe: string;
   etiquette_ges: string;
   adresse_ban: string;
+  conso_5_usages_par_m2_ep?: number;
+  emission_ges_5_usages_par_m2?: number;
+  date_etablissement_dpe?: string;
+  surface_habitable_logement?: number;
 }
 
 interface AdemeDpeResponse {
@@ -14,6 +18,10 @@ interface AdemeDpeResponse {
 export interface DpeResult {
   classeEnergie: string;
   classeGes: string;
+  consommation: number | null;
+  emissions: number | null;
+  dateDiagnostic: string | null;
+  surfaceHabitable: number | null;
 }
 
 // Looks up the DPE (energy/GES classes) for an address via ADEME's open
@@ -40,7 +48,14 @@ export async function lookupDpe(adresse: string): Promise<DpeResult | null> {
     if (!postalCode || !record.adresse_ban.includes(postalCode)) {
       return null;
     }
-    return { classeEnergie: record.etiquette_dpe, classeGes: record.etiquette_ges };
+    return {
+      classeEnergie: record.etiquette_dpe,
+      classeGes: record.etiquette_ges,
+      consommation: record.conso_5_usages_par_m2_ep ?? null,
+      emissions: record.emission_ges_5_usages_par_m2 ?? null,
+      dateDiagnostic: record.date_etablissement_dpe ?? null,
+      surfaceHabitable: record.surface_habitable_logement ?? null,
+    };
   } catch {
     return null;
   }
