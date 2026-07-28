@@ -21,6 +21,7 @@ function vmcLabel(value: string) {
 
 const dateFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "UTC" });
 const dateTimeFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeStyle: "short" });
+const montantFormatter = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
 
 export default async function EspaceProprietairePage() {
   const cookieStore = await cookies();
@@ -62,7 +63,7 @@ export default async function EspaceProprietairePage() {
     ? await supabase
         .from("interventions")
         .select(
-          "id, type_travaux, date_intervention, artisan_id, artisan_siret, rge_verifie, rge_verifie_a, attestation_decennale_path, attestation_decennale_uploaded_at",
+          "id, type_travaux, date_intervention, montant_euros, artisan_id, artisan_siret, rge_verifie, rge_verifie_a, attestation_decennale_path, attestation_decennale_uploaded_at",
         )
         .eq("logement_id", logement.id)
         .order("date_intervention", { ascending: false })
@@ -79,6 +80,12 @@ export default async function EspaceProprietairePage() {
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-semibold tracking-tight text-foreground">Mon logement</h1>
           <div className="flex gap-4">
+            <Link
+              href="/proprietaire/espace/finances"
+              className="text-sm font-medium text-foreground underline underline-offset-4"
+            >
+              Suivi financier
+            </Link>
             <Link
               href="/proprietaire/espace/acces"
               className="text-sm font-medium text-foreground underline underline-offset-4"
@@ -153,6 +160,9 @@ export default async function EspaceProprietairePage() {
                       <span className="flex-1 font-medium text-foreground">
                         {intervention.type_travaux}
                       </span>
+                      <span className="text-foreground">
+                        {montantFormatter.format(Number(intervention.montant_euros))}
+                      </span>
                       <span className="rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground">
                         Saisie par vous
                       </span>
@@ -167,6 +177,9 @@ export default async function EspaceProprietairePage() {
                       </span>
                       <span className="flex-1 font-medium text-foreground">
                         {intervention.type_travaux}
+                      </span>
+                      <span className="text-foreground">
+                        {montantFormatter.format(Number(intervention.montant_euros))}
                       </span>
                       <span className="text-muted-foreground">
                         Artisan (SIRET {intervention.artisan_siret ?? "inconnu"})
