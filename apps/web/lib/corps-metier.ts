@@ -9,3 +9,10 @@ export const CORPS_METIER_OPTIONS = [
   { value: "carreleur", label: "Carreleur" },
   { value: "autre", label: "Autre" },
 ] as const;
+
+export function corpsMetierLabel(value: string | null | undefined) {
+  if (!value) {
+    return "Non renseigné";
+  }
+  return CORPS_METIER_OPTIONS.find((option) => option.value === value)?.label ?? value;
+}

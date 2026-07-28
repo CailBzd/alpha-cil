@@ -90,6 +90,12 @@ export default async function EspaceProprietairePage() {
               Suivi financier
             </Link>
             <Link
+              href="/proprietaire/espace/contacts"
+              className="text-sm font-medium text-foreground underline underline-offset-4"
+            >
+              Carnet de contacts
+            </Link>
+            <Link
               href="/proprietaire/espace/acces"
               className="text-sm font-medium text-foreground underline underline-offset-4"
             >
