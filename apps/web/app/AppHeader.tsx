@@ -1,3 +1,4 @@
+import { House } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -15,7 +16,7 @@ export function AppHeader({ children }: { children: ReactNode }) {
               background: "linear-gradient(135deg, var(--color-primary), var(--color-accent))",
             }}
           >
-            🏡
+            <House className="size-4" strokeWidth={2} />
           </span>
           Alpha CIL
         </Link>

@@ -1,3 +1,4 @@
+import { House } from "lucide-react";
 import type { ReactNode } from "react";
 
 export function AuthCard({
@@ -29,7 +30,7 @@ export function AuthCard({
               background: "linear-gradient(135deg, var(--color-primary), var(--color-accent))",
             }}
           >
-            🏡
+            <House className="size-4" strokeWidth={2} />
           </span>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">{title}</h1>
         </div>

@@ -1,11 +1,22 @@
 import { buttonVariants } from "@alpha-cil/ui";
+import {
+  BadgeCheck,
+  Bell,
+  Download,
+  FileText,
+  House,
+  KeyRound,
+  Lock,
+  Wrench,
+  Zap,
+} from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "./theme-toggle";
 
 const PERSONAS = [
   {
     title: "Propriétaire",
-    emoji: "🏠",
+    icon: House,
     accent: "primary",
     description:
       "Créez votre carnet en quelques clics à partir d'une simple adresse. DPE importé automatiquement, rappels avant chaque entretien, export PDF pour la revente.",
@@ -14,7 +25,7 @@ const PERSONAS = [
   },
   {
     title: "Artisan",
-    emoji: "🛠️",
+    icon: Wrench,
     accent: "accent",
     description:
       "Uploadez votre facture, renseignez le type de travaux : votre statut RGE est vérifié et horodaté automatiquement. Un book de références qui se construit tout seul.",
@@ -23,7 +34,7 @@ const PERSONAS = [
   },
   {
     title: "Agence immobilière",
-    emoji: "🔑",
+    icon: KeyRound,
     accent: "primary",
     description:
       "Consultez le carnet d'un logement en lecture seule dès qu'un propriétaire vous y donne accès. De quoi répondre à un acquéreur sans le solliciter à chaque question.",
@@ -34,35 +45,35 @@ const PERSONAS = [
 
 const FEATURES = [
   {
-    emoji: "📄",
+    icon: FileText,
     title: "DPE importé automatiquement",
     description:
       "La classe énergie et GES sont récupérées depuis les données ADEME dès que votre adresse en possède un.",
   },
   {
-    emoji: "✅",
+    icon: BadgeCheck,
     title: "RGE vérifié et horodaté",
     description:
       "Chaque intervention est croisée avec le registre officiel à sa date exacte — une preuve, pas une déclaration.",
   },
   {
-    emoji: "🔔",
+    icon: Bell,
     title: "Rappels d'entretien",
     description: "Chaudière, ramonage, VMC : un email avant l'échéance, jamais après.",
   },
   {
-    emoji: "📤",
+    icon: Download,
     title: "Export maîtrisé",
     description:
       "PDF ou lien de consultation, avec exactement ce que vous choisissez d'inclure — jamais plus.",
   },
   {
-    emoji: "🔐",
+    icon: Lock,
     title: "Accès sur invitation uniquement",
     description: "Rien n'est partagé par défaut. Vous accordez, vous révoquez, à tout moment.",
   },
   {
-    emoji: "⚡",
+    icon: Zap,
     title: "Zéro ressaisie",
     description:
       "Une intervention artisan crée ou complète votre fiche automatiquement — vous n'avez rien à recopier.",
@@ -81,7 +92,7 @@ export default function HomePage() {
                 background: "linear-gradient(135deg, var(--color-primary), var(--color-accent))",
               }}
             >
-              🏡
+              <House className="size-4" strokeWidth={2} />
             </span>
             Alpha CIL
           </span>
@@ -159,15 +170,19 @@ export default function HomePage() {
                 className="group flex flex-col rounded-xl border border-border bg-card p-6 shadow-sm transition-shadow hover:shadow-md"
               >
                 <span
-                  className="flex h-11 w-11 items-center justify-center rounded-full text-xl"
+                  className="flex h-11 w-11 items-center justify-center rounded-full"
                   style={{
                     background:
                       persona.accent === "primary"
                         ? "color-mix(in oklch, var(--color-primary) 15%, transparent)"
                         : "color-mix(in oklch, var(--color-accent) 15%, transparent)",
+                    color:
+                      persona.accent === "primary"
+                        ? "var(--color-primary)"
+                        : "var(--color-accent)",
                   }}
                 >
-                  {persona.emoji}
+                  <persona.icon className="size-5" strokeWidth={2} />
                 </span>
                 <h3 className="mt-4 text-lg font-semibold tracking-tight text-foreground">
                   {persona.title}
@@ -198,8 +213,8 @@ export default function HomePage() {
             <div className="mt-10 grid gap-x-8 gap-y-10 sm:grid-cols-2">
               {FEATURES.map((feature) => (
                 <div key={feature.title} className="flex gap-4">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-card text-lg shadow-sm">
-                    {feature.emoji}
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-card text-foreground shadow-sm">
+                    <feature.icon className="size-4" strokeWidth={2} />
                   </span>
                   <div>
                     <h3 className="font-semibold text-foreground">{feature.title}</h3>
