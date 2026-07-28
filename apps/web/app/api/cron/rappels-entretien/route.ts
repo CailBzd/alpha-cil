@@ -5,8 +5,10 @@ import { NextResponse } from "next/server";
 interface LogementANotifier {
   logement_id: string;
   proprietaire_email: string;
-  chauffage_du: boolean;
-  chauffage_echeance: string | null;
+  chauffage_gaz_du: boolean;
+  chauffage_gaz_echeance: string | null;
+  chauffage_bois_du: boolean;
+  chauffage_bois_echeance: string | null;
   vmc_du: boolean;
   vmc_echeance: string | null;
 }
@@ -41,21 +43,39 @@ async function handleRappelsEntretien(request: Request) {
   let notifies = 0;
 
   for (const logement of logements) {
-    if (logement.chauffage_du && logement.chauffage_echeance) {
+    if (logement.chauffage_gaz_du && logement.chauffage_gaz_echeance) {
       try {
         await sendMail(
           logement.proprietaire_email,
           "Alpha CIL — entretien à prévoir",
-          `<p>L'entretien de votre chauffage arrive à échéance le ${dateFormatter.format(new Date(logement.chauffage_echeance))}.</p>
+          `<p>L'entretien de votre chaudière gaz arrive à échéance le ${dateFormatter.format(new Date(logement.chauffage_gaz_echeance))}.</p>
            <p><a href="${new URL(request.url).origin}/proprietaire/espace">Consultez votre carnet</a> pour mettre à jour la date une fois l'entretien réalisé.</p>`,
         );
         await supabase
           .from("logements")
-          .update({ rappel_chauffage_envoye_a: new Date().toISOString() })
+          .update({ rappel_chauffage_gaz_envoye_a: new Date().toISOString() })
           .eq("id", logement.logement_id);
         notifies += 1;
       } catch {
         // A failed send for one logement never blocks the rest of the run.
+      }
+    }
+
+    if (logement.chauffage_bois_du && logement.chauffage_bois_echeance) {
+      try {
+        await sendMail(
+          logement.proprietaire_email,
+          "Alpha CIL — entretien à prévoir",
+          `<p>Le ramonage de votre chauffage bois arrive à échéance le ${dateFormatter.format(new Date(logement.chauffage_bois_echeance))}.</p>
+           <p><a href="${new URL(request.url).origin}/proprietaire/espace">Consultez votre carnet</a> pour mettre à jour la date une fois l'entretien réalisé.</p>`,
+        );
+        await supabase
+          .from("logements")
+          .update({ rappel_chauffage_bois_envoye_a: new Date().toISOString() })
+          .eq("id", logement.logement_id);
+        notifies += 1;
+      } catch {
+        // Same resilience posture as the gaz reminder above.
       }
     }
 

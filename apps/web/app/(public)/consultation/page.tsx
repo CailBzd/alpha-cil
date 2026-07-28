@@ -18,7 +18,7 @@ function vmcLabel(value: string) {
 interface GrantValidation {
   logement_id: string | null;
   adresse: string | null;
-  chauffage_type: string | null;
+  chauffage_type: string[] | null;
   vmc_type: string | null;
   scope: string | null;
   tiers_type: string | null;
@@ -93,8 +93,8 @@ export default async function ConsultationPage({
             <p className="text-foreground">{validation.adresse}</p>
             <p className="text-muted-foreground">
               Chauffage :{" "}
-              {validation.chauffage_type
-                ? chauffageLabel(validation.chauffage_type)
+              {validation.chauffage_type && validation.chauffage_type.length > 0
+                ? validation.chauffage_type.map(chauffageLabel).join(", ")
                 : "Non renseigné"}
             </p>
             <p className="text-muted-foreground">

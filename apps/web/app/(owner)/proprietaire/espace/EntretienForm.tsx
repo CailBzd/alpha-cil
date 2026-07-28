@@ -8,8 +8,14 @@ import { useState, type FormEvent } from "react";
 interface EntretienFieldProps {
   logementId: string;
   label: string;
-  column: "derniere_verif_chauffage" | "derniere_verif_vmc";
-  resetColumn: "rappel_chauffage_envoye_a" | "rappel_vmc_envoye_a";
+  column:
+    | "derniere_verif_chauffage_gaz"
+    | "derniere_verif_chauffage_bois"
+    | "derniere_verif_vmc";
+  resetColumn:
+    | "rappel_chauffage_gaz_envoye_a"
+    | "rappel_chauffage_bois_envoye_a"
+    | "rappel_vmc_envoye_a";
   currentValue: string | null;
 }
 
@@ -54,31 +60,43 @@ export function EntretienForm({
   logementId,
   chauffageType,
   vmcType,
-  derniereVerifChauffage,
+  derniereVerifChauffageGaz,
+  derniereVerifChauffageBois,
   derniereVerifVmc,
 }: {
   logementId: string;
-  chauffageType: string | null;
+  chauffageType: string[] | null;
   vmcType: string | null;
-  derniereVerifChauffage: string | null;
+  derniereVerifChauffageGaz: string | null;
+  derniereVerifChauffageBois: string | null;
   derniereVerifVmc: string | null;
 }) {
-  const chauffageEligible = chauffageType === "gaz" || chauffageType === "bois";
+  const gazEligible = chauffageType?.includes("gaz") ?? false;
+  const boisEligible = chauffageType?.includes("bois") ?? false;
   const vmcEligible = vmcType === "simple_flux" || vmcType === "double_flux";
 
-  if (!chauffageEligible && !vmcEligible) {
+  if (!gazEligible && !boisEligible && !vmcEligible) {
     return null;
   }
 
   return (
     <div className="space-y-3 rounded-xl border border-border bg-card p-6 shadow-sm">
-      {chauffageEligible ? (
+      {gazEligible ? (
         <EntretienField
           logementId={logementId}
-          label={chauffageType === "bois" ? "Dernier ramonage" : "Dernier entretien de la chaudière"}
-          column="derniere_verif_chauffage"
-          resetColumn="rappel_chauffage_envoye_a"
-          currentValue={derniereVerifChauffage}
+          label="Dernier entretien de la chaudière"
+          column="derniere_verif_chauffage_gaz"
+          resetColumn="rappel_chauffage_gaz_envoye_a"
+          currentValue={derniereVerifChauffageGaz}
+        />
+      ) : null}
+      {boisEligible ? (
+        <EntretienField
+          logementId={logementId}
+          label="Dernier ramonage"
+          column="derniere_verif_chauffage_bois"
+          resetColumn="rappel_chauffage_bois_envoye_a"
+          currentValue={derniereVerifChauffageBois}
         />
       ) : null}
       {vmcEligible ? (

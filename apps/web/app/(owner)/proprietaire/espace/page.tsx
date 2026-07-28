@@ -50,11 +50,13 @@ export default async function EspaceProprietairePage() {
   const { data: logement } = await supabase
     .from("logements")
     .select(
-      "id, adresse, chauffage_type, vmc_type, dpe_classe_energie, dpe_classe_ges, derniere_verif_chauffage, derniere_verif_vmc",
+      "id, adresse, chauffage_type, vmc_type, dpe_classe_energie, dpe_classe_ges, derniere_verif_chauffage_gaz, derniere_verif_chauffage_bois, derniere_verif_vmc",
     )
     .maybeSingle();
 
-  const incomplet = logement ? !logement.chauffage_type || !logement.vmc_type : false;
+  const incomplet = logement
+    ? !logement.chauffage_type || logement.chauffage_type.length === 0 || !logement.vmc_type
+    : false;
 
   const { data: interventions } = logement
     ? await supabase
@@ -97,7 +99,9 @@ export default async function EspaceProprietairePage() {
               <p className="text-foreground">{logement.adresse}</p>
               <p className="text-muted-foreground">
                 Chauffage :{" "}
-                {logement.chauffage_type ? chauffageLabel(logement.chauffage_type) : "Non renseigné"}
+                {logement.chauffage_type && logement.chauffage_type.length > 0
+                  ? logement.chauffage_type.map(chauffageLabel).join(", ")
+                  : "Non renseigné"}
               </p>
               <p className="text-muted-foreground">
                 VMC : {logement.vmc_type ? vmcLabel(logement.vmc_type) : "Non renseigné"}
@@ -118,7 +122,8 @@ export default async function EspaceProprietairePage() {
                 logementId={logement.id}
                 chauffageType={logement.chauffage_type}
                 vmcType={logement.vmc_type}
-                derniereVerifChauffage={logement.derniere_verif_chauffage}
+                derniereVerifChauffageGaz={logement.derniere_verif_chauffage_gaz}
+                derniereVerifChauffageBois={logement.derniere_verif_chauffage_bois}
                 derniereVerifVmc={logement.derniere_verif_vmc}
               />
             )}
