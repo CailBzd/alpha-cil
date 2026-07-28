@@ -4,6 +4,7 @@ import { CORPS_METIER_OPTIONS } from "@/lib/corps-metier";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { AppHeader } from "../../../AppHeader";
 import { ThemeToggle } from "../../../theme-toggle";
 import { SignOutButton } from "./SignOutButton";
 
@@ -59,19 +60,19 @@ export default async function EspaceArtisanPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="flex items-center justify-between border-b border-border px-6 py-4">
-        <span className="font-semibold tracking-tight text-foreground">Alpha CIL</span>
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-muted-foreground">{user.email}</span>
-          <ThemeToggle />
-          <SignOutButton />
-        </div>
-      </header>
+      <AppHeader>
+        <span className="hidden text-sm text-muted-foreground sm:inline">{user.email}</span>
+        <ThemeToggle />
+        <SignOutButton />
+      </AppHeader>
       <div className="mx-auto flex max-w-5xl gap-8 px-6 py-8">
         <nav className="w-48 shrink-0 space-y-1">
           <a
             href="/artisan/espace"
-            className="block rounded-md bg-secondary px-3 py-2 text-sm font-medium text-secondary-foreground"
+            className="block rounded-md px-3 py-2 text-sm font-medium text-white shadow-sm"
+            style={{
+              background: "linear-gradient(135deg, var(--color-primary), var(--color-accent))",
+            }}
           >
             Mes interventions
           </a>

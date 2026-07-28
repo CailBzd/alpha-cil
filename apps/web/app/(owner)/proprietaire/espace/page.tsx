@@ -3,6 +3,7 @@ import { CHAUFFAGE_OPTIONS, VMC_OPTIONS } from "@/lib/equipements";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { AppHeader } from "../../../AppHeader";
 import { ThemeToggle } from "../../../theme-toggle";
 import { AttestationLink } from "./AttestationLink";
 import { CreerFicheForm } from "./CreerFicheForm";
@@ -67,14 +68,11 @@ export default async function EspaceProprietairePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="flex items-center justify-between border-b border-border px-6 py-4">
-        <span className="font-semibold tracking-tight text-foreground">Alpha CIL</span>
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-muted-foreground">{user.email}</span>
-          <ThemeToggle />
-          <SignOutButton />
-        </div>
-      </header>
+      <AppHeader>
+        <span className="hidden text-sm text-muted-foreground sm:inline">{user.email}</span>
+        <ThemeToggle />
+        <SignOutButton />
+      </AppHeader>
       <main className="mx-auto max-w-3xl space-y-4 px-6 py-8">
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-semibold tracking-tight text-foreground">Mon logement</h1>

@@ -1,6 +1,9 @@
 import { createServerSupabaseClient } from "@alpha-cil/db";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { AppHeader } from "../../../../AppHeader";
+import { ThemeToggle } from "../../../../theme-toggle";
+import { SignOutButton } from "../SignOutButton";
 import { DecennaleForm } from "./DecennaleForm";
 
 export default async function ProfilArtisanPage() {
@@ -35,11 +38,18 @@ export default async function ProfilArtisanPage() {
     .single();
 
   return (
-    <main className="mx-auto max-w-lg px-4 py-12">
-      <h1 className="text-2xl font-semibold tracking-tight text-foreground">Mon profil</h1>
-      <div className="mt-6">
-        <DecennaleForm uploadedAt={artisan?.attestation_decennale_uploaded_at ?? null} />
-      </div>
-    </main>
+    <div className="min-h-screen bg-background">
+      <AppHeader>
+        <span className="hidden text-sm text-muted-foreground sm:inline">{user.email}</span>
+        <ThemeToggle />
+        <SignOutButton />
+      </AppHeader>
+      <main className="mx-auto max-w-lg px-4 py-12">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Mon profil</h1>
+        <div className="mt-6">
+          <DecennaleForm uploadedAt={artisan?.attestation_decennale_uploaded_at ?? null} />
+        </div>
+      </main>
+    </div>
   );
 }

@@ -2,6 +2,9 @@ import { createServerSupabaseClient } from "@alpha-cil/db";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { AppHeader } from "../../../../AppHeader";
+import { ThemeToggle } from "../../../../theme-toggle";
+import { SignOutButton } from "../SignOutButton";
 import { AccesForm } from "./AccesForm";
 import { RevokeButton } from "./RevokeButton";
 
@@ -55,7 +58,13 @@ export default async function AccesPage() {
   const activeGrants = (grants ?? []).filter((grant) => new Date(grant.expires_at) > now);
 
   return (
-    <main className="mx-auto max-w-lg px-4 py-12">
+    <div className="min-h-screen bg-background">
+      <AppHeader>
+        <span className="hidden text-sm text-muted-foreground sm:inline">{user.email}</span>
+        <ThemeToggle />
+        <SignOutButton />
+      </AppHeader>
+      <main className="mx-auto max-w-lg px-4 py-12">
       <div className="space-y-1">
         <Link
           href="/proprietaire/espace"
@@ -112,6 +121,7 @@ export default async function AccesPage() {
           Aucun logement n&apos;est encore lié à votre compte.
         </p>
       )}
-    </main>
+      </main>
+    </div>
   );
 }

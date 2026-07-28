@@ -2,6 +2,9 @@ import { createServerSupabaseClient } from "@alpha-cil/db";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { AppHeader } from "../../../../AppHeader";
+import { ThemeToggle } from "../../../../theme-toggle";
+import { SignOutButton } from "../SignOutButton";
 import { ExportForm } from "./ExportForm";
 
 const dateFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "UTC" });
@@ -42,33 +45,40 @@ export default async function ExportPage() {
     : { data: null };
 
   return (
-    <main className="mx-auto max-w-lg px-4 py-12">
-      <div className="space-y-1">
-        <Link
-          href="/proprietaire/espace"
-          className="text-sm text-muted-foreground underline underline-offset-4"
-        >
-          &larr; Retour à mon espace
-        </Link>
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Exporter mon carnet
-        </h1>
-      </div>
-
-      {logement ? (
-        <div className="mt-6">
-          <ExportForm
-            interventions={(interventions ?? []).map((intervention) => ({
-              id: intervention.id,
-              label: `${dateFormatter.format(new Date(intervention.date_intervention))} — ${intervention.type_travaux}`,
-            }))}
-          />
+    <div className="min-h-screen bg-background">
+      <AppHeader>
+        <span className="hidden text-sm text-muted-foreground sm:inline">{user.email}</span>
+        <ThemeToggle />
+        <SignOutButton />
+      </AppHeader>
+      <main className="mx-auto max-w-lg px-4 py-12">
+        <div className="space-y-1">
+          <Link
+            href="/proprietaire/espace"
+            className="text-sm text-muted-foreground underline underline-offset-4"
+          >
+            &larr; Retour à mon espace
+          </Link>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+            Exporter mon carnet
+          </h1>
         </div>
-      ) : (
-        <p className="mt-6 text-sm text-muted-foreground">
-          Aucun logement n&apos;est encore lié à votre compte.
-        </p>
-      )}
-    </main>
+
+        {logement ? (
+          <div className="mt-6">
+            <ExportForm
+              interventions={(interventions ?? []).map((intervention) => ({
+                id: intervention.id,
+                label: `${dateFormatter.format(new Date(intervention.date_intervention))} — ${intervention.type_travaux}`,
+              }))}
+            />
+          </div>
+        ) : (
+          <p className="mt-6 text-sm text-muted-foreground">
+            Aucun logement n&apos;est encore lié à votre compte.
+          </p>
+        )}
+      </main>
+    </div>
   );
 }
