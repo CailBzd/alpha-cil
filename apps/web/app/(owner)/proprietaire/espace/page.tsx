@@ -96,6 +96,12 @@ export default async function EspaceProprietairePage() {
               Carnet de contacts
             </Link>
             <Link
+              href="/proprietaire/espace/rappels"
+              className="text-sm font-medium text-foreground underline underline-offset-4"
+            >
+              Mes rappels
+            </Link>
+            <Link
               href="/proprietaire/espace/acces"
               className="text-sm font-medium text-foreground underline underline-offset-4"
             >
