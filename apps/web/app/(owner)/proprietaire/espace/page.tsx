@@ -102,6 +102,12 @@ export default async function EspaceProprietairePage() {
               Mes rappels
             </Link>
             <Link
+              href="/proprietaire/espace/projets"
+              className="text-sm font-medium text-foreground underline underline-offset-4"
+            >
+              Mes projets
+            </Link>
+            <Link
               href="/proprietaire/espace/acces"
               className="text-sm font-medium text-foreground underline underline-offset-4"
             >
