@@ -10,6 +10,7 @@ import { CreerFicheForm } from "./CreerFicheForm";
 import { DetailsLogementForm } from "./DetailsLogementForm";
 import { EntretienForm } from "./EntretienForm";
 import { EquipementsForm } from "./EquipementsForm";
+import { LogementMapClient } from "./LogementMapClient";
 import { SignOutButton } from "./SignOutButton";
 
 function chauffageLabel(value: string) {
@@ -155,6 +156,7 @@ export default async function EspaceProprietairePage() {
                 Construit en : {logement.annee_construction ?? "Non renseigné"}
               </p>
             </div>
+            <LogementMapClient adresse={logement.adresse} />
             <DetailsLogementForm
               logementId={logement.id}
               nombrePieces={logement.nombre_pieces}
