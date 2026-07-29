@@ -1,0 +1,79 @@
+import { createServerSupabaseClient } from "@alpha-cil/db";
+import { cookies } from "next/headers";
+import Link from "next/link";
+
+const dateFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "UTC" });
+
+export default async function EspaceAgencePage() {
+  const cookieStore = await cookies();
+  const supabase = createServerSupabaseClient({
+    getAll: () => cookieStore.getAll(),
+    setAll: (cookiesToSet) => {
+      try {
+        for (const { name, value, options } of cookiesToSet) {
+          cookieStore.set(name, value, options);
+        }
+      } catch {
+        // Server Components can't write cookies. middleware.ts refreshes
+        // the session and writes fresh cookies on every request, so a
+        // write attempted here is safe to ignore.
+      }
+    },
+  });
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data: grants } = await supabase
+    .from("logement_access_grants")
+    .select("id, expires_at, logement_id")
+    .eq("agence_id", user?.id ?? "")
+    .is("revoked_at", null)
+    .order("expires_at", { ascending: true });
+
+  const now = new Date();
+  const activeGrants = (grants ?? []).filter((grant) => new Date(grant.expires_at) > now);
+
+  const { data: logements } = activeGrants.length > 0
+    ? await supabase
+        .from("logements")
+        .select("id, adresse")
+        .in(
+          "id",
+          activeGrants.map((grant) => grant.logement_id),
+        )
+    : { data: null };
+
+  const adresseById = new Map((logements ?? []).map((logement) => [logement.id, logement.adresse]));
+
+  return (
+    <>
+      <h1 className="text-xl font-semibold tracking-tight text-foreground">Logements</h1>
+      {activeGrants.length > 0 ? (
+        <ul className="divide-y divide-border rounded-xl border border-border bg-card">
+          {activeGrants.map((grant) => (
+            <li
+              key={grant.id}
+              className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3 text-sm"
+            >
+              <Link
+                href={`/agence/espace/logements/${grant.logement_id}`}
+                className="flex-1 font-medium text-foreground underline underline-offset-4"
+              >
+                {adresseById.get(grant.logement_id) ?? "Adresse inconnue"}
+              </Link>
+              <span className="text-muted-foreground">
+                Accès jusqu&apos;au {dateFormatter.format(new Date(grant.expires_at))}
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-sm text-muted-foreground">
+          Aucun logement ne vous a été partagé pour l&apos;instant.
+        </p>
+      )}
+    </>
+  );
+}

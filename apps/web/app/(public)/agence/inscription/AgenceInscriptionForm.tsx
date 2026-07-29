@@ -1,13 +1,22 @@
 "use client";
 
-import { Alert, AuthCard, Button, Input, Select } from "@alpha-cil/ui";
+import { Alert, AuthCard, Button, Input } from "@alpha-cil/ui";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-import { CORPS_METIER_OPTIONS } from "@/lib/corps-metier";
 import { ThemeToggle } from "../../../theme-toggle";
 
-export default function ArtisanInscriptionPage() {
+export function AgenceInscriptionForm({
+  token,
+  invitationValid,
+  tiersEmail,
+  adresse,
+}: {
+  token: string | null;
+  invitationValid: boolean;
+  tiersEmail: string | null;
+  adresse: string | null;
+}) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -22,18 +31,22 @@ export default function ArtisanInscriptionPage() {
       email: form.get("email"),
       password: form.get("password"),
       siret: form.get("siret"),
-      corpsMetier: form.get("corpsMetier"),
+      token,
     };
 
     try {
-      const response = await fetch("/api/artisan/signup", {
+      const response = await fetch("/api/agence/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
 
+      const data = (await response.json().catch(() => null)) as {
+        error?: string;
+        claimed?: boolean;
+      } | null;
+
       if (!response.ok) {
-        const data = (await response.json().catch(() => null)) as { error?: string } | null;
         setError(
           data?.error === "email_taken"
             ? "Cet email est déjà utilisé. Connectez-vous ou utilisez un autre email."
@@ -47,28 +60,51 @@ export default function ArtisanInscriptionPage() {
         return;
       }
 
-      router.push("/artisan/espace");
+      if (data?.claimed === false) {
+        setError(
+          "Compte créé, mais l'invitation n'a pas pu être validée. Connectez-vous pour réessayer.",
+        );
+        setSubmitting(false);
+        return;
+      }
+
+      router.push("/agence/espace");
     } catch {
       setError("Impossible de créer le compte. Réessayez.");
       setSubmitting(false);
     }
   }
 
+  if (!invitationValid) {
+    return (
+      <AuthCard title="Créer mon compte agence" action={<ThemeToggle />}>
+        <Alert>Ce lien d&apos;invitation est invalide, expiré ou déjà utilisé.</Alert>
+      </AuthCard>
+    );
+  }
+
   return (
     <AuthCard
-      title="Créer mon compte artisan"
+      title="Créer mon compte agence"
       action={<ThemeToggle />}
       footer={
         <>
-          Déjà un compte ?{" "}
-          <Link href="/artisan/connexion" className="font-medium text-foreground underline underline-offset-4">
+          Vous avez déjà un compte agence ?{" "}
+          <Link
+            href={`/agence/connexion?token=${token}`}
+            className="font-medium text-foreground underline underline-offset-4"
+          >
             Se connecter
           </Link>
         </>
       }
     >
+      <p className="rounded-md bg-secondary px-3 py-2 text-sm text-secondary-foreground">
+        Vous avez été invité à consulter, en lecture seule, le carnet du logement situé au{" "}
+        <strong>{adresse}</strong>.
+      </p>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <Input label="Email" name="email" type="email" required autoComplete="email" />
+        <Input label="Email" name="email" type="email" required readOnly value={tiersEmail ?? ""} />
         <Input
           label="Mot de passe"
           name="password"
@@ -84,14 +120,6 @@ export default function ArtisanInscriptionPage() {
           required
           pattern="[0-9]{14}"
           title="14 chiffres"
-        />
-        <Select
-          label="Corps de métier"
-          name="corpsMetier"
-          required
-          defaultValue=""
-          placeholder="Sélectionnez un corps de métier"
-          options={CORPS_METIER_OPTIONS.map((option) => ({ ...option }))}
         />
         {error ? <Alert>{error}</Alert> : null}
         <Button type="submit" disabled={submitting} className="w-full">

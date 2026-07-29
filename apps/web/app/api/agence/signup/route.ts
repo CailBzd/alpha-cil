@@ -7,7 +7,7 @@ interface SignupBody {
   email?: unknown;
   password?: unknown;
   siret?: unknown;
-  corpsMetier?: unknown;
+  token?: unknown;
 }
 
 function isNonEmptyString(value: unknown): value is string {
@@ -17,20 +17,22 @@ function isNonEmptyString(value: unknown): value is string {
 export async function POST(request: Request) {
   const body = (await request.json().catch(() => null)) as SignupBody | null;
 
+  // Unlike artisan signup, the token is required: an agency account can
+  // only ever be created from an owner's invitation, never self-serve.
   if (
     !body ||
     !isNonEmptyString(body.email) ||
     !isNonEmptyString(body.password) ||
     !isNonEmptyString(body.siret) ||
-    !isNonEmptyString(body.corpsMetier)
+    !isNonEmptyString(body.token)
   ) {
     return NextResponse.json({ error: "invalid_request" }, { status: 400 });
   }
 
-  const { email, password, siret, corpsMetier } = body;
+  const { email, password, siret, token } = body;
 
   // Verified before signUp so a bad SIRET never leaves behind an orphaned
-  // auth.users row with no matching artisans profile.
+  // auth.users row with no matching agences profile.
   const siretResult = await verifySiret(siret);
   if (siretResult.status !== "valide") {
     return NextResponse.json(
@@ -67,12 +69,14 @@ export async function POST(request: Request) {
   }
 
   const { error: insertError } = await supabase
-    .from("artisans")
-    .insert({ id: userId, siret, corps_metier: corpsMetier, denomination: siretResult.denomination });
+    .from("agences")
+    .insert({ id: userId, siret, denomination: siretResult.denomination });
 
   if (insertError) {
     return NextResponse.json({ error: "signup_failed" }, { status: 400 });
   }
 
-  return NextResponse.json({ success: true });
+  const { data: claimReason } = await supabase.rpc("claim_agence_grant", { p_token: token });
+
+  return NextResponse.json({ success: true, claimed: claimReason === "success" });
 }

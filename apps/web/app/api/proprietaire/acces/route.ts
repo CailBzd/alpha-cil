@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from "@alpha-cil/db";
+import { sendMail } from "@alpha-cil/notifications";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -89,6 +90,19 @@ export async function POST(request: Request) {
       await supabase.from("logement_access_grants").delete().eq("id", grant.id);
       return NextResponse.json({ error: "creation_failed" }, { status: 400 });
     }
+  }
+
+  if (body.tiersType === "agence") {
+    const origin = new URL(request.url).origin;
+    const html = `<p>Un propriétaire vous invite à consulter le carnet d'un logement en lecture seule.</p>
+         <p><a href="${origin}/agence/inscription?token=${grant.token}">Créez votre compte agence</a> pour y accéder (vérification SIRET requise).</p>`;
+
+    // A notification failure never invalidates the grant already created —
+    // the owner still sees the raw link in AccesForm as a fallback, same
+    // resilience posture as the other sendMail call sites in this codebase.
+    await sendMail(body.tiersEmail, "Alpha CIL — invitation à consulter un logement", html).catch(
+      () => {},
+    );
   }
 
   return NextResponse.json({ token: grant.token });
