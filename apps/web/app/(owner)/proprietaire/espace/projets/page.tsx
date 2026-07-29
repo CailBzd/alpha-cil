@@ -1,10 +1,6 @@
 import { createServerSupabaseClient } from "@alpha-cil/db";
 import { cookies } from "next/headers";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { AppHeader } from "../../../../AppHeader";
-import { ThemeToggle } from "../../../../theme-toggle";
-import { SignOutButton } from "../SignOutButton";
 import { ProjetForm } from "./ProjetForm";
 
 export default async function ProjetsPage() {
@@ -23,14 +19,6 @@ export default async function ProjetsPage() {
       }
     },
   });
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/proprietaire/connexion");
-  }
 
   const { data: logement } = await supabase.from("logements").select("id").maybeSingle();
 
@@ -55,62 +43,49 @@ export default async function ProjetsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <AppHeader>
-        <span className="hidden text-sm text-muted-foreground sm:inline">{user.email}</span>
-        <ThemeToggle />
-        <SignOutButton />
-      </AppHeader>
-      <main className="mx-auto max-w-2xl space-y-6 px-6 py-12">
-        <div className="space-y-1">
-          <Link
-            href="/proprietaire/espace"
-            className="text-sm text-muted-foreground underline underline-offset-4"
-          >
-            &larr; Retour à mon espace
-          </Link>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Mes projets</h1>
-          <p className="text-sm text-muted-foreground">
-            Regroupez plusieurs devis d&apos;un même besoin (ex. « installer une clim ») pour les
-            comparer côte à côte avant de commander les travaux.
-          </p>
-        </div>
+    <>
+      <div>
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">Mes projets</h1>
+        <p className="text-sm text-muted-foreground">
+          Regroupez plusieurs devis d&apos;un même besoin (ex. « installer une clim ») pour les
+          comparer côte à côte avant de commander les travaux.
+        </p>
+      </div>
 
-        {!logement ? (
-          <p className="text-sm text-muted-foreground">
-            Aucun logement n&apos;est encore lié à votre compte.
-          </p>
-        ) : (
-          <>
-            <ProjetForm logementId={logement.id} />
+      {!logement ? (
+        <p className="text-sm text-muted-foreground">
+          Aucun logement n&apos;est encore lié à votre compte.
+        </p>
+      ) : (
+        <>
+          <ProjetForm logementId={logement.id} />
 
-            {projets && projets.length > 0 ? (
-              <ul className="divide-y divide-border rounded-xl border border-border bg-card">
-                {projets.map((projet) => (
-                  <li
-                    key={projet.id}
-                    className="flex items-center justify-between gap-4 px-4 py-3 text-sm"
+          {projets && projets.length > 0 ? (
+            <ul className="divide-y divide-border rounded-xl border border-border bg-card">
+              {projets.map((projet) => (
+                <li
+                  key={projet.id}
+                  className="flex items-center justify-between gap-4 px-4 py-3 text-sm"
+                >
+                  <Link
+                    href={`/proprietaire/espace/projets/${projet.id}`}
+                    className="flex-1 font-medium text-foreground underline underline-offset-4"
                   >
-                    <Link
-                      href={`/proprietaire/espace/projets/${projet.id}`}
-                      className="flex-1 font-medium text-foreground underline underline-offset-4"
-                    >
-                      {projet.nom}
-                    </Link>
-                    <span className="text-muted-foreground">
-                      {countByProjet.get(projet.id) ?? 0} devis
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                Aucun projet enregistré pour l&apos;instant.
-              </p>
-            )}
-          </>
-        )}
-      </main>
-    </div>
+                    {projet.nom}
+                  </Link>
+                  <span className="text-muted-foreground">
+                    {countByProjet.get(projet.id) ?? 0} devis
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Aucun projet enregistré pour l&apos;instant.
+            </p>
+          )}
+        </>
+      )}
+    </>
   );
 }

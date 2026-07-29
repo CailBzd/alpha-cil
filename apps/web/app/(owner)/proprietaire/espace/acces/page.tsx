@@ -1,10 +1,5 @@
 import { createServerSupabaseClient } from "@alpha-cil/db";
 import { cookies } from "next/headers";
-import Link from "next/link";
-import { redirect } from "next/navigation";
-import { AppHeader } from "../../../../AppHeader";
-import { ThemeToggle } from "../../../../theme-toggle";
-import { SignOutButton } from "../SignOutButton";
 import { AccesForm } from "./AccesForm";
 import { RevokeButton } from "./RevokeButton";
 
@@ -26,14 +21,6 @@ export default async function AccesPage() {
       }
     },
   });
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/proprietaire/connexion");
-  }
 
   const { data: logement } = await supabase.from("logements").select("id").maybeSingle();
 
@@ -58,41 +45,21 @@ export default async function AccesPage() {
   const activeGrants = (grants ?? []).filter((grant) => new Date(grant.expires_at) > now);
 
   return (
-    <div className="min-h-screen bg-background">
-      <AppHeader>
-        <span className="hidden text-sm text-muted-foreground sm:inline">{user.email}</span>
-        <ThemeToggle />
-        <SignOutButton />
-      </AppHeader>
-      <main className="mx-auto max-w-lg px-4 py-12">
-      <div className="space-y-1">
-        <Link
-          href="/proprietaire/espace"
-          className="text-sm text-muted-foreground underline underline-offset-4"
-        >
-          &larr; Retour à mon espace
-        </Link>
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Gérer les accès
-        </h1>
-      </div>
+    <>
+      <h1 className="text-xl font-semibold tracking-tight text-foreground">Gérer les accès</h1>
 
       {logement ? (
         <>
-          <div className="mt-6">
-            <AccesForm
-              interventions={(interventions ?? []).map((intervention) => ({
-                id: intervention.id,
-                label: `${dateFormatter.format(new Date(intervention.date_intervention))} — ${intervention.type_travaux}`,
-              }))}
-            />
-          </div>
+          <AccesForm
+            interventions={(interventions ?? []).map((intervention) => ({
+              id: intervention.id,
+              label: `${dateFormatter.format(new Date(intervention.date_intervention))} — ${intervention.type_travaux}`,
+            }))}
+          />
 
-          <h2 className="mt-8 text-lg font-semibold tracking-tight text-foreground">
-            Accès actifs
-          </h2>
+          <h2 className="text-lg font-semibold tracking-tight text-foreground">Accès actifs</h2>
           {activeGrants.length > 0 ? (
-            <ul className="mt-2 divide-y divide-border rounded-xl border border-border bg-card">
+            <ul className="divide-y divide-border rounded-xl border border-border bg-card">
               {activeGrants.map((grant) => (
                 <li
                   key={grant.id}
@@ -113,15 +80,14 @@ export default async function AccesPage() {
               ))}
             </ul>
           ) : (
-            <p className="mt-2 text-sm text-muted-foreground">Aucun accès actif pour l&apos;instant.</p>
+            <p className="text-sm text-muted-foreground">Aucun accès actif pour l&apos;instant.</p>
           )}
         </>
       ) : (
-        <p className="mt-6 text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           Aucun logement n&apos;est encore lié à votre compte.
         </p>
       )}
-      </main>
-    </div>
+    </>
   );
 }

@@ -1,11 +1,6 @@
 import { createServerSupabaseClient } from "@alpha-cil/db";
 import { CORPS_METIER_OPTIONS } from "@/lib/corps-metier";
 import { cookies } from "next/headers";
-import Link from "next/link";
-import { redirect } from "next/navigation";
-import { AppHeader } from "../../../../AppHeader";
-import { ThemeToggle } from "../../../../theme-toggle";
-import { SignOutButton } from "../SignOutButton";
 import { FinancesCharts } from "./FinancesCharts";
 
 const montantFormatter = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
@@ -30,14 +25,6 @@ export default async function FinancesPage() {
       }
     },
   });
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/proprietaire/connexion");
-  }
 
   const { data: logement } = await supabase.from("logements").select("id").maybeSingle();
 
@@ -76,60 +63,43 @@ export default async function FinancesPage() {
     .sort((a, b) => b.montant - a.montant);
 
   return (
-    <div className="min-h-screen bg-background">
-      <AppHeader>
-        <span className="hidden text-sm text-muted-foreground sm:inline">{user.email}</span>
-        <ThemeToggle />
-        <SignOutButton />
-      </AppHeader>
-      <main className="mx-auto max-w-3xl space-y-6 px-6 py-12">
-        <div className="space-y-1">
-          <Link
-            href="/proprietaire/espace"
-            className="text-sm text-muted-foreground underline underline-offset-4"
-          >
-            &larr; Retour à mon espace
-          </Link>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Suivi financier
-          </h1>
-        </div>
+    <>
+      <h1 className="text-xl font-semibold tracking-tight text-foreground">Suivi financier</h1>
 
-        {!logement ? (
-          <p className="text-sm text-muted-foreground">
-            Aucun logement n&apos;est encore lié à votre compte.
-          </p>
-        ) : rows.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            Aucune intervention chiffrée pour ce logement pour l&apos;instant.
-          </p>
-        ) : (
-          <>
-            <div className="grid gap-4 sm:grid-cols-3">
-              <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-                <p className="text-sm text-muted-foreground">Total dépensé</p>
-                <p className="mt-1 text-3xl font-semibold tracking-tight text-foreground">
-                  {montantFormatter.format(total)}
-                </p>
-              </div>
-              <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-                <p className="text-sm text-muted-foreground">Réalisé par un artisan</p>
-                <p className="mt-1 text-3xl font-semibold tracking-tight text-foreground">
-                  {montantFormatter.format(totalArtisan)}
-                </p>
-              </div>
-              <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-                <p className="text-sm text-muted-foreground">Travaux personnels</p>
-                <p className="mt-1 text-3xl font-semibold tracking-tight text-foreground">
-                  {montantFormatter.format(totalDiy)}
-                </p>
-              </div>
+      {!logement ? (
+        <p className="text-sm text-muted-foreground">
+          Aucun logement n&apos;est encore lié à votre compte.
+        </p>
+      ) : rows.length === 0 ? (
+        <p className="text-sm text-muted-foreground">
+          Aucune intervention chiffrée pour ce logement pour l&apos;instant.
+        </p>
+      ) : (
+        <>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+              <p className="text-sm text-muted-foreground">Total dépensé</p>
+              <p className="mt-1 text-3xl font-semibold tracking-tight text-foreground">
+                {montantFormatter.format(total)}
+              </p>
             </div>
+            <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+              <p className="text-sm text-muted-foreground">Réalisé par un artisan</p>
+              <p className="mt-1 text-3xl font-semibold tracking-tight text-foreground">
+                {montantFormatter.format(totalArtisan)}
+              </p>
+            </div>
+            <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+              <p className="text-sm text-muted-foreground">Travaux personnels</p>
+              <p className="mt-1 text-3xl font-semibold tracking-tight text-foreground">
+                {montantFormatter.format(totalDiy)}
+              </p>
+            </div>
+          </div>
 
-            <FinancesCharts byYear={byYear} byCorpsMetier={byCorpsMetier} />
-          </>
-        )}
-      </main>
-    </div>
+          <FinancesCharts byYear={byYear} byCorpsMetier={byCorpsMetier} />
+        </>
+      )}
+    </>
   );
 }

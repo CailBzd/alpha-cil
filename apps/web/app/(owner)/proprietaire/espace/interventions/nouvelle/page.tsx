@@ -2,9 +2,6 @@ import { createServerSupabaseClient } from "@alpha-cil/db";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { AppHeader } from "../../../../../AppHeader";
-import { ThemeToggle } from "../../../../../theme-toggle";
-import { SignOutButton } from "../../SignOutButton";
 import { InterventionProprietaireForm } from "./InterventionProprietaireForm";
 
 export default async function NouvelleInterventionProprietairePage() {
@@ -24,14 +21,6 @@ export default async function NouvelleInterventionProprietairePage() {
     },
   });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/proprietaire/connexion");
-  }
-
   const { data: logement } = await supabase.from("logements").select("id").maybeSingle();
 
   if (!logement) {
@@ -39,26 +28,19 @@ export default async function NouvelleInterventionProprietairePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <AppHeader>
-        <span className="hidden text-sm text-muted-foreground sm:inline">{user.email}</span>
-        <ThemeToggle />
-        <SignOutButton />
-      </AppHeader>
-      <main className="mx-auto max-w-lg px-4 py-12">
-        <div className="space-y-1">
-          <Link
-            href="/proprietaire/espace"
-            className="text-sm text-muted-foreground underline underline-offset-4"
-          >
-            &larr; Retour à mon espace
-          </Link>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Ajouter une intervention
-          </h1>
-        </div>
-        <InterventionProprietaireForm />
-      </main>
-    </div>
+    <>
+      <div>
+        <Link
+          href="/proprietaire/espace"
+          className="text-sm text-muted-foreground underline underline-offset-4"
+        >
+          &larr; Retour à mon espace
+        </Link>
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">
+          Ajouter une intervention
+        </h1>
+      </div>
+      <InterventionProprietaireForm />
+    </>
   );
 }
