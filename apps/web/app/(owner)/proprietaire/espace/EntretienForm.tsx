@@ -42,6 +42,7 @@ function EntretienField({ logementId, label, column, resetColumn, currentValue }
       return;
     }
 
+    setSubmitting(false);
     router.refresh();
   }
 

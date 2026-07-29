@@ -73,6 +73,7 @@ export function LogementMap({ adresse }: { adresse: string }) {
   return (
     <div className="h-80 w-full overflow-hidden rounded-xl border border-border shadow-sm">
       <MapContainer
+        key={`${position[0]},${position[1]}`}
         center={position}
         zoom={18}
         scrollWheelZoom={false}

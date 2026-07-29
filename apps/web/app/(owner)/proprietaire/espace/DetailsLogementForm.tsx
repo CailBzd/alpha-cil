@@ -41,6 +41,7 @@ export function DetailsLogementForm({
       return;
     }
 
+    setSubmitting(false);
     router.refresh();
   }
 

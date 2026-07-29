@@ -2,6 +2,7 @@ import { createServerSupabaseClient } from "@alpha-cil/db";
 import { CHAUFFAGE_OPTIONS, VMC_OPTIONS } from "@/lib/equipements";
 import { cookies } from "next/headers";
 import Link from "next/link";
+import { AdresseForm } from "./AdresseForm";
 import { AttestationLink } from "./AttestationLink";
 import { CreerFicheForm } from "./CreerFicheForm";
 import { DetailsLogementForm } from "./DetailsLogementForm";
@@ -46,10 +47,6 @@ export default async function EspaceProprietairePage() {
       "id, adresse, chauffage_type, vmc_type, dpe_classe_energie, dpe_classe_ges, dpe_consommation, dpe_emissions, dpe_date_diagnostic, surface_habitable, nombre_pieces, annee_construction, derniere_verif_chauffage_gaz, derniere_verif_chauffage_bois, derniere_verif_vmc",
     )
     .maybeSingle();
-
-  const incomplet = logement
-    ? !logement.chauffage_type || logement.chauffage_type.length === 0 || !logement.vmc_type
-    : false;
 
   const { data: interventions } = logement
     ? await supabase
@@ -102,27 +99,25 @@ export default async function EspaceProprietairePage() {
             </p>
           </div>
           <LogementMapClient adresse={logement.adresse} />
+          <AdresseForm logementId={logement.id} adresse={logement.adresse} />
           <DetailsLogementForm
             logementId={logement.id}
             nombrePieces={logement.nombre_pieces}
             anneeConstruction={logement.annee_construction}
           />
-          {incomplet ? (
-            <EquipementsForm
-              logementId={logement.id}
-              chauffageType={logement.chauffage_type}
-              vmcType={logement.vmc_type}
-            />
-          ) : (
-            <EntretienForm
-              logementId={logement.id}
-              chauffageType={logement.chauffage_type}
-              vmcType={logement.vmc_type}
-              derniereVerifChauffageGaz={logement.derniere_verif_chauffage_gaz}
-              derniereVerifChauffageBois={logement.derniere_verif_chauffage_bois}
-              derniereVerifVmc={logement.derniere_verif_vmc}
-            />
-          )}
+          <EquipementsForm
+            logementId={logement.id}
+            chauffageType={logement.chauffage_type}
+            vmcType={logement.vmc_type}
+          />
+          <EntretienForm
+            logementId={logement.id}
+            chauffageType={logement.chauffage_type}
+            vmcType={logement.vmc_type}
+            derniereVerifChauffageGaz={logement.derniere_verif_chauffage_gaz}
+            derniereVerifChauffageBois={logement.derniere_verif_chauffage_bois}
+            derniereVerifVmc={logement.derniere_verif_vmc}
+          />
 
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold tracking-tight text-foreground">

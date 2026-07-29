@@ -47,6 +47,7 @@ export function EquipementsForm({
       return;
     }
 
+    setSubmitting(false);
     router.refresh();
   }
 
