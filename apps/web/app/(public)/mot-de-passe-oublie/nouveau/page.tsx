@@ -1,7 +1,7 @@
 "use client";
 
 import { createBrowserSupabaseClient } from "@alpha-cil/db";
-import { Alert, AuthCard, Button, Input } from "@alpha-cil/ui";
+import { Alert, AuthCard, Button, PasswordInput } from "@alpha-cil/ui";
 import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";
 import { ThemeToggle } from "../../../theme-toggle";
@@ -75,10 +75,9 @@ export default function NouveauMotDePassePage() {
         </p>
       ) : ready ? (
         <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
+          <PasswordInput
             label="Nouveau mot de passe"
             name="password"
-            type="password"
             required
             autoComplete="new-password"
           />

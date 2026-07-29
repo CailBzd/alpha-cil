@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert, AuthCard, Button, Input } from "@alpha-cil/ui";
+import { Alert, AuthCard, Button, Input, PasswordInput } from "@alpha-cil/ui";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
@@ -25,9 +25,18 @@ export function ProprietaireInscriptionForm({
     setSubmitting(true);
 
     const form = new FormData(event.currentTarget);
+    const password = form.get("password");
+    const passwordConfirmation = form.get("passwordConfirmation");
+
+    if (password !== passwordConfirmation) {
+      setError("Les mots de passe ne correspondent pas.");
+      setSubmitting(false);
+      return;
+    }
+
     const body = {
       email: form.get("email"),
-      password: form.get("password"),
+      password,
       token,
     };
 
@@ -87,10 +96,16 @@ export function ProprietaireInscriptionForm({
       ) : null}
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input label="Email" name="email" type="email" required autoComplete="email" />
-        <Input
+        <PasswordInput
           label="Mot de passe"
           name="password"
-          type="password"
+          required
+          minLength={8}
+          autoComplete="new-password"
+        />
+        <PasswordInput
+          label="Confirmer le mot de passe"
+          name="passwordConfirmation"
           required
           minLength={8}
           autoComplete="new-password"

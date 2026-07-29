@@ -1,7 +1,7 @@
 "use client";
 
 import { createBrowserSupabaseClient } from "@alpha-cil/db";
-import { Alert, AuthCard, Button, Input } from "@alpha-cil/ui";
+import { Alert, AuthCard, Button, Input, PasswordInput } from "@alpha-cil/ui";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
@@ -68,10 +68,9 @@ export default function AgenceConnexionPage() {
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input label="Email" name="email" type="email" required autoComplete="email" />
-        <Input
+        <PasswordInput
           label="Mot de passe"
           name="password"
-          type="password"
           required
           autoComplete="current-password"
         />
