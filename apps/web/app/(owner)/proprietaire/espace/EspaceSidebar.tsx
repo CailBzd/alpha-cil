@@ -8,6 +8,7 @@ const LINKS = [
   { href: "/proprietaire/espace/finances", label: "Suivi financier", exact: false },
   { href: "/proprietaire/espace/contacts", label: "Carnet de contacts", exact: false },
   { href: "/proprietaire/espace/rappels", label: "Mes rappels", exact: false },
+  { href: "/proprietaire/espace/calendrier", label: "Calendrier", exact: false },
   { href: "/proprietaire/espace/projets", label: "Mes projets", exact: false },
   { href: "/proprietaire/espace/acces", label: "Gérer les accès", exact: false },
   { href: "/proprietaire/espace/export", label: "Exporter", exact: false },

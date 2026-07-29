@@ -78,6 +78,12 @@ export default async function EspaceArtisanPage() {
             Mes interventions
           </a>
           <a
+            href="/artisan/espace/rendez-vous"
+            className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-secondary-foreground"
+          >
+            Mes rendez-vous
+          </a>
+          <a
             href="/artisan/espace/profil"
             className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-secondary-foreground"
           >

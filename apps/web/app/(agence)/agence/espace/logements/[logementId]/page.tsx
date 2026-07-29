@@ -60,6 +60,20 @@ export default async function AgenceLogementPage({
     .eq("logement_id", logementId)
     .order("date_intervention", { ascending: false });
 
+  // Rendez-vous are visible under a 'total' grant only (RLS's
+  // has_agence_grant_total already enforces this — the scope check here
+  // just avoids an empty round-trip for a 'partiel' grant). A 'partiel'
+  // grant means "only these specific past interventions I picked," not
+  // "also see all upcoming appointments."
+  const { data: rendezVous } =
+    grant.scope === "total"
+      ? await supabase
+          .from("rendez_vous")
+          .select("id, type_travaux, date_prevue, statut")
+          .eq("logement_id", logementId)
+          .order("date_prevue", { ascending: true })
+      : { data: null };
+
   return (
     <>
       <Link
@@ -75,6 +89,35 @@ export default async function AgenceLogementPage({
         showDetails={grant.scope === "total"}
         interventions={interventions ?? []}
       />
+      {rendezVous && rendezVous.length > 0 ? (
+        <div className="space-y-2">
+          <h2 className="text-lg font-semibold tracking-tight text-foreground">Rendez-vous</h2>
+          <ul className="divide-y divide-border rounded-xl border border-border bg-card">
+            {rendezVous.map((rdv) => (
+              <li
+                key={rdv.id}
+                className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3 text-sm"
+              >
+                <span className="flex-1 font-medium text-foreground">{rdv.type_travaux}</span>
+                <span className="text-muted-foreground">
+                  {new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "UTC" }).format(
+                    new Date(rdv.date_prevue),
+                  )}
+                </span>
+                <span
+                  className={`rounded-full px-2 py-0.5 text-xs ${
+                    rdv.statut === "validee"
+                      ? "bg-secondary text-secondary-foreground"
+                      : "border border-border text-muted-foreground"
+                  }`}
+                >
+                  {rdv.statut === "validee" ? "Validée" : "Provisoire"}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
     </>
   );
 }
