@@ -9,9 +9,13 @@ import { useState, type FormEvent } from "react";
 export interface Contact {
   id: string;
   nom: string;
+  siret: string | null;
+  alias: string | null;
   corps_metier: string | null;
   telephone: string | null;
   email: string | null;
+  interlocuteur_prenom: string | null;
+  interlocuteur_nom: string | null;
   notes: string | null;
 }
 
@@ -33,9 +37,12 @@ export function ContactRow({ contact }: { contact: Contact }) {
       .from("contacts")
       .update({
         nom: form.get("nom"),
+        alias: form.get("alias") || null,
         corps_metier: corpsMetier || null,
         telephone: form.get("telephone") || null,
         email: form.get("email") || null,
+        interlocuteur_prenom: form.get("interlocuteurPrenom") || null,
+        interlocuteur_nom: form.get("interlocuteurNom") || null,
         notes: form.get("notes") || null,
       })
       .eq("id", contact.id);
@@ -63,6 +70,7 @@ export function ContactRow({ contact }: { contact: Contact }) {
       <li className="p-4">
         <form onSubmit={handleSave} className="space-y-4">
           <Input label="Nom" name="nom" type="text" defaultValue={contact.nom} required />
+          <Input label="Alias (optionnel)" name="alias" type="text" defaultValue={contact.alias ?? ""} />
           <Select
             label="Corps de métier"
             name="corpsMetier"
@@ -72,6 +80,18 @@ export function ContactRow({ contact }: { contact: Contact }) {
           />
           <Input label="Téléphone" name="telephone" type="tel" defaultValue={contact.telephone ?? ""} />
           <Input label="Email" name="email" type="email" defaultValue={contact.email ?? ""} />
+          <Input
+            label="Prénom de l'interlocuteur (optionnel)"
+            name="interlocuteurPrenom"
+            type="text"
+            defaultValue={contact.interlocuteur_prenom ?? ""}
+          />
+          <Input
+            label="Nom de l'interlocuteur (optionnel)"
+            name="interlocuteurNom"
+            type="text"
+            defaultValue={contact.interlocuteur_nom ?? ""}
+          />
           <Input label="Notes" name="notes" type="text" defaultValue={contact.notes ?? ""} />
           {error ? <Alert>{error}</Alert> : null}
           <div className="flex gap-3">
@@ -95,10 +115,20 @@ export function ContactRow({ contact }: { contact: Contact }) {
 
   return (
     <li className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3 text-sm">
-      <span className="flex-1 font-medium text-foreground">{contact.nom}</span>
+      <span className="flex-1 font-medium text-foreground">
+        {contact.nom}
+        {contact.alias ? (
+          <span className="ml-1 font-normal text-muted-foreground">({contact.alias})</span>
+        ) : null}
+      </span>
       <span className="text-muted-foreground">{corpsMetierLabel(contact.corps_metier)}</span>
       <span className="text-muted-foreground">{contact.telephone ?? "—"}</span>
       <span className="text-muted-foreground">{contact.email ?? "—"}</span>
+      {contact.interlocuteur_prenom || contact.interlocuteur_nom ? (
+        <span className="w-full text-xs text-muted-foreground">
+          Interlocuteur : {[contact.interlocuteur_prenom, contact.interlocuteur_nom].filter(Boolean).join(" ")}
+        </span>
+      ) : null}
       {contact.notes ? (
         <span className="w-full text-xs text-muted-foreground">{contact.notes}</span>
       ) : null}

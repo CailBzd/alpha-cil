@@ -22,7 +22,9 @@ export default async function ContactsPage() {
 
   const { data: contacts } = await supabase
     .from("contacts")
-    .select("id, nom, corps_metier, telephone, email, notes")
+    .select(
+      "id, nom, siret, alias, corps_metier, telephone, email, interlocuteur_prenom, interlocuteur_nom, notes",
+    )
     .order("created_at", { ascending: false });
 
   return (
