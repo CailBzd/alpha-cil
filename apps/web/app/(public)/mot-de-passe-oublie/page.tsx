@@ -47,7 +47,7 @@ export default function MotDePasseOubliePage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input label="Email" name="email" type="email" required autoComplete="email" />
           {error ? <Alert>{error}</Alert> : null}
-          <Button type="submit" disabled={submitting} className="w-full">
+          <Button type="submit" loading={submitting} className="w-full">
             Envoyer le lien de réinitialisation
           </Button>
         </form>

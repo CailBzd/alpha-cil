@@ -63,7 +63,7 @@ export function DecennaleForm({ uploadedAt }: { uploadedAt: string | null }) {
         {success ? (
           <p className="text-sm text-foreground">Attestation enregistrée.</p>
         ) : null}
-        <Button type="submit" disabled={submitting} className="w-full">
+        <Button type="submit" loading={submitting} className="w-full">
           {uploadedAt ? "Remplacer l'attestation" : "Enregistrer l'attestation"}
         </Button>
       </form>

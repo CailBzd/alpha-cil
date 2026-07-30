@@ -111,7 +111,7 @@ export function ProprietaireInscriptionForm({
           autoComplete="new-password"
         />
         {error ? <Alert>{error}</Alert> : null}
-        <Button type="submit" disabled={submitting} className="w-full">
+        <Button type="submit" loading={submitting} className="w-full">
           Créer mon compte
         </Button>
       </form>

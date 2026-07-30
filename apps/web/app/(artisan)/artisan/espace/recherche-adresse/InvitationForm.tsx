@@ -63,7 +63,7 @@ export function InvitationForm({ adresse }: { adresse: string }) {
         required
       />
       {error ? <Alert>{error}</Alert> : null}
-      <Button type="submit" disabled={submitting || email.trim().length === 0}>
+      <Button type="submit" disabled={email.trim().length === 0} loading={submitting}>
         Envoyer l&apos;invitation
       </Button>
     </form>

@@ -65,7 +65,7 @@ export default function ProprietaireConnexionPage() {
           autoComplete="current-password"
         />
         {error ? <Alert>{error}</Alert> : null}
-        <Button type="submit" disabled={submitting} className="w-full">
+        <Button type="submit" loading={submitting} className="w-full">
           Se connecter
         </Button>
       </form>

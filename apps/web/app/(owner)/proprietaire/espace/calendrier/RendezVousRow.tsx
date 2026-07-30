@@ -22,10 +22,10 @@ export function RendezVousRow({ rendezVous }: { rendezVous: RendezVous }) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
+  const [loadingAction, setLoadingAction] = useState<"save" | "toggle" | "delete" | null>(null);
 
-  async function patch(body: Record<string, unknown>) {
-    setSubmitting(true);
+  async function patch(body: Record<string, unknown>, action: "save" | "toggle") {
+    setLoadingAction(action);
     setError(null);
     const response = await fetch(`/api/rendez-vous/${rendezVous.id}`, {
       method: "PATCH",
@@ -34,20 +34,23 @@ export function RendezVousRow({ rendezVous }: { rendezVous: RendezVous }) {
     });
     if (!response.ok) {
       setError("Impossible d'enregistrer cette modification. Réessayez.");
-      setSubmitting(false);
+      setLoadingAction(null);
       return false;
     }
-    setSubmitting(false);
+    setLoadingAction(null);
     return true;
   }
 
   async function handleSave(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const ok = await patch({
-      datePrevue: form.get("datePrevue"),
-      notes: form.get("notes") || "",
-    });
+    const ok = await patch(
+      {
+        datePrevue: form.get("datePrevue"),
+        notes: form.get("notes") || "",
+      },
+      "save",
+    );
     if (ok) {
       setEditing(false);
       router.refresh();
@@ -55,12 +58,15 @@ export function RendezVousRow({ rendezVous }: { rendezVous: RendezVous }) {
   }
 
   async function toggleStatut() {
-    const ok = await patch({ statut: rendezVous.statut === "validee" ? "provisoire" : "validee" });
+    const ok = await patch(
+      { statut: rendezVous.statut === "validee" ? "provisoire" : "validee" },
+      "toggle",
+    );
     if (ok) router.refresh();
   }
 
   async function handleDelete() {
-    setSubmitting(true);
+    setLoadingAction("delete");
     const supabase = createBrowserSupabaseClient();
     await supabase.from("rendez_vous").delete().eq("id", rendezVous.id);
     router.refresh();
@@ -80,13 +86,13 @@ export function RendezVousRow({ rendezVous }: { rendezVous: RendezVous }) {
           <Input label="Notes" name="notes" type="text" defaultValue={rendezVous.notes ?? ""} />
           {error ? <Alert>{error}</Alert> : null}
           <div className="flex gap-3">
-            <Button type="submit" disabled={submitting} className="flex-1">
+            <Button type="submit" loading={loadingAction === "save"} className="flex-1">
               Enregistrer
             </Button>
             <Button
               type="button"
               variant="outline"
-              disabled={submitting}
+              disabled={loadingAction === "save"}
               onClick={() => setEditing(false)}
               className="flex-1"
             >
@@ -125,13 +131,30 @@ export function RendezVousRow({ rendezVous }: { rendezVous: RendezVous }) {
       ) : null}
       {error ? <Alert>{error}</Alert> : null}
       <div className="flex gap-3">
-        <Button variant="outline" size="sm" disabled={submitting} onClick={toggleStatut}>
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={loadingAction === "delete"}
+          loading={loadingAction === "toggle"}
+          onClick={toggleStatut}
+        >
           {rendezVous.statut === "validee" ? "Marquer provisoire" : "Marquer validée"}
         </Button>
-        <Button variant="outline" size="sm" disabled={submitting} onClick={() => setEditing(true)}>
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={loadingAction !== null}
+          onClick={() => setEditing(true)}
+        >
           Modifier
         </Button>
-        <Button variant="outline" size="sm" disabled={submitting} onClick={handleDelete}>
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={loadingAction === "toggle"}
+          loading={loadingAction === "delete"}
+          onClick={handleDelete}
+        >
           Supprimer
         </Button>
       </div>

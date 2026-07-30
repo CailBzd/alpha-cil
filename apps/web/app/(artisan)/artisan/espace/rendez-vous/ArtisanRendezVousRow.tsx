@@ -66,7 +66,7 @@ export function ArtisanRendezVousRow({ rendezVous }: { rendezVous: RendezVous })
           />
           {error ? <Alert>{error}</Alert> : null}
           <div className="flex gap-3">
-            <Button type="submit" disabled={submitting} className="flex-1">
+            <Button type="submit" loading={submitting} className="flex-1">
               Enregistrer
             </Button>
             <Button
@@ -105,10 +105,15 @@ export function ArtisanRendezVousRow({ rendezVous }: { rendezVous: RendezVous })
       ) : null}
       {error ? <Alert>{error}</Alert> : null}
       <div className="flex gap-3">
-        <Button variant="outline" size="sm" disabled={submitting} onClick={toggleStatut}>
+        <Button variant="outline" size="sm" loading={submitting} onClick={toggleStatut}>
           {rendezVous.statut === "validee" ? "Marquer provisoire" : "Marquer validée"}
         </Button>
-        <Button variant="outline" size="sm" disabled={submitting} onClick={() => setEditing(true)}>
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={submitting}
+          onClick={() => setEditing(true)}
+        >
           Modifier la date
         </Button>
       </div>

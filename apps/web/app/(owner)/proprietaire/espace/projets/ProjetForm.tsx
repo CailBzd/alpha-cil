@@ -39,7 +39,7 @@ export function ProjetForm({ logementId }: { logementId: string }) {
     >
       <Input label="Nom du projet" name="nom" type="text" placeholder="Ex. Installer une clim" required />
       {error ? <Alert>{error}</Alert> : null}
-      <Button type="submit" disabled={submitting}>
+      <Button type="submit" loading={submitting}>
         Créer le projet
       </Button>
     </form>

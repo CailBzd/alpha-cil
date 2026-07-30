@@ -55,7 +55,7 @@ export function AdresseRechercheForm() {
           required
         />
         {error ? <Alert>{error}</Alert> : null}
-        <Button type="submit" disabled={submitting || adresse.trim().length === 0}>
+        <Button type="submit" disabled={adresse.trim().length === 0} loading={submitting}>
           Rechercher
         </Button>
       </form>

@@ -20,7 +20,7 @@ export function RevokeButton({ grantId }: { grantId: string }) {
   }
 
   return (
-    <Button variant="outline" size="sm" disabled={submitting} onClick={handleRevoke}>
+    <Button variant="outline" size="sm" loading={submitting} onClick={handleRevoke}>
       Révoquer
     </Button>
   );

@@ -78,7 +78,7 @@ export function EquipementsForm({
         options={VMC_OPTIONS.map((option) => ({ ...option }))}
       />
       {error ? <Alert>{error}</Alert> : null}
-      <Button type="submit" disabled={submitting} className="w-full">
+      <Button type="submit" loading={submitting} className="w-full">
         Enregistrer
       </Button>
     </form>

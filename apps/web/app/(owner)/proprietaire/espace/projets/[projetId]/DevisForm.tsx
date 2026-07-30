@@ -71,7 +71,7 @@ export function DevisForm({
       <Input label="Date du devis (optionnel)" name="dateDevis" type="date" />
       <Input label="Conditions (optionnel)" name="conditions" type="text" />
       {error ? <Alert>{error}</Alert> : null}
-      <Button type="submit" disabled={submitting} className="w-full">
+      <Button type="submit" loading={submitting} className="w-full">
         Ajouter
       </Button>
     </form>

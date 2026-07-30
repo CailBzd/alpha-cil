@@ -12,7 +12,7 @@ export function ExportForm({
   const [includeAdresse, setIncludeAdresse] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [link, setLink] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
+  const [loadingAction, setLoadingAction] = useState<"pdf" | "lien" | null>(null);
 
   function toggle(id: string) {
     setSelected((prev) => {
@@ -39,7 +39,7 @@ export function ExportForm({
       return;
     }
     setError(null);
-    setSubmitting(true);
+    setLoadingAction("pdf");
 
     try {
       const response = await fetch("/api/proprietaire/export/pdf", {
@@ -59,7 +59,7 @@ export function ExportForm({
             ? "Sélectionnez au moins une information à inclure, ou cochez l'adresse."
             : "Impossible de générer le PDF. Réessayez.",
         );
-        setSubmitting(false);
+        setLoadingAction(null);
         return;
       }
 
@@ -70,10 +70,10 @@ export function ExportForm({
       anchor.download = "carnet-alpha-cil.pdf";
       anchor.click();
       URL.revokeObjectURL(url);
-      setSubmitting(false);
+      setLoadingAction(null);
     } catch {
       setError("Impossible de générer le PDF. Réessayez.");
-      setSubmitting(false);
+      setLoadingAction(null);
     }
   }
 
@@ -85,7 +85,7 @@ export function ExportForm({
     }
     setError(null);
     setLink(null);
-    setSubmitting(true);
+    setLoadingAction("lien");
 
     const form = new FormData(event.currentTarget);
 
@@ -110,16 +110,16 @@ export function ExportForm({
             ? "Sélectionnez au moins une intervention à partager."
             : "Impossible de créer le lien. Réessayez.",
         );
-        setSubmitting(false);
+        setLoadingAction(null);
         return;
       }
 
       const data = (await response.json()) as { token: string };
       setLink(`${window.location.origin}/consultation?token=${data.token}`);
-      setSubmitting(false);
+      setLoadingAction(null);
     } catch {
       setError("Impossible de créer le lien. Réessayez.");
-      setSubmitting(false);
+      setLoadingAction(null);
     }
   }
 
@@ -167,13 +167,19 @@ export function ExportForm({
         <Button
           type="button"
           variant="outline"
-          disabled={submitting}
+          disabled={loadingAction === "lien"}
+          loading={loadingAction === "pdf"}
           onClick={handleDownloadPdf}
           className="flex-1"
         >
           Télécharger en PDF
         </Button>
-        <Button type="submit" disabled={submitting} className="flex-1">
+        <Button
+          type="submit"
+          disabled={loadingAction === "pdf"}
+          loading={loadingAction === "lien"}
+          className="flex-1"
+        >
           Générer un lien
         </Button>
       </div>

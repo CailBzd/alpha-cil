@@ -67,7 +67,7 @@ export function ContactForm() {
       <Input label="Email" name="email" type="email" />
       <Input label="Notes" name="notes" type="text" />
       {error ? <Alert>{error}</Alert> : null}
-      <Button type="submit" disabled={submitting} className="w-full">
+      <Button type="submit" loading={submitting} className="w-full">
         Ajouter
       </Button>
     </form>

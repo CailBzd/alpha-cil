@@ -82,7 +82,7 @@ export default function NouveauMotDePassePage() {
             autoComplete="new-password"
           />
           {error ? <Alert>{error}</Alert> : null}
-          <Button type="submit" disabled={submitting} className="w-full">
+          <Button type="submit" loading={submitting} className="w-full">
             Mettre à jour le mot de passe
           </Button>
         </form>

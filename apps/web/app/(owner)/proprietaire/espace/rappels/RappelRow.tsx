@@ -34,14 +34,14 @@ export function RappelRow({
   const router = useRouter();
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
+  const [loadingAction, setLoadingAction] = useState<"save" | "toggle" | "delete" | null>(null);
 
   const enRetard = !rappel.traite_a && new Date(rappel.date_echeance) < new Date();
 
   async function handleSave(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
-    setSubmitting(true);
+    setLoadingAction("save");
 
     const form = new FormData(event.currentTarget);
     const contactId = form.get("contactId");
@@ -58,17 +58,17 @@ export function RappelRow({
 
     if (updateError) {
       setError("Impossible d'enregistrer ces modifications. Réessayez.");
-      setSubmitting(false);
+      setLoadingAction(null);
       return;
     }
 
     setEditing(false);
-    setSubmitting(false);
+    setLoadingAction(null);
     router.refresh();
   }
 
   async function toggleTraite() {
-    setSubmitting(true);
+    setLoadingAction("toggle");
     const supabase = createBrowserSupabaseClient();
     await supabase
       .from("rappels")
@@ -78,7 +78,7 @@ export function RappelRow({
   }
 
   async function handleDelete() {
-    setSubmitting(true);
+    setLoadingAction("delete");
     const supabase = createBrowserSupabaseClient();
     await supabase.from("rappels").delete().eq("id", rappel.id);
     router.refresh();
@@ -106,13 +106,13 @@ export function RappelRow({
           <Input label="Notes" name="notes" type="text" defaultValue={rappel.notes ?? ""} />
           {error ? <Alert>{error}</Alert> : null}
           <div className="flex gap-3">
-            <Button type="submit" disabled={submitting} className="flex-1">
+            <Button type="submit" loading={loadingAction === "save"} className="flex-1">
               Enregistrer
             </Button>
             <Button
               type="button"
               variant="outline"
-              disabled={submitting}
+              disabled={loadingAction === "save"}
               onClick={() => setEditing(false)}
               className="flex-1"
             >
@@ -152,13 +152,30 @@ export function RappelRow({
         <span className="w-full text-xs text-muted-foreground">{rappel.notes}</span>
       ) : null}
       <div className="flex gap-3">
-        <Button variant="outline" size="sm" disabled={submitting} onClick={toggleTraite}>
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={loadingAction === "delete"}
+          loading={loadingAction === "toggle"}
+          onClick={toggleTraite}
+        >
           {rappel.traite_a ? "Marquer à faire" : "Marquer traité"}
         </Button>
-        <Button variant="outline" size="sm" disabled={submitting} onClick={() => setEditing(true)}>
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={loadingAction !== null}
+          onClick={() => setEditing(true)}
+        >
           Modifier
         </Button>
-        <Button variant="outline" size="sm" disabled={submitting} onClick={handleDelete}>
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={loadingAction === "toggle"}
+          loading={loadingAction === "delete"}
+          onClick={handleDelete}
+        >
           Supprimer
         </Button>
       </div>

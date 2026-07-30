@@ -1,4 +1,5 @@
 import { cva, type VariantProps } from "class-variance-authority";
+import { Loader2 } from "lucide-react";
 import type { ButtonHTMLAttributes } from "react";
 import { cn } from "./lib/cn";
 
@@ -25,14 +26,28 @@ export const buttonVariants = cva(
 );
 
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
-  VariantProps<typeof buttonVariants>;
+  VariantProps<typeof buttonVariants> & { loading?: boolean };
 
-export function Button({ className, variant, size, type = "button", ...props }: ButtonProps) {
+export function Button({
+  className,
+  variant,
+  size,
+  type = "button",
+  loading = false,
+  disabled,
+  children,
+  ...props
+}: ButtonProps) {
   return (
     <button
       type={type}
+      disabled={disabled || loading}
+      aria-busy={loading || undefined}
       className={cn(buttonVariants({ variant, size }), className)}
       {...props}
-    />
+    >
+      {loading ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : null}
+      {children}
+    </button>
   );
 }

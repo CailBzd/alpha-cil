@@ -49,7 +49,7 @@ export function AdresseForm({ logementId, adresse }: { logementId: string; adres
     >
       <Input label="Adresse du logement" name="adresse" type="text" defaultValue={adresse} required />
       {error ? <Alert>{error}</Alert> : null}
-      <Button type="submit" disabled={submitting}>
+      <Button type="submit" loading={submitting}>
         Modifier l&apos;adresse
       </Button>
     </form>

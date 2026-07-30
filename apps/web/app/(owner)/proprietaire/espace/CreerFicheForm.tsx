@@ -49,7 +49,7 @@ export function CreerFicheForm() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input label="Adresse du logement" name="adresse" type="text" required />
         {error ? <Alert>{error}</Alert> : null}
-        <Button type="submit" disabled={submitting} className="w-full">
+        <Button type="submit" loading={submitting} className="w-full">
           Créer ma fiche
         </Button>
       </form>

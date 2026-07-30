@@ -50,7 +50,7 @@ function EntretienField({ logementId, label, column, resetColumn, currentValue }
     <form onSubmit={handleSubmit} className="flex flex-wrap items-end gap-3">
       <Input label={label} name="date" type="date" defaultValue={currentValue ?? ""} required />
       {error ? <Alert>{error}</Alert> : null}
-      <Button type="submit" disabled={submitting}>
+      <Button type="submit" loading={submitting}>
         Enregistrer
       </Button>
     </form>

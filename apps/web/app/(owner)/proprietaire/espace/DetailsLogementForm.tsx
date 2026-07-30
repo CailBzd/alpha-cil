@@ -66,7 +66,7 @@ export function DetailsLogementForm({
         defaultValue={anneeConstruction ?? ""}
       />
       {error ? <Alert>{error}</Alert> : null}
-      <Button type="submit" disabled={submitting}>
+      <Button type="submit" loading={submitting}>
         Enregistrer
       </Button>
     </form>

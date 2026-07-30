@@ -71,7 +71,7 @@ export function RendezVousForm({
       />
       <Input label="Notes" name="notes" type="text" />
       {error ? <Alert>{error}</Alert> : null}
-      <Button type="submit" disabled={submitting} className="w-full">
+      <Button type="submit" loading={submitting} className="w-full">
         Planifier
       </Button>
     </form>

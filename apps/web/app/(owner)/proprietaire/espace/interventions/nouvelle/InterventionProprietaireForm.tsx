@@ -66,7 +66,7 @@ export function InterventionProprietaireForm() {
       />
       <Input label="Facture (PDF, optionnel)" name="facture" type="file" accept="application/pdf" />
       {error ? <Alert>{error}</Alert> : null}
-      <Button type="submit" disabled={submitting} className="w-full">
+      <Button type="submit" loading={submitting} className="w-full">
         Enregistrer l&apos;intervention
       </Button>
     </form>

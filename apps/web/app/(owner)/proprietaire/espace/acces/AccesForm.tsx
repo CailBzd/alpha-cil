@@ -127,7 +127,7 @@ export function AccesForm({
           Lien à partager : {link}
         </p>
       ) : null}
-      <Button type="submit" disabled={submitting} className="w-full">
+      <Button type="submit" loading={submitting} className="w-full">
         Créer l&apos;accès
       </Button>
     </form>
