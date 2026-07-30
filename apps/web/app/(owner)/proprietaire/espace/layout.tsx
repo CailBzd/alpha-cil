@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from "@alpha-cil/db";
+import { PERSONA_ESPACE_PATH, resolvePersona } from "@/lib/persona";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
@@ -30,6 +31,11 @@ export default async function EspaceProprietaireLayout({ children }: { children:
 
   if (!user) {
     redirect("/proprietaire/connexion");
+  }
+
+  const persona = await resolvePersona(supabase, user.id);
+  if (persona !== "proprietaire") {
+    redirect(PERSONA_ESPACE_PATH[persona]);
   }
 
   return (

@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from "@alpha-cil/db";
+import { PERSONA_ESPACE_PATH, resolvePersona } from "@/lib/persona";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -30,6 +31,11 @@ export default async function NouvelleInterventionPage() {
 
   if (!user) {
     redirect("/artisan/connexion");
+  }
+
+  const persona = await resolvePersona(supabase, user.id);
+  if (persona !== "artisan") {
+    redirect(PERSONA_ESPACE_PATH[persona]);
   }
 
   return (

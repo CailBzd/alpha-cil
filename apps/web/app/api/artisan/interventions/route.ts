@@ -36,6 +36,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
   }
 
+  const { data: artisan } = await supabase
+    .from("artisans")
+    .select("siret, attestation_decennale_path, attestation_decennale_uploaded_at")
+    .eq("id", user.id)
+    .single();
+
+  if (!artisan) {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  }
+
   const formData = await request.formData();
   const facture = formData.get("facture");
   const typeTravaux = formData.get("typeTravaux");
@@ -110,13 +120,7 @@ export async function POST(request: Request) {
     }
   }
 
-  const { data: artisan } = await supabase
-    .from("artisans")
-    .select("siret, attestation_decennale_path, attestation_decennale_uploaded_at")
-    .eq("id", user.id)
-    .single();
-
-  const rgeVerifie = artisan ? await verifyRge(artisan.siret, dateIntervention) : false;
+  const rgeVerifie = await verifyRge(artisan.siret, dateIntervention);
 
   const { error: insertError } = await supabase.from("interventions").insert({
     artisan_id: user.id,
@@ -131,9 +135,9 @@ export async function POST(request: Request) {
     adresse_logement: adresseLogement,
     email_client: emailClient,
     logement_id: match?.logement_id ?? null,
-    artisan_siret: artisan?.siret ?? null,
-    attestation_decennale_path: artisan?.attestation_decennale_path ?? null,
-    attestation_decennale_uploaded_at: artisan?.attestation_decennale_uploaded_at ?? null,
+    artisan_siret: artisan.siret,
+    attestation_decennale_path: artisan.attestation_decennale_path,
+    attestation_decennale_uploaded_at: artisan.attestation_decennale_uploaded_at,
     dpe_classe_energie: dpe?.classeEnergie ?? null,
     dpe_classe_ges: dpe?.classeGes ?? null,
     dpe_consommation: dpe?.consommation ?? null,

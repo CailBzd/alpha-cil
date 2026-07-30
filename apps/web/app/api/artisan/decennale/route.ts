@@ -21,6 +21,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
   }
 
+  const { data: artisan } = await supabase
+    .from("artisans")
+    .select("id")
+    .eq("id", user.id)
+    .single();
+
+  if (!artisan) {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  }
+
   const formData = await request.formData();
   const attestation = formData.get("attestation");
 

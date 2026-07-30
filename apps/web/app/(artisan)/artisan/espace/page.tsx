@@ -1,6 +1,7 @@
 import { buttonVariants } from "@alpha-cil/ui";
 import { createServerSupabaseClient } from "@alpha-cil/db";
 import { CORPS_METIER_OPTIONS } from "@/lib/corps-metier";
+import { PERSONA_ESPACE_PATH, resolvePersona } from "@/lib/persona";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -44,6 +45,11 @@ export default async function EspaceArtisanPage() {
 
   if (!user) {
     redirect("/artisan/connexion");
+  }
+
+  const persona = await resolvePersona(supabase, user.id);
+  if (persona !== "artisan") {
+    redirect(PERSONA_ESPACE_PATH[persona]);
   }
 
   const { data: interventions } = await supabase
