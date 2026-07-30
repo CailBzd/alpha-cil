@@ -4,9 +4,9 @@ import { redirect } from "next/navigation";
 import { AppHeader } from "../../../../AppHeader";
 import { ThemeToggle } from "../../../../theme-toggle";
 import { SignOutButton } from "../SignOutButton";
-import { ArtisanRendezVousRow } from "./ArtisanRendezVousRow";
+import { AdresseRechercheForm } from "./AdresseRechercheForm";
 
-export default async function ArtisanRendezVousPage() {
+export default async function RechercheAdressePage() {
   const cookieStore = await cookies();
   const supabase = createServerSupabaseClient({
     getAll: () => cookieStore.getAll(),
@@ -31,11 +31,6 @@ export default async function ArtisanRendezVousPage() {
     redirect("/artisan/connexion");
   }
 
-  const { data: rendezVous } = await supabase
-    .from("rendez_vous")
-    .select("id, type_travaux, date_prevue, statut, notes, adresse_logement")
-    .order("date_prevue", { ascending: true });
-
   return (
     <div className="min-h-screen bg-background">
       <AppHeader>
@@ -53,16 +48,16 @@ export default async function ArtisanRendezVousPage() {
           </a>
           <a
             href="/artisan/espace/rendez-vous"
-            className="block rounded-md px-3 py-2 text-sm font-medium text-white shadow-sm"
-            style={{
-              background: "linear-gradient(135deg, var(--color-primary), var(--color-accent))",
-            }}
+            className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-secondary-foreground"
           >
             Mes rendez-vous
           </a>
           <a
             href="/artisan/espace/recherche-adresse"
-            className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-secondary-foreground"
+            className="block rounded-md px-3 py-2 text-sm font-medium text-white shadow-sm"
+            style={{
+              background: "linear-gradient(135deg, var(--color-primary), var(--color-accent))",
+            }}
           >
             Rechercher une adresse
           </a>
@@ -74,28 +69,10 @@ export default async function ArtisanRendezVousPage() {
           </a>
         </nav>
         <main className="flex-1 space-y-4">
-          <h1 className="text-xl font-semibold tracking-tight text-foreground">Mes rendez-vous</h1>
-          {rendezVous && rendezVous.length > 0 ? (
-            <ul className="divide-y divide-border rounded-xl border border-border bg-card">
-              {rendezVous.map((rdv) => (
-                <ArtisanRendezVousRow
-                  key={rdv.id}
-                  rendezVous={{
-                    id: rdv.id,
-                    type_travaux: rdv.type_travaux,
-                    date_prevue: rdv.date_prevue,
-                    statut: rdv.statut,
-                    notes: rdv.notes,
-                    adresse: rdv.adresse_logement,
-                  }}
-                />
-              ))}
-            </ul>
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              Aucun rendez-vous ne vous a été associé pour l&apos;instant.
-            </p>
-          )}
+          <h1 className="text-xl font-semibold tracking-tight text-foreground">
+            Rechercher une adresse
+          </h1>
+          <AdresseRechercheForm />
         </main>
       </div>
     </div>
