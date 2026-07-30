@@ -6,6 +6,7 @@ import { AppHeader } from "../../../../AppHeader";
 import { ThemeToggle } from "../../../../theme-toggle";
 import { SignOutButton } from "../SignOutButton";
 import { DecennaleForm } from "./DecennaleForm";
+import { SocieteForm } from "./SocieteForm";
 
 export default async function ProfilArtisanPage() {
   const cookieStore = await cookies();
@@ -39,7 +40,7 @@ export default async function ProfilArtisanPage() {
 
   const { data: artisan } = await supabase
     .from("artisans")
-    .select("attestation_decennale_uploaded_at")
+    .select("siret, denomination, adresse, telephone, corps_metier, attestation_decennale_uploaded_at")
     .eq("id", user.id)
     .single();
 
@@ -52,7 +53,15 @@ export default async function ProfilArtisanPage() {
       </AppHeader>
       <main className="mx-auto max-w-lg px-4 py-12">
         <h1 className="text-2xl font-semibold tracking-tight text-foreground">Mon profil</h1>
-        <div className="mt-6">
+        <div className="mt-6 space-y-6">
+          <SocieteForm
+            artisanId={user.id}
+            siret={artisan?.siret ?? ""}
+            denomination={artisan?.denomination ?? null}
+            adresse={artisan?.adresse ?? null}
+            telephone={artisan?.telephone ?? null}
+            corpsMetier={artisan?.corps_metier ?? []}
+          />
           <DecennaleForm uploadedAt={artisan?.attestation_decennale_uploaded_at ?? null} />
         </div>
       </main>

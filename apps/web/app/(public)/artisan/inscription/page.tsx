@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert, AuthCard, Button, Input, PasswordInput, Select } from "@alpha-cil/ui";
+import { Alert, AuthCard, Button, Input, PasswordInput } from "@alpha-cil/ui";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
@@ -20,9 +20,16 @@ export default function ArtisanInscriptionPage() {
     const form = new FormData(event.currentTarget);
     const password = form.get("password");
     const passwordConfirmation = form.get("passwordConfirmation");
+    const corpsMetiers = form.getAll("corpsMetier") as string[];
 
     if (password !== passwordConfirmation) {
       setError("Les mots de passe ne correspondent pas.");
+      setSubmitting(false);
+      return;
+    }
+
+    if (corpsMetiers.length === 0) {
+      setError("Sélectionnez au moins un corps de métier.");
       setSubmitting(false);
       return;
     }
@@ -31,7 +38,7 @@ export default function ArtisanInscriptionPage() {
       email: form.get("email"),
       password,
       siret: form.get("siret"),
-      corpsMetier: form.get("corpsMetier"),
+      corpsMetier: corpsMetiers,
     };
 
     try {
@@ -100,14 +107,20 @@ export default function ArtisanInscriptionPage() {
           pattern="[0-9]{14}"
           title="14 chiffres"
         />
-        <Select
-          label="Corps de métier"
-          name="corpsMetier"
-          required
-          defaultValue=""
-          placeholder="Sélectionnez un corps de métier"
-          options={CORPS_METIER_OPTIONS.map((option) => ({ ...option }))}
-        />
+        <div className="space-y-1.5">
+          <span className="text-sm font-medium text-foreground">Corps de métier</span>
+          <div className="space-y-1">
+            {CORPS_METIER_OPTIONS.map((option) => (
+              <label
+                key={option.value}
+                className="flex items-center gap-1.5 text-sm text-foreground"
+              >
+                <input type="checkbox" name="corpsMetier" value={option.value} />
+                {option.label}
+              </label>
+            ))}
+          </div>
+        </div>
         {error ? <Alert>{error}</Alert> : null}
         <Button type="submit" loading={submitting} className="w-full">
           Créer mon compte

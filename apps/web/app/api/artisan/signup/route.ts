@@ -14,6 +14,10 @@ function isNonEmptyString(value: unknown): value is string {
   return typeof value === "string" && value.length > 0;
 }
 
+function isNonEmptyStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.length > 0 && value.every(isNonEmptyString);
+}
+
 export async function POST(request: Request) {
   const body = (await request.json().catch(() => null)) as SignupBody | null;
 
@@ -22,7 +26,7 @@ export async function POST(request: Request) {
     !isNonEmptyString(body.email) ||
     !isNonEmptyString(body.password) ||
     !isNonEmptyString(body.siret) ||
-    !isNonEmptyString(body.corpsMetier)
+    !isNonEmptyStringArray(body.corpsMetier)
   ) {
     return NextResponse.json({ error: "invalid_request" }, { status: 400 });
   }
