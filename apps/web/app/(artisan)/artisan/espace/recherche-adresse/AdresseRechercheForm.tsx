@@ -2,9 +2,11 @@
 
 import { Alert, Button, Input } from "@alpha-cil/ui";
 import { useState, type FormEvent } from "react";
+import { InvitationForm } from "./InvitationForm";
 
 export function AdresseRechercheForm() {
   const [adresse, setAdresse] = useState("");
+  const [searchedAdresse, setSearchedAdresse] = useState("");
   const [result, setResult] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -30,6 +32,7 @@ export function AdresseRechercheForm() {
 
       const data = (await response.json()) as { exists: boolean };
       setResult(data.exists);
+      setSearchedAdresse(adresse);
       setSubmitting(false);
     } catch {
       setError("Impossible d'effectuer la recherche. Réessayez.");
@@ -63,6 +66,7 @@ export function AdresseRechercheForm() {
             : "Aucun compte n'existe pour cette adresse."}
         </p>
       ) : null}
+      {result === false ? <InvitationForm adresse={searchedAdresse} /> : null}
     </div>
   );
 }
