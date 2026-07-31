@@ -45,7 +45,7 @@ export default async function EspaceProprietaireLayout({ children }: { children:
         <ThemeToggle />
         <SignOutButton />
       </AppHeader>
-      <div className="mx-auto flex max-w-5xl gap-8 px-6 py-8">
+      <div className="mx-auto flex max-w-5xl flex-col gap-6 px-6 py-8 sm:flex-row sm:gap-8">
         <EspaceSidebar />
         <main className="min-w-0 flex-1 space-y-4">{children}</main>
       </div>

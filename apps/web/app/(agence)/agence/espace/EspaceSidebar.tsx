@@ -9,7 +9,7 @@ export function EspaceSidebar() {
   const pathname = usePathname();
 
   return (
-    <nav className="w-48 shrink-0 space-y-1">
+    <nav className="flex gap-1 overflow-x-auto pb-1 sm:w-48 sm:shrink-0 sm:flex-col sm:overflow-visible sm:space-y-1 sm:pb-0">
       {LINKS.map((link) => {
         const active = link.exact ? pathname === link.href : pathname.startsWith(link.href);
         return (
@@ -18,8 +18,8 @@ export function EspaceSidebar() {
             href={link.href}
             className={
               active
-                ? "block rounded-md px-3 py-2 text-sm font-medium text-white shadow-sm"
-                : "block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-secondary-foreground"
+                ? "block shrink-0 whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-white shadow-sm"
+                : "block shrink-0 whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-secondary-foreground"
             }
             style={
               active

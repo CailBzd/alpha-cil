@@ -39,7 +39,7 @@ const PERSONAS = [
     description:
       "Consultez le carnet d'un logement en lecture seule dès qu'un propriétaire vous y donne accès. De quoi répondre à un acquéreur sans le solliciter à chaque question.",
     cta: "Se connecter",
-    href: "/proprietaire/connexion",
+    href: "/agence/connexion",
   },
 ] as const;
 

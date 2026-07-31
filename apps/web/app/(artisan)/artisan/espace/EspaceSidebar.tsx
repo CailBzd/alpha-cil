@@ -4,14 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const LINKS = [
-  { href: "/proprietaire/espace", label: "Mon logement", exact: true },
-  { href: "/proprietaire/espace/finances", label: "Suivi financier", exact: false },
-  { href: "/proprietaire/espace/contacts", label: "Carnet de contacts", exact: false },
-  { href: "/proprietaire/espace/rappels", label: "Mes rappels", exact: false },
-  { href: "/proprietaire/espace/calendrier", label: "Calendrier", exact: false },
-  { href: "/proprietaire/espace/projets", label: "Mes projets", exact: false },
-  { href: "/proprietaire/espace/acces", label: "Gérer les accès", exact: false },
-  { href: "/proprietaire/espace/export", label: "Exporter", exact: false },
+  { href: "/artisan/espace", label: "Mes interventions", exact: true },
+  { href: "/artisan/espace/rendez-vous", label: "Mes rendez-vous", exact: false },
+  { href: "/artisan/espace/recherche-adresse", label: "Rechercher une adresse", exact: false },
+  { href: "/artisan/espace/profil", label: "Mon profil", exact: false },
 ] as const;
 
 export function EspaceSidebar() {

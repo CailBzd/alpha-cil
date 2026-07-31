@@ -7,6 +7,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AppHeader } from "../../../AppHeader";
 import { ThemeToggle } from "../../../theme-toggle";
+import { EspaceSidebar } from "./EspaceSidebar";
 import { SignOutButton } from "./SignOutButton";
 
 const STATUT_LABELS: Record<string, string> = {
@@ -72,37 +73,9 @@ export default async function EspaceArtisanPage() {
         <ThemeToggle />
         <SignOutButton />
       </AppHeader>
-      <div className="mx-auto flex max-w-5xl gap-8 px-6 py-8">
-        <nav className="w-48 shrink-0 space-y-1">
-          <a
-            href="/artisan/espace"
-            className="block rounded-md px-3 py-2 text-sm font-medium text-white shadow-sm"
-            style={{
-              background: "linear-gradient(135deg, var(--color-primary), var(--color-accent))",
-            }}
-          >
-            Mes interventions
-          </a>
-          <a
-            href="/artisan/espace/rendez-vous"
-            className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-secondary-foreground"
-          >
-            Mes rendez-vous
-          </a>
-          <a
-            href="/artisan/espace/recherche-adresse"
-            className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-secondary-foreground"
-          >
-            Rechercher une adresse
-          </a>
-          <a
-            href="/artisan/espace/profil"
-            className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-secondary-foreground"
-          >
-            Mon profil
-          </a>
-        </nav>
-        <main className="flex-1 space-y-4">
+      <div className="mx-auto flex max-w-5xl flex-col gap-6 px-6 py-8 sm:flex-row sm:gap-8">
+        <EspaceSidebar />
+        <main className="min-w-0 flex-1 space-y-4">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-semibold tracking-tight text-foreground">
               Mes interventions
