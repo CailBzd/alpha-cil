@@ -5,7 +5,7 @@ MVP feature-complete (14 user stories + 14 additional feature requests shipped, 
 - **Date**: 2026-07-31
 - **Scope**: full monorepo (`apps/web`, `packages/*`, `supabase/migrations`) — all 7 pillars
 - **Health**: fair (one active security leak + a poor-rated tests pillar keep this out of "good"; findings are isolated/addressable, not systemic — no pillar shows widespread broken correctness)
-- **Findings**: 8 critical, 32 warning, 16 minor (56 total)
+- **Findings**: 8 critical, 24 warning, 24 minor (56 total) — corrected 2026-07-31: the original count miscounted 32/16 instead of 24/24; the table below (and the per-pillar files) were always correct, only this header summary was off.
 
 ## Findings
 
@@ -87,3 +87,15 @@ Sorted critical → warning → minor. Full per-pillar detail (including all min
 
 - **Scanned**: code-quality, architecture, security, dependencies, performance, tests, ui
 - **Skipped**: none
+
+## Update 2026-07-31 (same day): all 24 warnings fixed
+
+All 8 criticals were fixed first (see the top of this file / memory), then all 24 🟡 warning-severity rows above were closed in the same session:
+
+- **Security**: `CRON_SECRET` now fails closed on an unset env var; `artisans_update_self` restricted to column-level grants (migration `0035`) so an artisan can never rewrite their own verified `siret`.
+- **Performance**: migration `0036` adds indexes on every RLS-filtered FK across all 33 prior migrations; `AbortSignal.timeout(5000)` added to the SIRET/RGE/DPE gov-API fetches; `lookupDpe`/`verifyRge` now run via `Promise.all` in the artisan intervention route.
+- **Architecture**: `RendezVousRow`'s delete now goes through a new `DELETE /api/rendez-vous/[id]` handler instead of a direct client call; the artisan persona got its own `layout.tsx` + `EspaceSidebar.tsx` (its `profil`/`interventions/nouvelle` pages were simplified to match the same convention every other espace page already followed); INSTALL.md corrected to describe `packages/logement`/`packages/intervention` as the thin external-API adapters they actually are (not CRUD owners), `packages/artisan` dropped from the docs (never built), and the two allowed write paths (Route Handler vs direct client+RLS) now documented.
+- **Code-quality**: `corpsMetierLabel`/`chauffageLabel`/`vmcLabel` de-duplicated into their existing/new shared modules; 4 Row components (`RappelRow`, `ContactRow`, `DevisRow`, `RendezVousRow`) now check the returned error on delete/toggle instead of failing silently with a stuck loading state; new `apps/web/lib/formatters.ts` and `apps/web/lib/form-validation.ts` replace ~30 duplicated local `Intl` formatter and `isNonEmptyString` definitions across 16 and 13 files respectively; new `apps/web/lib/supabase-server.ts` (`getServerSupabaseClient()`) replaces the cookies()+client boilerplate across 33 files; new `apps/web/lib/siret-signup.ts` (`createSiretAccount()`) shares the artisan/agence signup flow; new `apps/web/app/ConnexionForm.tsx` shares all 3 persona connexion pages (agence's invitation-claim step plugged in via an `afterSignIn` callback).
+- **Dependencies**: `pnpm-workspace.yaml` now overrides `postcss`/`sharp` to their patched versions (closes the 4 known CVEs); `resend` bumped 4→6, `lucide-react` bumped to 1.x, `tailwind-merge` bumped to 3.x. The `next` 16 major bump was deliberately left for a dedicated pass — not urgent pre-launch and carries real App Router migration risk.
+
+Every fix was verified against the real test suite (16 unit + 14 integration + 9 Playwright e2e, all passing), a full `tsc --noEmit`, and a full `next build` — not just written and assumed correct. Only the 24 🟢 minor-severity rows remain open.

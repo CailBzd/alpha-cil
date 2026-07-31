@@ -43,25 +43,25 @@ graph TD
     API[Route Handlers /api]
   end
 
-  API --> Logement[packages/logement]
-  API --> Intervention[packages/intervention]
-  API --> ArtisanMod[packages/artisan]
+  API --> Logement[packages/logement - adaptateur DPE]
+  API --> Intervention[packages/intervention - adaptateur RGE/SIRET]
   API --> Notifications[packages/notifications]
+  API --> DB[(Supabase Postgres + RLS)]
 
   Intervention --> ADEME[(API ADEME/France Rénov - RGE)]
+  Intervention --> Sirene[(API recherche-entreprises - SIRET)]
   Intervention --> Decennale[Vérif décennale - déclaratif/upload]
   Logement --> DPEAdeme[(Import DPE ADEME)]
 
-  Logement --> DB[(Supabase Postgres + RLS)]
-  Intervention --> DB
-  ArtisanMod --> DB
   Notifications --> DB
 
   Intervention --> Storage[(Supabase Storage - factures/attestations)]
   Notifications --> Email[Email transactionnel]
 ```
 
-Les modules `packages/*` (logement, intervention, artisan, notifications) sont indépendants et ne communiquent qu'à travers `packages/db` — aucun accès direct entre modules, ce qui garde la frontière d'accès (RLS/ACL) au niveau des données plutôt qu'au niveau du code métier. `intervention` et `logement` sont les deux seuls modules qui parlent aux APIs externes ADEME, chacun pour son propre domaine (`intervention` pour le statut RGE, `logement` pour l'import DPE) ; `intervention` reste seul à parler au stockage de fichiers.
+Les modules `packages/*` (logement, intervention, notifications) sont indépendants et ne communiquent qu'à travers `packages/db` — aucun accès direct entre modules, ce qui garde la frontière d'accès (RLS/ACL) au niveau des données plutôt qu'au niveau du code métier. `intervention` et `logement` sont les deux seuls modules qui parlent aux APIs externes ADEME, chacun pour son propre domaine (`intervention` pour le statut RGE et le SIRET, `logement` pour l'import DPE) ; `intervention` reste seul à parler au stockage de fichiers.
+
+**Écart constaté (audit 2026-07-31) :** `packages/logement` et `packages/intervention` ne sont en pratique que de fins adaptateurs pour ces APIs externes — tout le CRUD (logements, interventions, contacts, rappels, devis, etc.) vit directement dans `apps/web` via des appels `.from(...)` inline, pas dans ces packages. `packages/artisan` n'a jamais été créé ; les comptes/profils artisan vivent dans `apps/web/app/api/artisan/*` et `apps/web/app/(artisan)/*`. La frontière RLS/`SECURITY DEFINER` elle-même reste solide malgré cet écart — c'est la frontière de *code* qui a dérivé, pas la frontière de *données*. Deux chemins d'écriture coexistent délibérément dans `apps/web` : un Route Handler (`apps/web/app/api/**/route.ts`) pour toute mutation avec un effet de bord (appel externe, email, upload, RPC métier), et un appel client direct + RLS pour du CRUD simple sur une seule table (voir les composants `*Row.tsx`/`*Form.tsx` sous `app/(owner)/proprietaire/espace/**`). Choisissez le premier dès qu'une mutation fait plus qu'un `insert`/`update`/`delete` sur sa propre table.
 
 ## Folder structure
 
@@ -73,14 +73,14 @@ alpha-cil/
 │       │   ├── (public)/             # pages SEO : landing, acquisition artisans
 │       │   ├── (owner)/              # dashboard propriétaire (authentifié)
 │       │   ├── (artisan)/            # interface artisan (authentifié)
+│       │   ├── (agence)/             # consultation lecture seule agence (authentifié, invitation-only)
 │       │   └── api/                  # Route Handlers (REST)
 │       ├── middleware.ts             # refresh session uniquement, jamais d'ACL/PII
 │       └── next.config.ts
 ├── packages/
-│   ├── logement/                     # fiche logement : CRUD, import DPE, portabilité
-│   ├── intervention/                 # upload facture, vérif RGE/décennale
-│   ├── artisan/                      # comptes artisan, historique
-│   ├── notifications/                # rappels d'entretien, emails
+│   ├── logement/                     # adaptateur import DPE (ADEME) — le CRUD logement vit dans apps/web
+│   ├── intervention/                 # adaptateur vérif RGE (ADEME) + SIRET (recherche-entreprises)
+│   ├── notifications/                # envoi d'email (Resend)
 │   ├── db/                           # client Supabase, migrations, policies RLS
 │   └── ui/                           # composants partagés
 ├── supabase/
