@@ -1,7 +1,5 @@
 import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
-
-const dateFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "UTC" });
-const dateTimeFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeStyle: "short" });
+import { dateFormatter, dateTimeFormatter } from "@/lib/formatters";
 
 const styles = StyleSheet.create({
   page: { padding: 32, fontSize: 11, fontFamily: "Helvetica" },

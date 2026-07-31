@@ -1,5 +1,4 @@
-import { createServerSupabaseClient } from "@alpha-cil/db";
-import { cookies } from "next/headers";
+import { getServerSupabaseClient } from "@/lib/supabase-server";
 import { ProprietaireInscriptionForm } from "./ProprietaireInscriptionForm";
 
 export default async function ProprietaireInscriptionPage({
@@ -9,20 +8,7 @@ export default async function ProprietaireInscriptionPage({
 }) {
   const { token } = await searchParams;
 
-  const cookieStore = await cookies();
-  const supabase = createServerSupabaseClient({
-    getAll: () => cookieStore.getAll(),
-    setAll: (cookiesToSet) => {
-      try {
-        for (const { name, value, options } of cookiesToSet) {
-          cookieStore.set(name, value, options);
-        }
-      } catch {
-        // Server Components can't write cookies; this page is reachable
-        // without a session, so there is nothing to refresh here.
-      }
-    },
-  });
+  const supabase = await getServerSupabaseClient();
 
   let invitation: { adresse: string; valid: boolean } | null = null;
   if (token) {

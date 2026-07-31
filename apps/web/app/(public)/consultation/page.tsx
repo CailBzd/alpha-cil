@@ -1,5 +1,4 @@
-import { createServerSupabaseClient } from "@alpha-cil/db";
-import { cookies } from "next/headers";
+import { getServerSupabaseClient } from "@/lib/supabase-server";
 import { AppHeader } from "../../AppHeader";
 import { LogementReadOnlyView, type ReadOnlyIntervention } from "../../LogementReadOnlyView";
 import { ThemeToggle } from "../../theme-toggle";
@@ -21,13 +20,7 @@ export default async function ConsultationPage({
 }) {
   const { token } = await searchParams;
 
-  const cookieStore = await cookies();
-  const supabase = createServerSupabaseClient({
-    getAll: () => cookieStore.getAll(),
-    setAll: () => {
-      // No session to persist on this fully public, unauthenticated page.
-    },
-  });
+  const supabase = await getServerSupabaseClient();
 
   let validation: GrantValidation | null = null;
   let interventions: ReadOnlyIntervention[] = [];

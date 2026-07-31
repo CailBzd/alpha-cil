@@ -1,6 +1,5 @@
-import { createServerSupabaseClient } from "@alpha-cil/db";
 import { PERSONA_ESPACE_PATH, resolvePersona } from "@/lib/persona";
-import { cookies } from "next/headers";
+import { getServerSupabaseClient } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { AppHeader } from "../../../AppHeader";
@@ -9,21 +8,7 @@ import { EspaceSidebar } from "./EspaceSidebar";
 import { SignOutButton } from "./SignOutButton";
 
 export default async function EspaceAgenceLayout({ children }: { children: ReactNode }) {
-  const cookieStore = await cookies();
-  const supabase = createServerSupabaseClient({
-    getAll: () => cookieStore.getAll(),
-    setAll: (cookiesToSet) => {
-      try {
-        for (const { name, value, options } of cookiesToSet) {
-          cookieStore.set(name, value, options);
-        }
-      } catch {
-        // Server Components can't write cookies. middleware.ts refreshes
-        // the session and writes fresh cookies on every request, so a
-        // write attempted here is safe to ignore.
-      }
-    },
-  });
+  const supabase = await getServerSupabaseClient();
 
   const {
     data: { user },

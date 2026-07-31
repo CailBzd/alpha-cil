@@ -1,15 +1,11 @@
-import { createServerSupabaseClient } from "@alpha-cil/db";
-import { cookies } from "next/headers";
+import { isNonEmptyString } from "@/lib/form-validation";
+import { getServerSupabaseClient } from "@/lib/supabase-server";
 import { NextResponse } from "next/server";
 
 interface SignupBody {
   email?: unknown;
   password?: unknown;
   token?: unknown;
-}
-
-function isNonEmptyString(value: unknown): value is string {
-  return typeof value === "string" && value.length > 0;
 }
 
 export async function POST(request: Request) {
@@ -22,15 +18,7 @@ export async function POST(request: Request) {
   const { email, password } = body;
   const token = isNonEmptyString(body.token) ? body.token : null;
 
-  const cookieStore = await cookies();
-  const supabase = createServerSupabaseClient({
-    getAll: () => cookieStore.getAll(),
-    setAll: (cookiesToSet) => {
-      for (const { name, value, options } of cookiesToSet) {
-        cookieStore.set(name, value, options);
-      }
-    },
-  });
+  const supabase = await getServerSupabaseClient();
 
   const { data, error: signUpError } = await supabase.auth.signUp({ email, password });
 

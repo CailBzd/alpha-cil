@@ -1,5 +1,4 @@
-import { createServerSupabaseClient } from "@alpha-cil/db";
-import { cookies } from "next/headers";
+import { getServerSupabaseClient } from "@/lib/supabase-server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { DevisForm } from "./DevisForm";
@@ -12,21 +11,7 @@ export default async function ProjetDetailPage({
 }) {
   const { projetId } = await params;
 
-  const cookieStore = await cookies();
-  const supabase = createServerSupabaseClient({
-    getAll: () => cookieStore.getAll(),
-    setAll: (cookiesToSet) => {
-      try {
-        for (const { name, value, options } of cookiesToSet) {
-          cookieStore.set(name, value, options);
-        }
-      } catch {
-        // Server Components can't write cookies. middleware.ts refreshes
-        // the session and writes fresh cookies on every request, so a
-        // write attempted here is safe to ignore.
-      }
-    },
-  });
+  const supabase = await getServerSupabaseClient();
 
   // RLS already scopes this to the caller's own logement's projets — a
   // nonexistent or someone else's projet id simply comes back null.

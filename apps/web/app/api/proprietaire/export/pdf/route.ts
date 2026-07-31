@@ -1,8 +1,7 @@
-import { createServerSupabaseClient } from "@alpha-cil/db";
 import { renderToBuffer } from "@react-pdf/renderer";
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { CarnetDocument } from "@/app/(owner)/proprietaire/espace/export/CarnetDocument";
+import { getServerSupabaseClient } from "@/lib/supabase-server";
 
 interface ExportPdfBody {
   interventionIds?: unknown;
@@ -21,15 +20,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "empty_selection" }, { status: 400 });
   }
 
-  const cookieStore = await cookies();
-  const supabase = createServerSupabaseClient({
-    getAll: () => cookieStore.getAll(),
-    setAll: (cookiesToSet) => {
-      for (const { name, value, options } of cookiesToSet) {
-        cookieStore.set(name, value, options);
-      }
-    },
-  });
+  const supabase = await getServerSupabaseClient();
 
   const {
     data: { user },

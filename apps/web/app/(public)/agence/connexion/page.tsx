@@ -1,11 +1,8 @@
 "use client";
 
-import { createBrowserSupabaseClient } from "@alpha-cil/db";
-import { Alert, AuthCard, Button, Input, PasswordInput } from "@alpha-cil/ui";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
-import { ThemeToggle } from "../../../theme-toggle";
+import { ConnexionForm } from "../../../ConnexionForm";
 
 const CLAIM_ERROR_MESSAGES: Record<string, string> = {
   wrong_type: "Ce lien d'invitation n'est pas une invitation agence.",
@@ -16,80 +13,31 @@ const CLAIM_ERROR_MESSAGES: Record<string, string> = {
 };
 
 export default function AgenceConnexionPage() {
-  const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
-  const [claimIssue, setClaimIssue] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError(null);
-    setClaimIssue(null);
-    setSubmitting(true);
-
-    const form = new FormData(event.currentTarget);
-    const email = form.get("email") as string;
-    const password = form.get("password") as string;
+  async function afterSignIn(supabase: SupabaseClient) {
     const token = new URLSearchParams(window.location.search).get("token");
-
-    const supabase = createBrowserSupabaseClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (signInError) {
-      setError("Identifiants invalides.");
-      setSubmitting(false);
+    if (!token) {
       return;
     }
 
-    if (token) {
-      const { data: reason } = await supabase.rpc("claim_agence_grant", { p_token: token });
-      if (reason && reason !== "success") {
-        setClaimIssue(CLAIM_ERROR_MESSAGES[reason] ?? "Impossible de valider cette invitation.");
-        setSubmitting(false);
-        return;
-      }
+    const { data: reason } = await supabase.rpc("claim_agence_grant", { p_token: token });
+    if (reason && reason !== "success") {
+      return CLAIM_ERROR_MESSAGES[reason] ?? "Impossible de valider cette invitation.";
     }
-
-    router.push("/agence/espace");
   }
 
   return (
-    <AuthCard
+    <ConnexionForm
       title="Connexion agence"
-      action={<ThemeToggle />}
-      footer={
+      redirectPath="/agence/espace"
+      afterSignIn={afterSignIn}
+      blockedFooter={
         <Link
-          href="/mot-de-passe-oublie"
-          className="font-medium text-foreground underline underline-offset-4"
+          href="/agence/espace"
+          className="block text-center text-sm font-medium text-foreground underline underline-offset-4"
         >
-          Mot de passe oublié ?
+          Continuer vers mon espace
         </Link>
       }
-    >
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <Input label="Email" name="email" type="email" required autoComplete="email" />
-        <PasswordInput
-          label="Mot de passe"
-          name="password"
-          required
-          autoComplete="current-password"
-        />
-        {error ? <Alert>{error}</Alert> : null}
-        {claimIssue ? (
-          <>
-            <Alert>{claimIssue}</Alert>
-            <Link
-              href="/agence/espace"
-              className="block text-center text-sm font-medium text-foreground underline underline-offset-4"
-            >
-              Continuer vers mon espace
-            </Link>
-          </>
-        ) : null}
-        <Button type="submit" loading={submitting} className="w-full">
-          Se connecter
-        </Button>
-      </form>
-    </AuthCard>
+    />
   );
 }

@@ -9,8 +9,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { montantFormatter } from "@/lib/formatters";
 
-const montantFormatter = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
 const compactMontantFormatter = new Intl.NumberFormat("fr-FR", {
   style: "currency",
   currency: "EUR",

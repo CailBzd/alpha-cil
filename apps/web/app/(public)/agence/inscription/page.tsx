@@ -1,5 +1,4 @@
-import { createServerSupabaseClient } from "@alpha-cil/db";
-import { cookies } from "next/headers";
+import { getServerSupabaseClient } from "@/lib/supabase-server";
 import { AgenceInscriptionForm } from "./AgenceInscriptionForm";
 
 export default async function AgenceInscriptionPage({
@@ -9,20 +8,7 @@ export default async function AgenceInscriptionPage({
 }) {
   const { token } = await searchParams;
 
-  const cookieStore = await cookies();
-  const supabase = createServerSupabaseClient({
-    getAll: () => cookieStore.getAll(),
-    setAll: (cookiesToSet) => {
-      try {
-        for (const { name, value, options } of cookiesToSet) {
-          cookieStore.set(name, value, options);
-        }
-      } catch {
-        // Server Components can't write cookies; this page is reachable
-        // without a session, so there is nothing to refresh here.
-      }
-    },
-  });
+  const supabase = await getServerSupabaseClient();
 
   let invitation: { tiers_email: string; adresse: string; valid: boolean } | null = null;
   if (token) {

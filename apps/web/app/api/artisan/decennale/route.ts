@@ -1,17 +1,8 @@
-import { createServerSupabaseClient } from "@alpha-cil/db";
-import { cookies } from "next/headers";
+import { getServerSupabaseClient } from "@/lib/supabase-server";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  const cookieStore = await cookies();
-  const supabase = createServerSupabaseClient({
-    getAll: () => cookieStore.getAll(),
-    setAll: (cookiesToSet) => {
-      for (const { name, value, options } of cookiesToSet) {
-        cookieStore.set(name, value, options);
-      }
-    },
-  });
+  const supabase = await getServerSupabaseClient();
 
   const {
     data: { user },

@@ -1,10 +1,9 @@
 "use client";
 
 import { Alert, Button, Input } from "@alpha-cil/ui";
+import { dateFormatter } from "@/lib/formatters";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-
-const dateFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "UTC" });
 
 interface RendezVous {
   id: string;

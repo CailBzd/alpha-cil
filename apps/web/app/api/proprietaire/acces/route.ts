@@ -1,6 +1,6 @@
-import { createServerSupabaseClient } from "@alpha-cil/db";
 import { sendMail } from "@alpha-cil/notifications";
-import { cookies } from "next/headers";
+import { isNonEmptyString } from "@/lib/form-validation";
+import { getServerSupabaseClient } from "@/lib/supabase-server";
 import { NextResponse } from "next/server";
 
 interface AccesBody {
@@ -10,10 +10,6 @@ interface AccesBody {
   expiresAt?: unknown;
   interventionIds?: unknown;
   confirmed?: unknown;
-}
-
-function isNonEmptyString(value: unknown): value is string {
-  return typeof value === "string" && value.length > 0;
 }
 
 export async function POST(request: Request) {
@@ -37,15 +33,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "empty_selection" }, { status: 400 });
   }
 
-  const cookieStore = await cookies();
-  const supabase = createServerSupabaseClient({
-    getAll: () => cookieStore.getAll(),
-    setAll: (cookiesToSet) => {
-      for (const { name, value, options } of cookiesToSet) {
-        cookieStore.set(name, value, options);
-      }
-    },
-  });
+  const supabase = await getServerSupabaseClient();
 
   const {
     data: { user },

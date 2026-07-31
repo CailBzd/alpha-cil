@@ -1,26 +1,10 @@
-import { createServerSupabaseClient } from "@alpha-cil/db";
-import { cookies } from "next/headers";
+import { dateFormatter } from "@/lib/formatters";
+import { getServerSupabaseClient } from "@/lib/supabase-server";
 import { AccesForm } from "./AccesForm";
 import { RevokeButton } from "./RevokeButton";
 
-const dateFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "UTC" });
-
 export default async function AccesPage() {
-  const cookieStore = await cookies();
-  const supabase = createServerSupabaseClient({
-    getAll: () => cookieStore.getAll(),
-    setAll: (cookiesToSet) => {
-      try {
-        for (const { name, value, options } of cookiesToSet) {
-          cookieStore.set(name, value, options);
-        }
-      } catch {
-        // Server Components can't write cookies. middleware.ts refreshes
-        // the session and writes fresh cookies on every request, so a
-        // write attempted here is safe to ignore.
-      }
-    },
-  });
+  const supabase = await getServerSupabaseClient();
 
   const { data: logement } = await supabase.from("logements").select("id").maybeSingle();
 

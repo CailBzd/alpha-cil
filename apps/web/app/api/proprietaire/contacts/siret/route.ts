@@ -1,26 +1,14 @@
-import { createServerSupabaseClient } from "@alpha-cil/db";
 import { verifySiret } from "@alpha-cil/intervention";
-import { cookies } from "next/headers";
+import { isNonEmptyStringTrimmed as isNonEmptyString } from "@/lib/form-validation";
+import { getServerSupabaseClient } from "@/lib/supabase-server";
 import { NextResponse } from "next/server";
 
 interface SiretLookupBody {
   siret?: unknown;
 }
 
-function isNonEmptyString(value: unknown): value is string {
-  return typeof value === "string" && value.trim().length > 0;
-}
-
 export async function POST(request: Request) {
-  const cookieStore = await cookies();
-  const supabase = createServerSupabaseClient({
-    getAll: () => cookieStore.getAll(),
-    setAll: (cookiesToSet) => {
-      for (const { name, value, options } of cookiesToSet) {
-        cookieStore.set(name, value, options);
-      }
-    },
-  });
+  const supabase = await getServerSupabaseClient();
 
   const {
     data: { user },

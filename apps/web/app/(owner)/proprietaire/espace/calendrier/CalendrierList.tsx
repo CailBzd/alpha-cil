@@ -1,11 +1,9 @@
 "use client";
 
+import { dateFormatter, montantFormatter } from "@/lib/formatters";
 import { Fragment, useMemo, useState } from "react";
 import { RendezVousForm } from "./RendezVousForm";
 import { RendezVousRow, type RendezVous } from "./RendezVousRow";
-
-const dateFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "UTC" });
-const montantFormatter = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
 
 interface Intervention {
   id: string;
