@@ -2,10 +2,9 @@
 
 import { createBrowserSupabaseClient } from "@alpha-cil/db";
 import { Alert, Button, Input, Select } from "@alpha-cil/ui";
+import { dateFormatter } from "@/lib/formatters";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-
-const dateFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "UTC" });
 
 interface Rappel {
   id: string;
@@ -68,19 +67,36 @@ export function RappelRow({
   }
 
   async function toggleTraite() {
+    setError(null);
     setLoadingAction("toggle");
     const supabase = createBrowserSupabaseClient();
-    await supabase
+    const { error: updateError } = await supabase
       .from("rappels")
       .update({ traite_a: rappel.traite_a ? null : new Date().toISOString() })
       .eq("id", rappel.id);
+
+    if (updateError) {
+      setError("Impossible de mettre à jour ce rappel. Réessayez.");
+      setLoadingAction(null);
+      return;
+    }
+
+    setLoadingAction(null);
     router.refresh();
   }
 
   async function handleDelete() {
+    setError(null);
     setLoadingAction("delete");
     const supabase = createBrowserSupabaseClient();
-    await supabase.from("rappels").delete().eq("id", rappel.id);
+    const { error: deleteError } = await supabase.from("rappels").delete().eq("id", rappel.id);
+
+    if (deleteError) {
+      setError("Impossible de supprimer ce rappel. Réessayez.");
+      setLoadingAction(null);
+      return;
+    }
+
     router.refresh();
   }
 
@@ -151,6 +167,7 @@ export function RappelRow({
       {rappel.notes ? (
         <span className="w-full text-xs text-muted-foreground">{rappel.notes}</span>
       ) : null}
+      {error ? <Alert>{error}</Alert> : null}
       <div className="flex gap-3">
         <Button
           variant="outline"

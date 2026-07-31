@@ -1,30 +1,10 @@
-import { createServerSupabaseClient } from "@alpha-cil/db";
-import { CORPS_METIER_OPTIONS } from "@/lib/corps-metier";
-import { cookies } from "next/headers";
+import { corpsMetierLabel } from "@/lib/corps-metier";
+import { montantFormatter } from "@/lib/formatters";
+import { getServerSupabaseClient } from "@/lib/supabase-server";
 import { FinancesCharts } from "./FinancesCharts";
 
-const montantFormatter = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
-
-function corpsMetierLabel(value: string) {
-  return CORPS_METIER_OPTIONS.find((option) => option.value === value)?.label ?? value;
-}
-
 export default async function FinancesPage() {
-  const cookieStore = await cookies();
-  const supabase = createServerSupabaseClient({
-    getAll: () => cookieStore.getAll(),
-    setAll: (cookiesToSet) => {
-      try {
-        for (const { name, value, options } of cookiesToSet) {
-          cookieStore.set(name, value, options);
-        }
-      } catch {
-        // Server Components can't write cookies. middleware.ts refreshes
-        // the session and writes fresh cookies on every request, so a
-        // write attempted here is safe to ignore.
-      }
-    },
-  });
+  const supabase = await getServerSupabaseClient();
 
   const { data: logement } = await supabase.from("logements").select("id").maybeSingle();
 

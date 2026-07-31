@@ -3,11 +3,9 @@
 import { createBrowserSupabaseClient } from "@alpha-cil/db";
 import { Alert, Button, Input, Select } from "@alpha-cil/ui";
 import { DEVIS_STATUT_OPTIONS, devisStatutLabel } from "@/lib/devis";
+import { dateFormatter, montantFormatter } from "@/lib/formatters";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-
-const dateFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "UTC" });
-const montantFormatter = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
 
 interface Devis {
   id: string;
@@ -70,9 +68,17 @@ export function DevisRow({
   }
 
   async function handleDelete() {
+    setError(null);
     setLoadingAction("delete");
     const supabase = createBrowserSupabaseClient();
-    await supabase.from("devis").delete().eq("id", devis.id);
+    const { error: deleteError } = await supabase.from("devis").delete().eq("id", devis.id);
+
+    if (deleteError) {
+      setError("Impossible de supprimer ce devis. Réessayez.");
+      setLoadingAction(null);
+      return;
+    }
+
     router.refresh();
   }
 
@@ -159,6 +165,7 @@ export function DevisRow({
       {devis.conditions ? (
         <span className="w-full text-xs text-muted-foreground">{devis.conditions}</span>
       ) : null}
+      {error ? <Alert>{error}</Alert> : null}
       <div className="flex gap-3">
         <Button
           variant="outline"

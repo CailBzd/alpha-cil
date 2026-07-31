@@ -1,6 +1,12 @@
-import { createServerSupabaseClient } from "@alpha-cil/db";
-import { CHAUFFAGE_OPTIONS, VMC_OPTIONS } from "@/lib/equipements";
-import { cookies } from "next/headers";
+import { chauffageLabel, vmcLabel } from "@/lib/equipements";
+import {
+  consommationFormatter,
+  dateFormatter,
+  dateTimeFormatter,
+  montantFormatter,
+  surfaceFormatter,
+} from "@/lib/formatters";
+import { getServerSupabaseClient } from "@/lib/supabase-server";
 import Link from "next/link";
 import { AdresseForm } from "./AdresseForm";
 import { AttestationLink } from "./AttestationLink";
@@ -10,36 +16,8 @@ import { EntretienForm } from "./EntretienForm";
 import { EquipementsForm } from "./EquipementsForm";
 import { LogementMapClient } from "./LogementMapClient";
 
-function chauffageLabel(value: string) {
-  return CHAUFFAGE_OPTIONS.find((option) => option.value === value)?.label ?? value;
-}
-
-function vmcLabel(value: string) {
-  return VMC_OPTIONS.find((option) => option.value === value)?.label ?? value;
-}
-
-const dateFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "UTC" });
-const dateTimeFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeStyle: "short" });
-const montantFormatter = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
-const consommationFormatter = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 });
-const surfaceFormatter = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 });
-
 export default async function EspaceProprietairePage() {
-  const cookieStore = await cookies();
-  const supabase = createServerSupabaseClient({
-    getAll: () => cookieStore.getAll(),
-    setAll: (cookiesToSet) => {
-      try {
-        for (const { name, value, options } of cookiesToSet) {
-          cookieStore.set(name, value, options);
-        }
-      } catch {
-        // Server Components can't write cookies. middleware.ts refreshes
-        // the session and writes fresh cookies on every request, so a
-        // write attempted here is safe to ignore.
-      }
-    },
-  });
+  const supabase = await getServerSupabaseClient();
 
   const { data: logement } = await supabase
     .from("logements")

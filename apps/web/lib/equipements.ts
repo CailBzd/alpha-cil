@@ -11,3 +11,11 @@ export const VMC_OPTIONS = [
   { value: "double_flux", label: "VMC double flux" },
   { value: "aucune", label: "Aucune" },
 ] as const;
+
+export function chauffageLabel(value: string) {
+  return CHAUFFAGE_OPTIONS.find((option) => option.value === value)?.label ?? value;
+}
+
+export function vmcLabel(value: string) {
+  return VMC_OPTIONS.find((option) => option.value === value)?.label ?? value;
+}

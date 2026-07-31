@@ -1,15 +1,5 @@
-import { CHAUFFAGE_OPTIONS, VMC_OPTIONS } from "@/lib/equipements";
-
-const dateFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "UTC" });
-const dateTimeFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeStyle: "short" });
-
-function chauffageLabel(value: string) {
-  return CHAUFFAGE_OPTIONS.find((option) => option.value === value)?.label ?? value;
-}
-
-function vmcLabel(value: string) {
-  return VMC_OPTIONS.find((option) => option.value === value)?.label ?? value;
-}
+import { chauffageLabel, vmcLabel } from "@/lib/equipements";
+import { dateFormatter, dateTimeFormatter } from "@/lib/formatters";
 
 export interface ReadOnlyIntervention {
   id: string;

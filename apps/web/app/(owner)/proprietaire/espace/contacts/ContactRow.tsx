@@ -59,9 +59,17 @@ export function ContactRow({ contact }: { contact: Contact }) {
   }
 
   async function handleDelete() {
+    setError(null);
     setLoadingAction("delete");
     const supabase = createBrowserSupabaseClient();
-    await supabase.from("contacts").delete().eq("id", contact.id);
+    const { error: deleteError } = await supabase.from("contacts").delete().eq("id", contact.id);
+
+    if (deleteError) {
+      setError("Impossible de supprimer ce contact. Réessayez.");
+      setLoadingAction(null);
+      return;
+    }
+
     router.refresh();
   }
 
@@ -132,6 +140,7 @@ export function ContactRow({ contact }: { contact: Contact }) {
       {contact.notes ? (
         <span className="w-full text-xs text-muted-foreground">{contact.notes}</span>
       ) : null}
+      {error ? <Alert>{error}</Alert> : null}
       <div className="flex gap-3">
         <Button
           variant="outline"
