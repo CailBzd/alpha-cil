@@ -1,11 +1,7 @@
-import { createServerSupabaseClient } from "@alpha-cil/db";
 import { sendMail } from "@alpha-cil/notifications";
-import { cookies } from "next/headers";
+import { isNonEmptyString } from "@/lib/form-validation";
+import { getServerSupabaseClient } from "@/lib/supabase-server";
 import { NextResponse } from "next/server";
-
-function isNonEmptyString(value: unknown): value is string {
-  return typeof value === "string" && value.length > 0;
-}
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -21,15 +17,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     return NextResponse.json({ error: "invalid_request" }, { status: 400 });
   }
 
-  const cookieStore = await cookies();
-  const supabase = createServerSupabaseClient({
-    getAll: () => cookieStore.getAll(),
-    setAll: (cookiesToSet) => {
-      for (const { name, value, options } of cookiesToSet) {
-        cookieStore.set(name, value, options);
-      }
-    },
-  });
+  const supabase = await getServerSupabaseClient();
 
   const {
     data: { user },
@@ -102,6 +90,40 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         `${html}<p><a href="${origin}/artisan/connexion">Connectez-vous</a> pour le consulter.</p>`,
       ).catch(() => {});
     }
+  }
+
+  return NextResponse.json({ success: true });
+}
+
+export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+
+  const supabase = await getServerSupabaseClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
+  }
+
+  // Deletion is owner-only (rendez_vous_delete_owner RLS policy) — an
+  // artisan can update a linked rendez-vous but never delete it. RLS scopes
+  // this to nothing if the caller isn't the owner, so .select() lets us
+  // tell "deleted" apart from "not found/forbidden" instead of a silent 200.
+  const { data: deleted, error: deleteError } = await supabase
+    .from("rendez_vous")
+    .delete()
+    .eq("id", id)
+    .select("id")
+    .maybeSingle();
+
+  if (deleteError) {
+    return NextResponse.json({ error: "delete_failed" }, { status: 400 });
+  }
+  if (!deleted) {
+    return NextResponse.json({ error: "not_found" }, { status: 404 });
   }
 
   return NextResponse.json({ success: true });

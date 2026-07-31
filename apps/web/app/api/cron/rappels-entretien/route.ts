@@ -1,5 +1,6 @@
 import { createServiceRoleSupabaseClient } from "@alpha-cil/db";
 import { sendMail } from "@alpha-cil/notifications";
+import { dateFormatter } from "@/lib/formatters";
 import { NextResponse } from "next/server";
 
 interface LogementANotifier {
@@ -12,8 +13,6 @@ interface LogementANotifier {
   vmc_du: boolean;
   vmc_echeance: string | null;
 }
-
-const dateFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "UTC" });
 
 // Vercel Cron invokes scheduled routes with GET, not POST (see vercel.json).
 // POST stays too, for manual/local triggering the same way every other
@@ -28,7 +27,7 @@ export async function POST(request: Request) {
 
 async function handleRappelsEntretien(request: Request) {
   const authorization = request.headers.get("authorization");
-  if (authorization !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!process.env.CRON_SECRET || authorization !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 

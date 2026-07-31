@@ -33,7 +33,7 @@ export type VerifySiretResult =
 export async function verifySiret(siret: string): Promise<VerifySiretResult> {
   try {
     const url = `${RECHERCHE_ENTREPRISES_ENDPOINT}?q=${encodeURIComponent(siret)}&per_page=1`;
-    const response = await fetch(url);
+    const response = await fetch(url, { signal: AbortSignal.timeout(5000) });
     if (!response.ok) {
       return { status: "indisponible" };
     }

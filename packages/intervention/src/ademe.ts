@@ -19,7 +19,7 @@ interface AdemeRgeResponse {
 export async function verifyRge(siret: string, dateIntervention: string): Promise<boolean> {
   try {
     const url = `${ADEME_RGE_ENDPOINT}?qs=siret:${encodeURIComponent(siret)}`;
-    const response = await fetch(url);
+    const response = await fetch(url, { signal: AbortSignal.timeout(5000) });
     if (!response.ok) {
       return false;
     }

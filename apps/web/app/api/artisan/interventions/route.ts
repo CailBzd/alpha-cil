@@ -1,8 +1,8 @@
-import { createServerSupabaseClient } from "@alpha-cil/db";
 import { verifyRge } from "@alpha-cil/intervention";
 import { lookupDpe } from "@alpha-cil/logement";
 import { sendMail } from "@alpha-cil/notifications";
-import { cookies } from "next/headers";
+import { isNonEmptyString } from "@/lib/form-validation";
+import { getServerSupabaseClient } from "@/lib/supabase-server";
 import { NextResponse } from "next/server";
 
 interface MatchOrCreateLogementResult {
@@ -13,20 +13,8 @@ interface MatchOrCreateLogementResult {
   notify_email: string | null;
 }
 
-function isNonEmptyString(value: FormDataEntryValue | null): value is string {
-  return typeof value === "string" && value.length > 0;
-}
-
 export async function POST(request: Request) {
-  const cookieStore = await cookies();
-  const supabase = createServerSupabaseClient({
-    getAll: () => cookieStore.getAll(),
-    setAll: (cookiesToSet) => {
-      for (const { name, value, options } of cookiesToSet) {
-        cookieStore.set(name, value, options);
-      }
-    },
-  });
+  const supabase = await getServerSupabaseClient();
 
   const {
     data: { user },
@@ -81,7 +69,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "invalid_file_type" }, { status: 400 });
   }
 
-  const dpe = await lookupDpe(adresseLogement);
+  // Independent of each other (one depends on the address, the other on
+  // the artisan's own SIRET) — run concurrently rather than doubling the
+  // worst-case latency of an already slow, external-API-dependent
+  // submission path.
+  const [dpe, rgeVerifie] = await Promise.all([
+    lookupDpe(adresseLogement),
+    verifyRge(artisan.siret, dateIntervention),
+  ]);
 
   const { data: matchResult } = await supabase.rpc("match_or_create_logement", {
     p_adresse: adresseLogement,
@@ -119,8 +114,6 @@ export async function POST(request: Request) {
       photoPaths.push(photoPath);
     }
   }
-
-  const rgeVerifie = await verifyRge(artisan.siret, dateIntervention);
 
   const { error: insertError } = await supabase.from("interventions").insert({
     artisan_id: user.id,

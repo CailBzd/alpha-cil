@@ -1,11 +1,9 @@
 "use client";
 
-import { createBrowserSupabaseClient } from "@alpha-cil/db";
 import { Alert, Button, Input } from "@alpha-cil/ui";
+import { dateFormatter } from "@/lib/formatters";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-
-const dateFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "UTC" });
 
 export interface RendezVous {
   id: string;
@@ -67,8 +65,13 @@ export function RendezVousRow({ rendezVous }: { rendezVous: RendezVous }) {
 
   async function handleDelete() {
     setLoadingAction("delete");
-    const supabase = createBrowserSupabaseClient();
-    await supabase.from("rendez_vous").delete().eq("id", rendezVous.id);
+    setError(null);
+    const response = await fetch(`/api/rendez-vous/${rendezVous.id}`, { method: "DELETE" });
+    if (!response.ok) {
+      setError("Impossible de supprimer ce rendez-vous. Réessayez.");
+      setLoadingAction(null);
+      return;
+    }
     router.refresh();
   }
 

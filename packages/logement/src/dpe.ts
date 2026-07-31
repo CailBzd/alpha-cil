@@ -35,7 +35,7 @@ export interface DpeResult {
 export async function lookupDpe(adresse: string): Promise<DpeResult | null> {
   try {
     const url = `${ADEME_DPE_ENDPOINT}?q=${encodeURIComponent(adresse)}&size=1`;
-    const response = await fetch(url);
+    const response = await fetch(url, { signal: AbortSignal.timeout(5000) });
     if (!response.ok) {
       return null;
     }
