@@ -4,6 +4,9 @@ node_modules/
 dist/
 *.tsbuildinfo
 .env.*.local
+test-results/
+playwright-report/
+blob-report/
 
 .projects/cache
 .projects/vault
