@@ -11,6 +11,10 @@ export const metadata: Metadata = {
   title: "Alpha CIL",
   description: "Carnet de santé du logement",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/icon.svg",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export const viewport: Viewport = {
