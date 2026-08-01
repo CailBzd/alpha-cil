@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from "@alpha-cil/db";
+import { createServerSupabaseClient } from "@alpha-cil/db/server";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
