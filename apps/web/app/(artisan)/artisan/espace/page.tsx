@@ -19,7 +19,7 @@ export default async function EspaceArtisanPage() {
   const { data: interventions } = await supabase
     .from("interventions")
     .select(
-      "id, type_travaux, date_intervention, montant_euros, corps_metier, statut, rge_verifie, rge_verifie_a, dpe_classe_energie, dpe_classe_ges, dpe_consommation, dpe_emissions, dpe_date_diagnostic",
+      "id, logement_id, type_travaux, date_intervention, montant_euros, corps_metier, statut, rge_verifie, rge_verifie_a, dpe_classe_energie, dpe_classe_ges, dpe_consommation, dpe_emissions, dpe_date_diagnostic",
     )
     .order("date_intervention", { ascending: false });
 
@@ -27,6 +27,23 @@ export default async function EspaceArtisanPage() {
     .from("artisans")
     .select("attestation_decennale_uploaded_at")
     .single();
+
+  // Completeness is a per-logement number, never the underlying logement
+  // row (artisans have no select access to `logements` — deliberately,
+  // see logement_completude_pour_artisan's own comment) — one RPC call
+  // per distinct logement this artisan has an intervention on.
+  const logementIds = Array.from(
+    new Set((interventions ?? []).map((intervention) => intervention.logement_id).filter(Boolean)),
+  ) as string[];
+  const completudeEntries = await Promise.all(
+    logementIds.map(async (logementId) => {
+      const { data } = await supabase.rpc("logement_completude_pour_artisan", {
+        p_logement_id: logementId,
+      });
+      return [logementId, data?.[0]?.pourcentage ?? null] as const;
+    }),
+  );
+  const completudeParLogement = new Map(completudeEntries);
 
   return (
     <>
@@ -66,6 +83,11 @@ export default async function EspaceArtisanPage() {
                   ? ` le ${dateTimeFormatter.format(new Date(intervention.rge_verifie_a))}`
                   : ""}
               </span>
+              {intervention.logement_id && completudeParLogement.get(intervention.logement_id) !== null ? (
+                <span className="rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground">
+                  Carnet complété à {completudeParLogement.get(intervention.logement_id)}% grâce à vous
+                </span>
+              ) : null}
               <span className="w-full text-xs text-muted-foreground">
                 DPE :{" "}
                 {intervention.dpe_classe_energie
