@@ -1,20 +1,34 @@
-import { createServerSupabaseClient } from "@alpha-cil/db/server";
+import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+
+function requireEnv(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${name}`);
+  }
+  return value;
+}
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
 
-  const supabase = createServerSupabaseClient({
-    getAll: () => request.cookies.getAll(),
-    setAll: (cookiesToSet) => {
-      for (const { name, value } of cookiesToSet) {
-        request.cookies.set(name, value);
-      }
-      response = NextResponse.next({ request });
-      for (const { name, value, options } of cookiesToSet) {
-        response.cookies.set(name, value, options);
-      }
+  // Inlined rather than imported from @alpha-cil/db/server: Vercel's Edge
+  // Function bundler fails to trace across the workspace package boundary
+  // (its exports map points at raw .ts source), so this file must be
+  // self-contained with no cross-package import for the Edge runtime.
+  const supabase = createServerClient(requireEnv("SUPABASE_URL"), requireEnv("SUPABASE_ANON_KEY"), {
+    cookies: {
+      getAll: () => request.cookies.getAll(),
+      setAll: (cookiesToSet) => {
+        for (const { name, value } of cookiesToSet) {
+          request.cookies.set(name, value);
+        }
+        response = NextResponse.next({ request });
+        for (const { name, value, options } of cookiesToSet) {
+          response.cookies.set(name, value, options);
+        }
+      },
     },
   });
 

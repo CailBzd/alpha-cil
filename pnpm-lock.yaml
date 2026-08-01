@@ -42,6 +42,9 @@ importers:
       '@react-pdf/renderer':
         specifier: ^4.1.6
         version: 4.5.1(react@19.2.8)
+      '@supabase/ssr':
+        specifier: ^0.12.3
+        version: 0.12.3(@supabase/supabase-js@2.110.8)
       leaflet:
         specifier: ^1.9.4
         version: 1.9.4
