@@ -22,7 +22,7 @@ export default async function EspaceProprietairePage() {
   const { data: logement } = await supabase
     .from("logements")
     .select(
-      "id, adresse, chauffage_type, vmc_type, dpe_classe_energie, dpe_classe_ges, dpe_consommation, dpe_emissions, dpe_date_diagnostic, surface_habitable, nombre_pieces, annee_construction, derniere_verif_chauffage_gaz, derniere_verif_chauffage_bois, derniere_verif_vmc",
+      "id, adresse, chauffage_type, vmc_type, dpe_classe_energie, dpe_classe_ges, dpe_consommation, dpe_emissions, dpe_date_diagnostic, surface_habitable, nombre_pieces, annee_construction, type_operation, derniere_verif_chauffage_gaz, derniere_verif_chauffage_bois, derniere_verif_vmc, attestation_entretien_vmc_uploaded_at, attestation_entretien_chauffage_gaz_uploaded_at, attestation_entretien_chauffage_bois_uploaded_at",
     )
     .maybeSingle();
 
@@ -82,6 +82,7 @@ export default async function EspaceProprietairePage() {
             logementId={logement.id}
             nombrePieces={logement.nombre_pieces}
             anneeConstruction={logement.annee_construction}
+            typeOperation={logement.type_operation}
           />
           <EquipementsForm
             logementId={logement.id}
@@ -95,6 +96,9 @@ export default async function EspaceProprietairePage() {
             derniereVerifChauffageGaz={logement.derniere_verif_chauffage_gaz}
             derniereVerifChauffageBois={logement.derniere_verif_chauffage_bois}
             derniereVerifVmc={logement.derniere_verif_vmc}
+            attestationChauffageGazUploadedAt={logement.attestation_entretien_chauffage_gaz_uploaded_at}
+            attestationChauffageBoisUploadedAt={logement.attestation_entretien_chauffage_bois_uploaded_at}
+            attestationVmcUploadedAt={logement.attestation_entretien_vmc_uploaded_at}
           />
 
           <div className="flex items-center justify-between">

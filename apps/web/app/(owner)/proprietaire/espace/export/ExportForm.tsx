@@ -12,7 +12,7 @@ export function ExportForm({
   const [includeAdresse, setIncludeAdresse] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [link, setLink] = useState<string | null>(null);
-  const [loadingAction, setLoadingAction] = useState<"pdf" | "lien" | null>(null);
+  const [loadingAction, setLoadingAction] = useState<"pdf" | "json" | "lien" | null>(null);
 
   function toggle(id: string) {
     setSelected((prev) => {
@@ -73,6 +73,50 @@ export function ExportForm({
       setLoadingAction(null);
     } catch {
       setError("Impossible de générer le PDF. Réessayez.");
+      setLoadingAction(null);
+    }
+  }
+
+  async function handleDownloadJson() {
+    const confirmed = confirmIfEmpty();
+    if (!confirmed) {
+      return;
+    }
+    setError(null);
+    setLoadingAction("json");
+
+    try {
+      const response = await fetch("/api/proprietaire/export/json", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          interventionIds: Array.from(selected),
+          includeAdresse,
+          confirmed,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = (await response.json().catch(() => null)) as { error?: string } | null;
+        setError(
+          data?.error === "empty_selection"
+            ? "Sélectionnez au moins une information à inclure, ou cochez l'adresse."
+            : "Impossible de générer l'export JSON. Réessayez.",
+        );
+        setLoadingAction(null);
+        return;
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = "carnet-alpha-cil.json";
+      anchor.click();
+      URL.revokeObjectURL(url);
+      setLoadingAction(null);
+    } catch {
+      setError("Impossible de générer l'export JSON. Réessayez.");
       setLoadingAction(null);
     }
   }
@@ -153,7 +197,7 @@ export function ExportForm({
           checked={includeAdresse}
           onChange={(event) => setIncludeAdresse(event.target.checked)}
         />
-        Inclure l&apos;adresse du logement (PDF uniquement — le lien reste toujours sans adresse)
+        Inclure l&apos;adresse du logement (PDF/JSON uniquement — le lien reste toujours sans adresse)
       </label>
       <Input label="Destinataire (email ou nom)" name="destinataire" type="text" required />
       <Input label="Expire le" name="expiresAt" type="date" required />
@@ -167,7 +211,7 @@ export function ExportForm({
         <Button
           type="button"
           variant="outline"
-          disabled={loadingAction === "lien"}
+          disabled={loadingAction === "lien" || loadingAction === "json"}
           loading={loadingAction === "pdf"}
           onClick={handleDownloadPdf}
           className="flex-1"
@@ -175,8 +219,18 @@ export function ExportForm({
           Télécharger en PDF
         </Button>
         <Button
+          type="button"
+          variant="outline"
+          disabled={loadingAction === "lien" || loadingAction === "pdf"}
+          loading={loadingAction === "json"}
+          onClick={handleDownloadJson}
+          className="flex-1"
+        >
+          Exporter en JSON
+        </Button>
+        <Button
           type="submit"
-          disabled={loadingAction === "pdf"}
+          disabled={loadingAction === "pdf" || loadingAction === "json"}
           loading={loadingAction === "lien"}
           className="flex-1"
         >

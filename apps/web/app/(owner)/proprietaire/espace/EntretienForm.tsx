@@ -4,6 +4,7 @@ import { createBrowserSupabaseClient } from "@alpha-cil/db";
 import { Alert, Button, Input } from "@alpha-cil/ui";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { AttestationEntretienUpload } from "./AttestationEntretienUpload";
 
 interface EntretienFieldProps {
   logementId: string;
@@ -64,6 +65,9 @@ export function EntretienForm({
   derniereVerifChauffageGaz,
   derniereVerifChauffageBois,
   derniereVerifVmc,
+  attestationChauffageGazUploadedAt,
+  attestationChauffageBoisUploadedAt,
+  attestationVmcUploadedAt,
 }: {
   logementId: string;
   chauffageType: string[] | null;
@@ -71,6 +75,9 @@ export function EntretienForm({
   derniereVerifChauffageGaz: string | null;
   derniereVerifChauffageBois: string | null;
   derniereVerifVmc: string | null;
+  attestationChauffageGazUploadedAt: string | null;
+  attestationChauffageBoisUploadedAt: string | null;
+  attestationVmcUploadedAt: string | null;
 }) {
   const gazEligible = chauffageType?.includes("gaz") ?? false;
   const boisEligible = chauffageType?.includes("bois") ?? false;
@@ -83,31 +90,52 @@ export function EntretienForm({
   return (
     <div className="space-y-3 rounded-xl border border-border bg-card p-6 shadow-sm">
       {gazEligible ? (
-        <EntretienField
-          logementId={logementId}
-          label="Dernier entretien de la chaudière"
-          column="derniere_verif_chauffage_gaz"
-          resetColumn="rappel_chauffage_gaz_envoye_a"
-          currentValue={derniereVerifChauffageGaz}
-        />
+        <>
+          <EntretienField
+            logementId={logementId}
+            label="Dernier entretien de la chaudière"
+            column="derniere_verif_chauffage_gaz"
+            resetColumn="rappel_chauffage_gaz_envoye_a"
+            currentValue={derniereVerifChauffageGaz}
+          />
+          <AttestationEntretienUpload
+            type="chauffage_gaz"
+            label="Justificatif d'entretien chaudière (PDF)"
+            uploadedAt={attestationChauffageGazUploadedAt}
+          />
+        </>
       ) : null}
       {boisEligible ? (
-        <EntretienField
-          logementId={logementId}
-          label="Dernier ramonage"
-          column="derniere_verif_chauffage_bois"
-          resetColumn="rappel_chauffage_bois_envoye_a"
-          currentValue={derniereVerifChauffageBois}
-        />
+        <>
+          <EntretienField
+            logementId={logementId}
+            label="Dernier ramonage"
+            column="derniere_verif_chauffage_bois"
+            resetColumn="rappel_chauffage_bois_envoye_a"
+            currentValue={derniereVerifChauffageBois}
+          />
+          <AttestationEntretienUpload
+            type="chauffage_bois"
+            label="Justificatif de ramonage (PDF)"
+            uploadedAt={attestationChauffageBoisUploadedAt}
+          />
+        </>
       ) : null}
       {vmcEligible ? (
-        <EntretienField
-          logementId={logementId}
-          label="Dernier entretien de la VMC"
-          column="derniere_verif_vmc"
-          resetColumn="rappel_vmc_envoye_a"
-          currentValue={derniereVerifVmc}
-        />
+        <>
+          <EntretienField
+            logementId={logementId}
+            label="Dernier entretien de la VMC"
+            column="derniere_verif_vmc"
+            resetColumn="rappel_vmc_envoye_a"
+            currentValue={derniereVerifVmc}
+          />
+          <AttestationEntretienUpload
+            type="vmc"
+            label="Justificatif d'entretien VMC (PDF)"
+            uploadedAt={attestationVmcUploadedAt}
+          />
+        </>
       ) : null}
     </div>
   );

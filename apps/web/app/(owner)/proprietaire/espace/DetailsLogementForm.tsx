@@ -1,7 +1,7 @@
 "use client";
 
 import { createBrowserSupabaseClient } from "@alpha-cil/db";
-import { Alert, Button, Input } from "@alpha-cil/ui";
+import { Alert, Button, Input, Select } from "@alpha-cil/ui";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 
@@ -9,10 +9,12 @@ export function DetailsLogementForm({
   logementId,
   nombrePieces,
   anneeConstruction,
+  typeOperation,
 }: {
   logementId: string;
   nombrePieces: number | null;
   anneeConstruction: number | null;
+  typeOperation: string | null;
 }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -26,12 +28,14 @@ export function DetailsLogementForm({
     const form = new FormData(event.currentTarget);
     const pieces = form.get("nombrePieces");
     const annee = form.get("anneeConstruction");
+    const operation = form.get("typeOperation");
     const supabase = createBrowserSupabaseClient();
     const { error: updateError } = await supabase
       .from("logements")
       .update({
         nombre_pieces: pieces ? Number(pieces) : null,
         annee_construction: annee ? Number(annee) : null,
+        type_operation: operation || null,
       })
       .eq("id", logementId);
 
@@ -64,6 +68,16 @@ export function DetailsLogementForm({
         min="1700"
         max={new Date().getFullYear()}
         defaultValue={anneeConstruction ?? ""}
+      />
+      <Select
+        label="Type d'opération (CIL)"
+        name="typeOperation"
+        defaultValue={typeOperation ?? ""}
+        placeholder="Non renseigné"
+        options={[
+          { value: "neuf", label: "Logement neuf" },
+          { value: "renovation", label: "Rénovation énergétique" },
+        ]}
       />
       {error ? <Alert>{error}</Alert> : null}
       <Button type="submit" loading={submitting}>
