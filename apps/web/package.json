@@ -12,6 +12,7 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
+    "@alpha-cil/ai": "workspace:*",
     "@alpha-cil/db": "workspace:*",
     "@alpha-cil/intervention": "workspace:*",
     "@alpha-cil/logement": "workspace:*",

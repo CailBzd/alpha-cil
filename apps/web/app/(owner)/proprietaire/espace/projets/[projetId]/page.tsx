@@ -1,6 +1,7 @@
 import { getServerSupabaseClient } from "@/lib/supabase-server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { AnalyseIaButton } from "./AnalyseIaButton";
 import { DevisForm } from "./DevisForm";
 import { DevisRow } from "./DevisRow";
 
@@ -37,6 +38,14 @@ export default async function ProjetDetailPage({
     .order("nom", { ascending: true });
 
   const contactsById = new Map((contacts ?? []).map((contact) => [contact.id, contact]));
+
+  const { data: derniereAnalyse } = await supabase
+    .from("projet_analyses_ia")
+    .select("contenu, modele, created_at")
+    .eq("projet_id", projet.id)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
 
   return (
     <>
@@ -76,6 +85,10 @@ export default async function ProjetDetailPage({
       ) : (
         <p className="text-sm text-muted-foreground">Aucun devis enregistré pour ce projet.</p>
       )}
+
+      {devisList && devisList.length > 0 ? (
+        <AnalyseIaButton projetId={projet.id} derniereAnalyse={derniereAnalyse ?? null} />
+      ) : null}
     </>
   );
 }
