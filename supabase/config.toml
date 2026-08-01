@@ -245,6 +245,13 @@ otp_expiry = 3600
 # admin_email = "admin@email.com"
 # sender_name = "Admin"
 
+# Resend SMTP relay is the intended provider (RESEND_API_KEY already
+# configured for the app's own notification emails) — held off until a
+# verified sending domain exists, since Resend's sandbox sender
+# (onboarding@resend.dev) only delivers to the Resend account's own
+# email, not to real signups. See project memory / commercial-name
+# decision: the domain here should follow whatever name is chosen.
+
 # Uncomment to customize email template
 # [auth.email.template.invite]
 # subject = "You have been invited"
