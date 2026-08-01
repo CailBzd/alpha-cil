@@ -17,6 +17,7 @@
     "@alpha-cil/logement": "workspace:*",
     "@alpha-cil/notifications": "workspace:*",
     "@alpha-cil/ui": "workspace:*",
+    "@ducanh2912/next-pwa": "^10.2.9",
     "@react-pdf/renderer": "^4.1.6",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.28.0",

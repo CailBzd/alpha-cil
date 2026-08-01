@@ -8,6 +8,13 @@ test-results/
 playwright-report/
 blob-report/
 
+# Generated at build time by @ducanh2912/next-pwa — public/manifest.json
+# and public/icon.svg are hand-authored and stay tracked.
+apps/web/public/sw.js
+apps/web/public/sw.js.map
+apps/web/public/workbox-*.js
+apps/web/public/fallback-*.js
+
 .projects/cache
 .projects/vault
 .projects/state.test.json

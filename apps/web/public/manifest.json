@@ -1,0 +1,14 @@
+{
+  "name": "Alpha CIL — Carnet de santé du logement",
+  "short_name": "Alpha CIL",
+  "description": "Carnet de santé du logement — propriétaires, artisans et agences.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f2ea",
+  "theme_color": "#4f46e5",
+  "lang": "fr",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
