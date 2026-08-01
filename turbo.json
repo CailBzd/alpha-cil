@@ -7,7 +7,18 @@
     },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".next/**", "!.next/cache/**"],
+      "env": [
+        "SUPABASE_URL",
+        "SUPABASE_ANON_KEY",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "NEXT_PUBLIC_SUPABASE_URL",
+        "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+        "MISTRAL_API_KEY",
+        "RESEND_API_KEY",
+        "RESEND_FROM_EMAIL",
+        "CRON_SECRET"
+      ]
     },
     "lint": {
       "dependsOn": ["^build"]
