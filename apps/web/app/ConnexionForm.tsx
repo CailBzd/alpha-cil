@@ -49,7 +49,11 @@ export function ConnexionForm({
     const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
 
     if (signInError) {
-      setError("Identifiants invalides.");
+      setError(
+        signInError.code === "email_not_confirmed"
+          ? "Votre email n'est pas encore confirmé. Vérifiez votre boîte de réception (et vos spams) pour le lien de confirmation."
+          : "Identifiants invalides.",
+      );
       setSubmitting(false);
       return;
     }
