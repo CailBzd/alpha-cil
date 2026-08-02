@@ -1,18 +1,19 @@
 import { dateFormatter } from "@/lib/formatters";
 import { getServerSupabaseClient } from "@/lib/supabase-server";
+import { headers } from "next/headers";
 import Link from "next/link";
 
 export default async function EspaceAgencePage() {
   const supabase = await getServerSupabaseClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Already validated once in middleware.ts and relayed via this header —
+  // see the comment there.
+  const userId = (await headers()).get("x-alpha-cil-user-id") ?? "";
 
   const { data: grants } = await supabase
     .from("logement_access_grants")
     .select("id, expires_at, logement_id")
-    .eq("agence_id", user?.id ?? "")
+    .eq("agence_id", userId)
     .is("revoked_at", null)
     .order("expires_at", { ascending: true });
 

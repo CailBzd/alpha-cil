@@ -1,5 +1,6 @@
 import { dateFormatter } from "@/lib/formatters";
 import { getServerSupabaseClient } from "@/lib/supabase-server";
+import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { LogementReadOnlyView } from "../../../../../LogementReadOnlyView";
@@ -13,9 +14,9 @@ export default async function AgenceLogementPage({
 
   const supabase = await getServerSupabaseClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Already validated once in middleware.ts and relayed via this header —
+  // see the comment there.
+  const userId = (await headers()).get("x-alpha-cil-user-id") ?? "";
 
   // RLS (migration 0028) already scopes logements/interventions selects to
   // logements the caller has a valid, claimed grant for — a nonexistent or
@@ -25,7 +26,7 @@ export default async function AgenceLogementPage({
     .from("logement_access_grants")
     .select("scope")
     .eq("logement_id", logementId)
-    .eq("agence_id", user?.id ?? "")
+    .eq("agence_id", userId)
     .is("revoked_at", null)
     .gt("expires_at", new Date().toISOString())
     .maybeSingle();

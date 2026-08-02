@@ -8,22 +8,21 @@ export default async function AccesPage() {
 
   const { data: logement } = await supabase.from("logements").select("id").maybeSingle();
 
-  const { data: interventions } = logement
-    ? await supabase
-        .from("interventions")
-        .select("id, type_travaux, date_intervention")
-        .eq("logement_id", logement.id)
-        .order("date_intervention", { ascending: false })
-    : { data: null };
-
-  const { data: grants } = logement
-    ? await supabase
-        .from("logement_access_grants")
-        .select("id, tiers_email, tiers_type, scope, expires_at, revoked_at")
-        .eq("logement_id", logement.id)
-        .is("revoked_at", null)
-        .order("created_at", { ascending: false })
-    : { data: null };
+  const [{ data: interventions }, { data: grants }] = logement
+    ? await Promise.all([
+        supabase
+          .from("interventions")
+          .select("id, type_travaux, date_intervention")
+          .eq("logement_id", logement.id)
+          .order("date_intervention", { ascending: false }),
+        supabase
+          .from("logement_access_grants")
+          .select("id, tiers_email, tiers_type, scope, expires_at, revoked_at")
+          .eq("logement_id", logement.id)
+          .is("revoked_at", null)
+          .order("created_at", { ascending: false }),
+      ])
+    : [{ data: null }, { data: null }];
 
   const now = new Date();
   const activeGrants = (grants ?? []).filter((grant) => new Date(grant.expires_at) > now);

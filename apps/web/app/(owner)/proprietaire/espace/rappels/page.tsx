@@ -5,12 +5,10 @@ import { RappelRow } from "./RappelRow";
 export default async function RappelsPage() {
   const supabase = await getServerSupabaseClient();
 
-  const { data: logement } = await supabase.from("logements").select("id").maybeSingle();
-
-  const { data: contacts } = await supabase
-    .from("contacts")
-    .select("id, nom, telephone")
-    .order("nom", { ascending: true });
+  const [{ data: logement }, { data: contacts }] = await Promise.all([
+    supabase.from("logements").select("id").maybeSingle(),
+    supabase.from("contacts").select("id, nom, telephone").order("nom", { ascending: true }),
+  ]);
 
   const { data: rappels } = logement
     ? await supabase

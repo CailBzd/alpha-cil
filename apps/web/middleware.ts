@@ -1,4 +1,4 @@
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -11,7 +11,8 @@ function requireEnv(name: string): string {
 }
 
 export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({ request });
+  const requestHeaders = new Headers(request.headers);
+  let cookiesToApply: { name: string; value: string; options: CookieOptions }[] = [];
 
   // Inlined rather than imported from @alpha-cil/db/server: Vercel's Edge
   // Function bundler fails to trace across the workspace package boundary
@@ -24,18 +25,33 @@ export async function middleware(request: NextRequest) {
         for (const { name, value } of cookiesToSet) {
           request.cookies.set(name, value);
         }
-        response = NextResponse.next({ request });
-        for (const { name, value, options } of cookiesToSet) {
-          response.cookies.set(name, value, options);
-        }
+        cookiesToApply = cookiesToSet;
       },
     },
   });
 
-  // Refresh the session only. Access control is enforced by each route
-  // itself (see apps/web/app/(artisan)/artisan/espace/page.tsx and
-  // apps/web/app/(owner)/proprietaire/espace/page.tsx), never here.
-  await supabase.auth.getUser();
+  // Refreshes the session and is the ONLY place that calls the Supabase Auth
+  // server per request — every layout under (owner)/(artisan)/(agence) used
+  // to call auth.getUser() again itself, paying for a second network
+  // round-trip to re-validate the same JWT on every single navigation. The
+  // validated identity is relayed downstream via request headers instead
+  // (below), which .set() overwrites unconditionally, so a client-supplied
+  // header of the same name can never survive past this point.
+  //
+  // This does NOT move access control into the middleware: which persona a
+  // route requires and which rows a query may touch are still decided by
+  // each route and by RLS respectively, exactly as before.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  requestHeaders.set("x-alpha-cil-user-id", user?.id ?? "");
+  requestHeaders.set("x-alpha-cil-user-email", user?.email ?? "");
+
+  const response = NextResponse.next({ request: { headers: requestHeaders } });
+  for (const { name, value, options } of cookiesToApply) {
+    response.cookies.set(name, value, options);
+  }
 
   return response;
 }

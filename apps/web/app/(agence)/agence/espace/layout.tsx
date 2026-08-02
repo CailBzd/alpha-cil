@@ -1,5 +1,6 @@
 import { PERSONA_ESPACE_PATH, resolvePersona } from "@/lib/persona";
 import { getServerSupabaseClient } from "@/lib/supabase-server";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { AppHeader } from "../../../AppHeader";
@@ -8,17 +9,19 @@ import { EspaceSidebar } from "./EspaceSidebar";
 import { SignOutButton } from "./SignOutButton";
 
 export default async function EspaceAgenceLayout({ children }: { children: ReactNode }) {
-  const supabase = await getServerSupabaseClient();
+  // The JWT was already validated once in middleware.ts, which relays the
+  // result via these headers — see the comment there for why a second
+  // auth.getUser() round-trip here would be redundant, not safer.
+  const headersList = await headers();
+  const userId = headersList.get("x-alpha-cil-user-id");
+  const userEmail = headersList.get("x-alpha-cil-user-email");
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
+  if (!userId) {
     redirect("/agence/connexion");
   }
 
-  const persona = await resolvePersona(supabase, user.id);
+  const supabase = await getServerSupabaseClient();
+  const persona = await resolvePersona(supabase, userId);
   if (persona !== "agence") {
     redirect(PERSONA_ESPACE_PATH[persona]);
   }
@@ -26,7 +29,7 @@ export default async function EspaceAgenceLayout({ children }: { children: React
   return (
     <div className="min-h-screen bg-background">
       <AppHeader>
-        <span className="hidden text-sm text-muted-foreground sm:inline">{user.email}</span>
+        <span className="hidden text-sm text-muted-foreground sm:inline">{userEmail}</span>
         <ThemeToggle />
         <SignOutButton />
       </AppHeader>
