@@ -1,5 +1,5 @@
 import { getServerSupabaseClient } from "@/lib/supabase-server";
-import { CalendrierList } from "./CalendrierList";
+import { CalendrierClient } from "./CalendrierClient";
 
 export default async function CalendrierPage() {
   const supabase = await getServerSupabaseClient();
@@ -9,7 +9,7 @@ export default async function CalendrierPage() {
   const { data: interventions } = logement
     ? await supabase
         .from("interventions")
-        .select("id, type_travaux, date_intervention, montant_euros")
+        .select("id, type_travaux, date_intervention, montant_euros, duree_heures")
         .eq("logement_id", logement.id)
     : { data: null };
 
@@ -49,7 +49,7 @@ export default async function CalendrierPage() {
           Aucun logement n&apos;est encore lié à votre compte.
         </p>
       ) : (
-        <CalendrierList
+        <CalendrierClient
           logementId={logement.id}
           interventions={interventions ?? []}
           rappels={rappels ?? []}

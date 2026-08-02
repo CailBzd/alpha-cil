@@ -64,6 +64,13 @@ export function InterventionProprietaireForm() {
         placeholder="Sélectionnez un corps de métier"
         options={CORPS_METIER_OPTIONS.map((option) => ({ ...option }))}
       />
+      <Input
+        label="Durée (heures, optionnel)"
+        name="dureeHeures"
+        type="number"
+        step="0.5"
+        min="0.5"
+      />
       <Input label="Facture (PDF, optionnel)" name="facture" type="file" accept="application/pdf" />
       {error ? <Alert>{error}</Alert> : null}
       <Button type="submit" loading={submitting} className="w-full">

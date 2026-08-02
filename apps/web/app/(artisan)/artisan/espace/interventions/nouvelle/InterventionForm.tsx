@@ -67,6 +67,13 @@ export function InterventionForm() {
         placeholder="Sélectionnez un corps de métier"
         options={CORPS_METIER_OPTIONS.map((option) => ({ ...option }))}
       />
+      <Input
+        label="Durée (heures, optionnel)"
+        name="dureeHeures"
+        type="number"
+        step="0.5"
+        min="0.5"
+      />
       <Input label="Adresse du logement" name="adresseLogement" type="text" required />
       <Input label="Email du client" name="emailClient" type="email" required />
       <Input

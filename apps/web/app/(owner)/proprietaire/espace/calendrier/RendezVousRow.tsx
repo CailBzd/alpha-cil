@@ -16,7 +16,13 @@ export interface RendezVous {
   contact_id: string | null;
 }
 
-export function RendezVousRow({ rendezVous }: { rendezVous: RendezVous }) {
+export function RendezVousRow({
+  rendezVous,
+  highlighted,
+}: {
+  rendezVous: RendezVous;
+  highlighted?: boolean;
+}) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -77,7 +83,7 @@ export function RendezVousRow({ rendezVous }: { rendezVous: RendezVous }) {
 
   if (editing) {
     return (
-      <li className="p-4">
+      <li id={`entry-rendez_vous-${rendezVous.id}`} className="p-4">
         <form onSubmit={handleSave} className="space-y-4">
           <Input
             label="Date prévue"
@@ -108,7 +114,12 @@ export function RendezVousRow({ rendezVous }: { rendezVous: RendezVous }) {
   }
 
   return (
-    <li className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3 text-sm">
+    <li
+      id={`entry-rendez_vous-${rendezVous.id}`}
+      className={`flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3 text-sm transition-colors ${
+        highlighted ? "bg-secondary" : ""
+      }`}
+    >
       <span className="flex-1 font-medium text-foreground">{rendezVous.type_travaux}</span>
       <span className="text-muted-foreground">
         {dateFormatter.format(new Date(rendezVous.date_prevue))}

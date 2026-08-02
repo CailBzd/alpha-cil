@@ -24,6 +24,7 @@ export async function POST(request: Request) {
   const dateIntervention = formData.get("dateIntervention");
   const montantEuros = formData.get("montantEuros");
   const corpsMetier = formData.get("corpsMetier");
+  const dureeHeures = formData.get("dureeHeures");
   const facture = formData.get("facture");
   const hasFacture = facture instanceof File && facture.size > 0;
 
@@ -59,6 +60,7 @@ export async function POST(request: Request) {
     date_intervention: dateIntervention,
     montant_euros: Number(montantEuros),
     corps_metier: corpsMetier,
+    duree_heures: isNonEmptyString(dureeHeures) ? Number(dureeHeures) : null,
     facture_path: facturePath,
     rge_verifie: false,
     rge_verifie_a: null,

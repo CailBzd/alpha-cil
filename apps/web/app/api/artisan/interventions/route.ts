@@ -40,6 +40,7 @@ export async function POST(request: Request) {
   const dateIntervention = formData.get("dateIntervention");
   const montantEuros = formData.get("montantEuros");
   const corpsMetier = formData.get("corpsMetier");
+  const dureeHeures = formData.get("dureeHeures");
   const adresseLogement = formData.get("adresseLogement");
   const emailClient = formData.get("emailClient");
   const photos = formData
@@ -121,6 +122,7 @@ export async function POST(request: Request) {
     date_intervention: dateIntervention,
     montant_euros: Number(montantEuros),
     corps_metier: corpsMetier,
+    duree_heures: isNonEmptyString(dureeHeures) ? Number(dureeHeures) : null,
     facture_path: facturePath,
     photos: photoPaths,
     rge_verifie: rgeVerifie,

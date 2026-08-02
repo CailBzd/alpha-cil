@@ -5,11 +5,14 @@ import { Fragment, useMemo, useState } from "react";
 import { RendezVousForm } from "./RendezVousForm";
 import { RendezVousRow, type RendezVous } from "./RendezVousRow";
 
+const dureeFormatter = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 1 });
+
 interface Intervention {
   id: string;
   type_travaux: string;
   date_intervention: string;
   montant_euros: number;
+  duree_heures: number | null;
 }
 
 interface Rappel {
@@ -32,12 +35,14 @@ export function CalendrierList({
   rappels,
   rendezVous,
   contacts,
+  highlightedId,
 }: {
   logementId: string;
   interventions: Intervention[];
   rappels: Rappel[];
   rendezVous: RendezVous[];
   contacts: { id: string; nom: string }[];
+  highlightedId?: string | null;
 }) {
   const [activeKinds, setActiveKinds] = useState<Set<Kind>>(
     new Set(["intervention", "rappel", "rendez_vous"]),
@@ -59,17 +64,26 @@ export function CalendrierList({
     const merged: { kind: Kind; id: string; date: string; render: () => React.ReactNode }[] = [];
 
     for (const intervention of interventions) {
+      const isHighlighted = highlightedId === `intervention-${intervention.id}`;
       merged.push({
         kind: "intervention",
         id: intervention.id,
         date: intervention.date_intervention,
         render: () => (
-          <li className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3 text-sm">
+          <li
+            id={`entry-intervention-${intervention.id}`}
+            className={`flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3 text-sm transition-colors ${
+              isHighlighted ? "bg-secondary" : ""
+            }`}
+          >
             <span className="flex-1 font-medium text-foreground">
               {intervention.type_travaux}
             </span>
             <span className="text-muted-foreground">
               {dateFormatter.format(new Date(intervention.date_intervention))}
+              {intervention.duree_heures
+                ? ` · ${dureeFormatter.format(intervention.duree_heures)} h`
+                : ""}
             </span>
             <span className="text-foreground">
               {montantFormatter.format(Number(intervention.montant_euros))}
@@ -84,12 +98,18 @@ export function CalendrierList({
 
     for (const rappel of rappels) {
       const enRetard = !rappel.traite_a && new Date(rappel.date_echeance) < new Date();
+      const isHighlighted = highlightedId === `rappel-${rappel.id}`;
       merged.push({
         kind: "rappel",
         id: rappel.id,
         date: rappel.date_echeance,
         render: () => (
-          <li className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3 text-sm">
+          <li
+            id={`entry-rappel-${rappel.id}`}
+            className={`flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3 text-sm transition-colors ${
+              isHighlighted ? "bg-secondary" : ""
+            }`}
+          >
             <span className="flex-1 font-medium text-foreground">{rappel.titre}</span>
             <span className="text-muted-foreground">
               {dateFormatter.format(new Date(rappel.date_echeance))}
@@ -115,14 +135,19 @@ export function CalendrierList({
         kind: "rendez_vous",
         id: rdv.id,
         date: rdv.date_prevue,
-        render: () => <RendezVousRow rendezVous={rdv} />,
+        render: () => (
+          <RendezVousRow
+            rendezVous={rdv}
+            highlighted={highlightedId === `rendez_vous-${rdv.id}`}
+          />
+        ),
       });
     }
 
     return merged
       .filter((item) => activeKinds.has(item.kind))
       .sort((a, b) => a.date.localeCompare(b.date));
-  }, [interventions, rappels, rendezVous, activeKinds]);
+  }, [interventions, rappels, rendezVous, activeKinds, highlightedId]);
 
   return (
     <div className="space-y-4">
