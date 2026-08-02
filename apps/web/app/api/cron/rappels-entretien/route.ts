@@ -1,5 +1,5 @@
-import { createServiceRoleSupabaseClient } from "@alpha-cil/db";
-import { sendMail } from "@alpha-cil/notifications";
+import { createServiceRoleSupabaseClient } from "@foya/db";
+import { sendMail } from "@foya/notifications";
 import { dateFormatter } from "@/lib/formatters";
 import { NextResponse } from "next/server";
 
@@ -46,7 +46,7 @@ async function handleRappelsEntretien(request: Request) {
       try {
         await sendMail(
           logement.proprietaire_email,
-          "Alpha CIL — entretien à prévoir",
+          "Foya — entretien à prévoir",
           `<p>L'entretien de votre chaudière gaz arrive à échéance le ${dateFormatter.format(new Date(logement.chauffage_gaz_echeance))}.</p>
            <p><a href="${new URL(request.url).origin}/proprietaire/espace">Consultez votre carnet</a> pour mettre à jour la date une fois l'entretien réalisé.</p>`,
         );
@@ -64,7 +64,7 @@ async function handleRappelsEntretien(request: Request) {
       try {
         await sendMail(
           logement.proprietaire_email,
-          "Alpha CIL — entretien à prévoir",
+          "Foya — entretien à prévoir",
           `<p>Le ramonage de votre chauffage bois arrive à échéance le ${dateFormatter.format(new Date(logement.chauffage_bois_echeance))}.</p>
            <p><a href="${new URL(request.url).origin}/proprietaire/espace">Consultez votre carnet</a> pour mettre à jour la date une fois l'entretien réalisé.</p>`,
         );
@@ -82,7 +82,7 @@ async function handleRappelsEntretien(request: Request) {
       try {
         await sendMail(
           logement.proprietaire_email,
-          "Alpha CIL — entretien à prévoir",
+          "Foya — entretien à prévoir",
           `<p>L'entretien de votre VMC arrive à échéance le ${dateFormatter.format(new Date(logement.vmc_echeance))}.</p>
            <p><a href="${new URL(request.url).origin}/proprietaire/espace">Consultez votre carnet</a> pour mettre à jour la date une fois l'entretien réalisé.</p>`,
         );

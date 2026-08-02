@@ -1,4 +1,4 @@
-import { sendMail } from "@alpha-cil/notifications";
+import { sendMail } from "@foya/notifications";
 import { isNonEmptyString } from "@/lib/form-validation";
 import { getServerSupabaseClient } from "@/lib/supabase-server";
 import { NextResponse } from "next/server";
@@ -79,14 +79,14 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       if (ownerEmail) {
         await sendMail(
           ownerEmail,
-          "Alpha CIL — rendez-vous mis à jour",
+          "Foya — rendez-vous mis à jour",
           `${html}<p><a href="${origin}/proprietaire/connexion">Connectez-vous</a> pour le consulter.</p>`,
         ).catch(() => {});
       }
     } else if (rendezVous.artisan_email) {
       await sendMail(
         rendezVous.artisan_email,
-        "Alpha CIL — rendez-vous mis à jour",
+        "Foya — rendez-vous mis à jour",
         `${html}<p><a href="${origin}/artisan/connexion">Connectez-vous</a> pour le consulter.</p>`,
       ).catch(() => {});
     }

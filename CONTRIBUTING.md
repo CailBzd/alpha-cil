@@ -1,4 +1,4 @@
-# Contributing to Alpha CIL
+# Contributing to Foya
 
 ## Setup
 

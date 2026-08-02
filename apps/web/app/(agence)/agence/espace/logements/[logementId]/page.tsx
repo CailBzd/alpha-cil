@@ -16,7 +16,7 @@ export default async function AgenceLogementPage({
 
   // Already validated once in middleware.ts and relayed via this header —
   // see the comment there.
-  const userId = (await headers()).get("x-alpha-cil-user-id") ?? "";
+  const userId = (await headers()).get("x-foya-user-id") ?? "";
 
   // RLS (migration 0028) already scopes logements/interventions selects to
   // logements the caller has a valid, claimed grant for — a nonexistent or

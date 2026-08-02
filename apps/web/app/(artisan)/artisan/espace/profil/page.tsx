@@ -8,7 +8,7 @@ export default async function ProfilArtisanPage() {
   // see the comment there. The parent layout guards the empty case; this is
   // reachable only if that check is ever removed without this page being
   // updated too.
-  const userId = (await headers()).get("x-alpha-cil-user-id");
+  const userId = (await headers()).get("x-foya-user-id");
   if (!userId) {
     return null;
   }

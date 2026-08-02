@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert, Button } from "@alpha-cil/ui";
+import { Alert, Button } from "@foya/ui";
 import { useState } from "react";
 
 interface Analyse {

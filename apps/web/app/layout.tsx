@@ -8,7 +8,7 @@ import { ThemeProvider } from "./theme-provider";
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
-  title: "Alpha CIL",
+  title: "Foya",
   description: "Carnet de santé du logement",
   manifest: "/manifest.json",
   icons: {

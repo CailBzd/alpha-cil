@@ -1,4 +1,4 @@
-import { compareDevis, type DevisPourComparaison } from "@alpha-cil/ai";
+import { compareDevis, type DevisPourComparaison } from "@foya/ai";
 import { getServerSupabaseClient } from "@/lib/supabase-server";
 import { NextResponse } from "next/server";
 

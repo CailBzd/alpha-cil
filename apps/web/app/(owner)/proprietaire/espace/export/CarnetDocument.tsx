@@ -36,7 +36,7 @@ export function CarnetDocument({
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        <Text style={styles.title}>Alpha CIL — Carnet de santé du logement</Text>
+        <Text style={styles.title}>Foya — Carnet de santé du logement</Text>
         {adresse ? <Text style={styles.address}>{adresse}</Text> : null}
         <Text style={styles.sectionTitle}>Interventions</Text>
         {interventions.length > 0 ? (

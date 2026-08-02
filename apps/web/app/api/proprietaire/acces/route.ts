@@ -1,4 +1,4 @@
-import { sendMail } from "@alpha-cil/notifications";
+import { sendMail } from "@foya/notifications";
 import { isNonEmptyString } from "@/lib/form-validation";
 import { getServerSupabaseClient } from "@/lib/supabase-server";
 import { NextResponse } from "next/server";
@@ -88,7 +88,7 @@ export async function POST(request: Request) {
     // A notification failure never invalidates the grant already created —
     // the owner still sees the raw link in AccesForm as a fallback, same
     // resilience posture as the other sendMail call sites in this codebase.
-    await sendMail(body.tiersEmail, "Alpha CIL — invitation à consulter un logement", html).catch(
+    await sendMail(body.tiersEmail, "Foya — invitation à consulter un logement", html).catch(
       () => {},
     );
   }

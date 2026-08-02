@@ -1,4 +1,4 @@
-import type { createServerSupabaseClient } from "@alpha-cil/db";
+import type { createServerSupabaseClient } from "@foya/db";
 
 type SupabaseClient = ReturnType<typeof createServerSupabaseClient>;
 

@@ -1,4 +1,4 @@
-import { lookupDpe } from "@alpha-cil/logement";
+import { lookupDpe } from "@foya/logement";
 import { isNonEmptyString } from "@/lib/form-validation";
 import { getServerSupabaseClient } from "@/lib/supabase-server";
 import { NextResponse } from "next/server";

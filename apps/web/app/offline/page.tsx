@@ -5,7 +5,7 @@ export default function OfflinePage() {
         Pas de connexion
       </h1>
       <p className="max-w-sm text-sm text-muted-foreground">
-        Alpha CIL a besoin d&apos;une connexion internet pour afficher votre carnet. Réessayez
+        Foya a besoin d&apos;une connexion internet pour afficher votre carnet. Réessayez
         une fois reconnecté.
       </p>
     </div>

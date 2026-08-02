@@ -1,12 +1,12 @@
-import { createServerSupabaseClient } from "@alpha-cil/db";
-import { verifySiret } from "@alpha-cil/intervention";
+import { createServerSupabaseClient } from "@foya/db";
+import { verifySiret } from "@foya/intervention";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createFakeSupabase, mockCookies } from "../../../../test/supabase-mock";
 import { POST } from "./route";
 
 vi.mock("next/headers", () => ({ cookies: mockCookies() }));
-vi.mock("@alpha-cil/db", () => ({ createServerSupabaseClient: vi.fn() }));
-vi.mock("@alpha-cil/intervention", () => ({ verifySiret: vi.fn() }));
+vi.mock("@foya/db", () => ({ createServerSupabaseClient: vi.fn() }));
+vi.mock("@foya/intervention", () => ({ verifySiret: vi.fn() }));
 
 function request(body: unknown) {
   return new Request("http://localhost/api/agence/signup", {

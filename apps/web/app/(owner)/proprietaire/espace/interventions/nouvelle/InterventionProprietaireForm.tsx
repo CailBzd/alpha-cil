@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert, Button, Input, Select } from "@alpha-cil/ui";
+import { Alert, Button, Input, Select } from "@foya/ui";
 import { CORPS_METIER_OPTIONS } from "@/lib/corps-metier";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";

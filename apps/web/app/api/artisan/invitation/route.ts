@@ -1,5 +1,5 @@
-import { lookupDpe } from "@alpha-cil/logement";
-import { sendMail } from "@alpha-cil/notifications";
+import { lookupDpe } from "@foya/logement";
+import { sendMail } from "@foya/notifications";
 import { isNonEmptyStringTrimmed as isNonEmptyString } from "@/lib/form-validation";
 import { getServerSupabaseClient } from "@/lib/supabase-server";
 import { NextResponse } from "next/server";
@@ -80,7 +80,7 @@ export async function POST(request: Request) {
     <p><a href="${origin}/proprietaire/inscription?token=${match.invitation_token}">Créez votre compte pour consulter votre carnet</a>.</p>`;
 
   try {
-    await sendMail(body.email, "Alpha CIL — invitation à créer votre compte", html);
+    await sendMail(body.email, "Foya — invitation à créer votre compte", html);
   } catch {
     return NextResponse.json({ error: "invitation_failed" }, { status: 400 });
   }

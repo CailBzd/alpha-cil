@@ -99,7 +99,7 @@ export async function POST(request: Request) {
   return new NextResponse(JSON.stringify(payload, null, 2), {
     headers: {
       "Content-Type": "application/json",
-      "Content-Disposition": "attachment; filename=carnet-alpha-cil.json",
+      "Content-Disposition": "attachment; filename=carnet-foya.json",
     },
   });
 }

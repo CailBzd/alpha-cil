@@ -1,5 +1,5 @@
 {
-  "name": "@alpha-cil/intervention",
+  "name": "@foya/intervention",
   "version": "0.0.0",
   "private": true,
   "main": "./src/index.ts",

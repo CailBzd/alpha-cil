@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@alpha-cil/ui";
+import { Button } from "@foya/ui";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 

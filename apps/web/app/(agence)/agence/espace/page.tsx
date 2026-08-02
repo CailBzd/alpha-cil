@@ -8,7 +8,7 @@ export default async function EspaceAgencePage() {
 
   // Already validated once in middleware.ts and relayed via this header —
   // see the comment there.
-  const userId = (await headers()).get("x-alpha-cil-user-id") ?? "";
+  const userId = (await headers()).get("x-foya-user-id") ?? "";
 
   const { data: grants } = await supabase
     .from("logement_access_grants")

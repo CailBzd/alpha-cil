@@ -1,10 +1,10 @@
-import { compareDevis } from "@alpha-cil/ai";
+import { compareDevis } from "@foya/ai";
 import { getServerSupabaseClient } from "@/lib/supabase-server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { POST } from "./route";
 
 vi.mock("@/lib/supabase-server", () => ({ getServerSupabaseClient: vi.fn() }));
-vi.mock("@alpha-cil/ai", () => ({ compareDevis: vi.fn() }));
+vi.mock("@foya/ai", () => ({ compareDevis: vi.fn() }));
 
 const DEVIS_ROWS = [
   { contact_id: "contact-1", montant: 1000, conditions: null, statut: "recu", date_devis: "2026-01-01" },

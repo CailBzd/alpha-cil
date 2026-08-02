@@ -1,4 +1,4 @@
-import { verifySiret } from "@alpha-cil/intervention";
+import { verifySiret } from "@foya/intervention";
 import { isNonEmptyStringTrimmed as isNonEmptyString } from "@/lib/form-validation";
 import { getServerSupabaseClient } from "@/lib/supabase-server";
 import { NextResponse } from "next/server";

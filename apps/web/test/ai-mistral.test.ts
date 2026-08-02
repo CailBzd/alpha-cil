@@ -1,4 +1,4 @@
-import { compareDevis } from "@alpha-cil/ai";
+import { compareDevis } from "@foya/ai";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const DEVIS = [{ contact: "Acme SARL", montant: 1200, conditions: null, statut: "recu", dateDevis: "2026-01-01" }];

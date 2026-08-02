@@ -18,7 +18,7 @@ export function AppHeader({ children }: { children: ReactNode }) {
           >
             <House className="size-4" strokeWidth={2} />
           </span>
-          Alpha CIL
+          Foya
         </Link>
         <div className="flex items-center gap-4">{children}</div>
       </div>

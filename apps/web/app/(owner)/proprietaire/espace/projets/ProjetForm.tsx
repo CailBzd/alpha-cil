@@ -1,7 +1,7 @@
 "use client";
 
-import { createBrowserSupabaseClient } from "@alpha-cil/db";
-import { Alert, Button, Input } from "@alpha-cil/ui";
+import { createBrowserSupabaseClient } from "@foya/db";
+import { Alert, Button, Input } from "@foya/ui";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 

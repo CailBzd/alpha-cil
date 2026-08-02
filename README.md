@@ -1,4 +1,4 @@
-# Alpha CIL
+# Foya
 
 Carnet d'Information du Logement (CIL) numérique — un carnet de santé de la
 maison, alimenté par les artisans, pour la tranquillité du propriétaire et la

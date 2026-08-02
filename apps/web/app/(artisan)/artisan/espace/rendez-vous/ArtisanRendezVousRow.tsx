@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert, Button, Input } from "@alpha-cil/ui";
+import { Alert, Button, Input } from "@foya/ui";
 import { dateFormatter } from "@/lib/formatters";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";

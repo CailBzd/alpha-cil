@@ -1,7 +1,7 @@
 "use client";
 
-import { createBrowserSupabaseClient } from "@alpha-cil/db";
-import { Alert, Button, Input, Select } from "@alpha-cil/ui";
+import { createBrowserSupabaseClient } from "@foya/db";
+import { Alert, Button, Input, Select } from "@foya/ui";
 import { DEVIS_STATUT_OPTIONS, devisStatutLabel } from "@/lib/devis";
 import { dateFormatter, montantFormatter } from "@/lib/formatters";
 import { useRouter } from "next/navigation";

@@ -13,8 +13,8 @@ export default async function EspaceProprietaireLayout({ children }: { children:
   // result via these headers — see the comment there for why a second
   // auth.getUser() round-trip here would be redundant, not safer.
   const headersList = await headers();
-  const userId = headersList.get("x-alpha-cil-user-id");
-  const userEmail = headersList.get("x-alpha-cil-user-email");
+  const userId = headersList.get("x-foya-user-id");
+  const userEmail = headersList.get("x-foya-user-email");
 
   if (!userId) {
     redirect("/proprietaire/connexion");

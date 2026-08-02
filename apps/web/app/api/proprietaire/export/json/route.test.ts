@@ -111,7 +111,7 @@ describe("POST /api/proprietaire/export/json", () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toBe("application/json");
-    expect(response.headers.get("Content-Disposition")).toContain("carnet-alpha-cil.json");
+    expect(response.headers.get("Content-Disposition")).toContain("carnet-foya.json");
 
     const payload = await response.json();
     expect(payload.schemaVersion).toBe(1);

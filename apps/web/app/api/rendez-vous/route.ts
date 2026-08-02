@@ -1,4 +1,4 @@
-import { sendMail } from "@alpha-cil/notifications";
+import { sendMail } from "@foya/notifications";
 import { isNonEmptyString } from "@/lib/form-validation";
 import { getServerSupabaseClient } from "@/lib/supabase-server";
 import { NextResponse } from "next/server";
@@ -72,7 +72,7 @@ export async function POST(request: Request) {
 
   // A notification failure never invalidates the rendez-vous already
   // created, same resilience posture as every other sendMail call site.
-  await sendMail(artisanEmail, "Alpha CIL — rendez-vous sur un logement", html).catch(() => {});
+  await sendMail(artisanEmail, "Foya — rendez-vous sur un logement", html).catch(() => {});
 
   return NextResponse.json({ success: true, linked: linkReason === "linked" });
 }

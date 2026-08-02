@@ -1,4 +1,4 @@
-# INSTALL.md - `alpha-cil`
+# INSTALL.md - `foya`
 
 Technical vision and installation guide.
 
@@ -6,7 +6,7 @@ Technical vision and installation guide.
 
 Un carnet de santé numérique du logement, alimenté par les artisans, pour la tranquillité du propriétaire et la valorisation du bien à la revente.
 
-Alpha CIL numérise le Carnet d'Information du Logement (CIL) obligatoire depuis 2023, mais le vend comme un carnet de santé de la maison plutôt qu'une contrainte de conformité. L'adoption est tirée par les artisans (upload facture → vérification RGE/décennale → fiche logement mise à jour automatiquement), pas par le propriétaire, qui découvre passivement sa fiche puis s'engage via des rappels d'entretien et un export "dossier de vente" au moment de la revente.
+Foya numérise le Carnet d'Information du Logement (CIL) obligatoire depuis 2023, mais le vend comme un carnet de santé de la maison plutôt qu'une contrainte de conformité. L'adoption est tirée par les artisans (upload facture → vérification RGE/décennale → fiche logement mise à jour automatiquement), pas par le propriétaire, qui découvre passivement sa fiche puis s'engage via des rappels d'entretien et un export "dossier de vente" au moment de la revente.
 
 ## Decisions
 
@@ -66,7 +66,7 @@ Les modules `packages/*` (logement, intervention, notifications) sont indépenda
 ## Folder structure
 
 ```
-alpha-cil/
+foya/
 ├── apps/
 │   └── web/                          # Next.js 15 App Router
 │       ├── app/

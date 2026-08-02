@@ -1,4 +1,4 @@
-import { verifySiret } from "@alpha-cil/intervention";
+import { verifySiret } from "@foya/intervention";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { getServerSupabaseClient } from "@/lib/supabase-server";

@@ -1,4 +1,4 @@
-import { buttonVariants } from "@alpha-cil/ui";
+import { buttonVariants } from "@foya/ui";
 import {
   BadgeCheck,
   Bell,
@@ -94,7 +94,7 @@ export default function HomePage() {
             >
               <House className="size-4" strokeWidth={2} />
             </span>
-            Alpha CIL
+            Foya
           </span>
           <div className="flex items-center gap-5">
             <Link
@@ -259,7 +259,7 @@ export default function HomePage() {
 
       <footer className="border-t border-border px-6 py-8">
         <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 text-sm text-muted-foreground sm:flex-row">
-          <span>Alpha CIL — Carnet de santé du logement</span>
+          <span>Foya — Carnet de santé du logement</span>
           <div className="flex gap-6">
             <Link href="/artisan/connexion" className="hover:text-foreground">
               Espace artisan

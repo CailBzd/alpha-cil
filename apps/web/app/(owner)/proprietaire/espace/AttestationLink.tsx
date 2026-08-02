@@ -1,6 +1,6 @@
 "use client";
 
-import { createBrowserSupabaseClient } from "@alpha-cil/db";
+import { createBrowserSupabaseClient } from "@foya/db";
 import { useState } from "react";
 
 export function AttestationLink({ path }: { path: string }) {

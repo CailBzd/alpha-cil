@@ -1,7 +1,7 @@
 "use client";
 
-import { createBrowserSupabaseClient } from "@alpha-cil/db";
-import { Alert, AuthCard, Button, PasswordInput } from "@alpha-cil/ui";
+import { createBrowserSupabaseClient } from "@foya/db";
+import { Alert, AuthCard, Button, PasswordInput } from "@foya/ui";
 import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";
 import { ThemeToggle } from "../../../theme-toggle";

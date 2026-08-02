@@ -60,7 +60,7 @@ export async function POST(request: Request) {
   return new NextResponse(new Uint8Array(pdfBuffer), {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": "attachment; filename=carnet-alpha-cil.pdf",
+      "Content-Disposition": "attachment; filename=carnet-foya.pdf",
     },
   });
 }

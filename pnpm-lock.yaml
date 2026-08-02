@@ -18,27 +18,27 @@ importers:
 
   apps/web:
     dependencies:
-      '@alpha-cil/ai':
-        specifier: workspace:*
-        version: link:../../packages/ai
-      '@alpha-cil/db':
-        specifier: workspace:*
-        version: link:../../packages/db
-      '@alpha-cil/intervention':
-        specifier: workspace:*
-        version: link:../../packages/intervention
-      '@alpha-cil/logement':
-        specifier: workspace:*
-        version: link:../../packages/logement
-      '@alpha-cil/notifications':
-        specifier: workspace:*
-        version: link:../../packages/notifications
-      '@alpha-cil/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       '@ducanh2912/next-pwa':
         specifier: ^10.2.9
         version: 10.2.9(next@15.5.21(@babel/core@7.29.7(supports-color@8.1.1))(@playwright/test@1.62.1)(@types/node@22.20.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(supports-color@8.1.1)(webpack@5.109.2(lightningcss@1.33.0)(postcss@8.5.23))
+      '@foya/ai':
+        specifier: workspace:*
+        version: link:../../packages/ai
+      '@foya/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@foya/intervention':
+        specifier: workspace:*
+        version: link:../../packages/intervention
+      '@foya/logement':
+        specifier: workspace:*
+        version: link:../../packages/logement
+      '@foya/notifications':
+        specifier: workspace:*
+        version: link:../../packages/notifications
+      '@foya/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@react-pdf/renderer':
         specifier: ^4.1.6
         version: 4.5.1(react@19.2.8)

@@ -1,6 +1,6 @@
-import { verifyRge } from "@alpha-cil/intervention";
-import { lookupDpe } from "@alpha-cil/logement";
-import { sendMail } from "@alpha-cil/notifications";
+import { verifyRge } from "@foya/intervention";
+import { lookupDpe } from "@foya/logement";
+import { sendMail } from "@foya/notifications";
 import { isNonEmptyString } from "@/lib/form-validation";
 import { getServerSupabaseClient } from "@/lib/supabase-server";
 import { NextResponse } from "next/server";
@@ -155,7 +155,7 @@ export async function POST(request: Request) {
 
     // A notification failure never invalidates the intervention already
     // recorded, same resilience posture as the RGE verification above.
-    await sendMail(match.notify_email, "Alpha CIL — nouvelle intervention sur votre logement", html).catch(
+    await sendMail(match.notify_email, "Foya — nouvelle intervention sur votre logement", html).catch(
       () => {},
     );
   }

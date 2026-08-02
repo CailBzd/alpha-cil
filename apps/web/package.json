@@ -12,12 +12,12 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "@alpha-cil/ai": "workspace:*",
-    "@alpha-cil/db": "workspace:*",
-    "@alpha-cil/intervention": "workspace:*",
-    "@alpha-cil/logement": "workspace:*",
-    "@alpha-cil/notifications": "workspace:*",
-    "@alpha-cil/ui": "workspace:*",
+    "@foya/ai": "workspace:*",
+    "@foya/db": "workspace:*",
+    "@foya/intervention": "workspace:*",
+    "@foya/logement": "workspace:*",
+    "@foya/notifications": "workspace:*",
+    "@foya/ui": "workspace:*",
     "@ducanh2912/next-pwa": "^10.2.9",
     "@react-pdf/renderer": "^4.1.6",
     "@supabase/ssr": "^0.12.3",

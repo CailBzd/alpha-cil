@@ -1,4 +1,4 @@
-import { buttonVariants } from "@alpha-cil/ui";
+import { buttonVariants } from "@foya/ui";
 import { corpsMetierLabel } from "@/lib/corps-metier";
 import {
   consommationFormatter,

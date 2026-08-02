@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert, Button, Input } from "@alpha-cil/ui";
+import { Alert, Button, Input } from "@foya/ui";
 import { useState, type FormEvent } from "react";
 
 export function ExportForm({
@@ -67,7 +67,7 @@ export function ExportForm({
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = url;
-      anchor.download = "carnet-alpha-cil.pdf";
+      anchor.download = "carnet-foya.pdf";
       anchor.click();
       URL.revokeObjectURL(url);
       setLoadingAction(null);
@@ -111,7 +111,7 @@ export function ExportForm({
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = url;
-      anchor.download = "carnet-alpha-cil.json";
+      anchor.download = "carnet-foya.json";
       anchor.click();
       URL.revokeObjectURL(url);
       setLoadingAction(null);

@@ -1,10 +1,10 @@
-import { createServerSupabaseClient } from "@alpha-cil/db";
+import { createServerSupabaseClient } from "@foya/db";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createFakeSupabase, mockCookies } from "../../../../test/supabase-mock";
 import { POST } from "./route";
 
 vi.mock("next/headers", () => ({ cookies: mockCookies() }));
-vi.mock("@alpha-cil/db", () => ({ createServerSupabaseClient: vi.fn() }));
+vi.mock("@foya/db", () => ({ createServerSupabaseClient: vi.fn() }));
 
 function request(body: unknown) {
   return new Request("http://localhost/api/proprietaire/signup", {

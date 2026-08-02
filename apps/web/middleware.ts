@@ -14,7 +14,7 @@ export async function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   let cookiesToApply: { name: string; value: string; options: CookieOptions }[] = [];
 
-  // Inlined rather than imported from @alpha-cil/db/server: Vercel's Edge
+  // Inlined rather than imported from @foya/db/server: Vercel's Edge
   // Function bundler fails to trace across the workspace package boundary
   // (its exports map points at raw .ts source), so this file must be
   // self-contained with no cross-package import for the Edge runtime.
@@ -45,8 +45,8 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  requestHeaders.set("x-alpha-cil-user-id", user?.id ?? "");
-  requestHeaders.set("x-alpha-cil-user-email", user?.email ?? "");
+  requestHeaders.set("x-foya-user-id", user?.id ?? "");
+  requestHeaders.set("x-foya-user-email", user?.email ?? "");
 
   const response = NextResponse.next({ request: { headers: requestHeaders } });
   for (const { name, value, options } of cookiesToApply) {

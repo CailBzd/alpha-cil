@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from "@alpha-cil/db";
+import { createServerSupabaseClient } from "@foya/db";
 import { cookies } from "next/headers";
 
 // Replaces the ~10-line cookies()+createServerSupabaseClient(...) adapter
